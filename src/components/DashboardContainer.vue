@@ -80,8 +80,8 @@ export default {
     min-height: 40px;
     min-width: 40px;
     //padding: 10px;
-    grid-template-columns: auto;
-    grid-template-rows: auto;
+    //grid-template-columns: auto;
+    //grid-template-rows: auto;
     width: 100%;
     height: 100%;
     grid-gap: 10px;

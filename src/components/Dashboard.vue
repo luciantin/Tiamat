@@ -114,7 +114,7 @@ export default {
         dashboardClass: 'dashboard',
         dashboardTarget:'', //== document.getElemetById(dashboardData.dashboardId)
         grid:{top:0,left:0,width:0,height:0,x:0,y:0}, // not used
-        gridColNum:4,
+        gridColNum:5,
         gridRowNum:4,
       },
       mouseData:{
@@ -169,20 +169,20 @@ export default {
           }},
         'cnt-2':{
           title:'Container 1',
-          groups:['grp-2','grp-3',],
-          pos:{w:1,h:2,x:1,y:3},
-          innerGrid:{rows: 2,cols: 1},
+          groups:['grp-2','grp-3','grp-1'],
+          pos:{w:2,h:2,x:1,y:3},
+          innerGrid:{rows: 2,cols: 3},
           groupPlaceholderPos:{w:1,h:1,x:1,y:1},
           groupPos:{
             'grp-2':{w:1,h:1,x:1,y:1},
             'grp-3':{w:1,h:1,x:1,y:2},
-            // 'grp-1':{w:1,h:1,x:2,y:1},
+            'grp-1':{w:1,h:1,x:2,y:1},
           }},
         'cnt-3':{
           title:'Container 1',
           groups:['grp-4','grp-3'],
           pos:{w:2,h:2,x:1,y:1},
-          innerGrid:{rows: 2,cols: 2},
+          innerGrid:{rows: 2,cols: 3},
           groupPlaceholderPos:{w:1,h:1,x:1,y:1},
           groupPos:{
             'grp-4':{w:1,h:1,x:1,y:1},
@@ -192,12 +192,12 @@ export default {
           title:'Container 1',
           groups:['grp-5','grp-2','grp-1'],
           pos:{w:2,h:2,x:3,y:1},
-          innerGrid:{rows: 2,cols: 2},
+          innerGrid:{rows: 3,cols: 1},
           groupPlaceholderPos:{w:1,h:1,x:1,y:1},
           groupPos:{
             'grp-2':{w:2,h:1,x:1,y:1},
             'grp-5':{w:1,h:1,x:1,y:2},
-            'grp-1':{w:1,h:1,x:2,y:2},
+            'grp-1':{w:1,h:1,x:1,y:3},
           }},
       },
       tmpContainerData:{
@@ -269,8 +269,8 @@ export default {
       if(this.mouseData.type == 'container'){  // if the user is dragging a container element,
         let gridSector = { // smoothing to get better grid snapping while mouseOver, grid sector of cursor
                               // % of grid mouse is in          *          num of Rows/Cols       +1 bcz grid starts from 1
-          x: Math.floor((posX/this.dashboardData.grid.width) * this.dashboardData.gridRowNum) + 1,
-          y: Math.floor((posY/this.dashboardData.grid.height) * this.dashboardData.gridColNum) + 1
+          x: Math.floor((posX/this.dashboardData.grid.width) * this.dashboardData.gridColNum) + 1, // FIXME nes sam zeznuo, prob pobrkao col/row negdje jer radi ok a nebi trebalo
+          y: Math.floor((posY/this.dashboardData.grid.height) * this.dashboardData.gridRowNum) + 1
         }
         let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
           x: gridSector.x,
@@ -315,15 +315,15 @@ export default {
 
         let gridSector = { // smoothing to get better grid snapping while mouseOver, grid sector of cursor
           // % of grid mouse is in          *          num of Rows/Cols       +1 bcz grid starts from 1
-          x: Math.floor((cntPosX/containerSize.width) * this.containers[firstHoveredContainerKey].innerGrid.rows) + 1,
-          y: Math.floor((cntPosY/containerSize.height) * this.containers[firstHoveredContainerKey].innerGrid.cols) + 1
+          x: Math.floor((cntPosX/containerSize.width) * this.containers[firstHoveredContainerKey].innerGrid.cols) + 1,
+          y: Math.floor((cntPosY/containerSize.height) * this.containers[firstHoveredContainerKey].innerGrid.rows) + 1
         }
 
         let isInsideInnerGrid =
             ( (gridSector.x) <= this.containers[firstHoveredContainerKey].innerGrid.rows) &&
             ( (gridSector.y) <= this.containers[firstHoveredContainerKey].innerGrid.cols);
 
-        if(!isInsideInnerGrid) return;
+        // if(!isInsideInnerGrid) return;
 
         let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
           x: gridSector.x,
@@ -407,7 +407,7 @@ export default {
     },
     // goes up the tree until it finds the first el with targetClass(returns that el) or failConditionClass(returns null)
     firstParentWithTargetClass(el,targetClass,failConditionClass){ // FIXME ponekad baci Uncaught TypeError: el.classList is undefined,,, neznam iznad cega je kada to baci
-      if(el.classList.contains(targetClass)) return el; // tu ga baci
+      if(el.classList.contains(targetClass)) return el; // tu ga baci TODO baci error kad je mis iznad elem kojeg vuce !!!!
       else if(el.classList.contains(failConditionClass)) return null;
       else return this.firstParentWithTargetClass(el.parentElement,targetClass,failConditionClass);
     },
@@ -613,3 +613,48 @@ export default {
   }
 
 </style>
+
+
+<!--
+///////////////////////////////////////////////////////////////////////////////////////////////////
+///                             GRID SANITY CHECK                                               ///
+///////////////////////////////////////////////////////////////////////////////////////////////////
+
+ROW (y)|COl (x)
+      -→
+ |   0----------0----------0----------0----------0----------0
+ ↓   |          |
+     |    1x1y  |
+     |          |
+     |          |
+     0----------0----------0----------0----------0----------0
+     |          |
+     |   1x2y   |
+     |          |
+     |          |
+     0----------0----------0----------0----------0----------0
+     |          |          |
+     |          |          |
+     |          |          |
+     |          |          |
+     0----------0----------0----------0----------0----------0
+
+-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
