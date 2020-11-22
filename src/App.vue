@@ -3,11 +3,11 @@
   <!--  <Navbar v-if="isDisplayNavbar()" />-->
 
 <!--  <Dashboard />-->
-  <Grid
+  <GridV
       :items="this.items"
-      :groups="this.groups"
-      :containers="this.containers"
-      :gridData="this.gridData"
+      :containers="containers"
+      :groups="groups"
+      :gridData="gridData"
   />
 
 </template>
@@ -17,12 +17,12 @@
 import Navbar from "@/components/common/Navbar";
 import Dashboard from "@/components/dashboard/Dashboard";
 import Button from "@/components/common/Button";
-import Grid from "@/components/grid/Grid";
+import GridV from "@/components/grid/GridV";
 
 export default {
   name: 'App',
   components: {
-    Grid,
+    GridV,
     Button,
     Dashboard,
     Navbar,
