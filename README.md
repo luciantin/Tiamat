@@ -1,3 +1,19 @@
 # tiamat
 
-* Links : [Figma](https://www.figma.com/file/ol9SwO3y4DHBMqQ0130ajK/WebPage?node-id=688%3A736 "Figma"), [Web](http://tin.blue/piApp "Web")
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
