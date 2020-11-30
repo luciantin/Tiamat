@@ -1,19 +1,11 @@
-# tiamat
+# Tiamat
 
-## Project setup
-```
-npm install
-```
+- Napravio : Lucian Tin Udovicic
+- [Fakultet informatike u Puli ](http://fipu.unipu.hr "Fakultet informatike u Puli ")
+- Kolegij: [Programsko inženjerstvo](http://ntankovic.unipu.hr/pi "Programsko inženjerstvo")
+- Mentori: [doc. dr. sc. Nikola Tanković ](http://ntankovic.unipu.hr/ "doc. dr. sc. Nikola Tanković ") i Toni Starčić, univ. bacc. inf.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+- Opis :
+  - 
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- Ostalo : [Link](http://tin.blue/piApp "Link") 
