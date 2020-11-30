@@ -53,17 +53,17 @@
             </div>
           </template>
 
-<!--          <template v-slot:GroupItems>-->
-<!--            <Item v-for="item in this.getItems(group)"-->
-<!--                           :class="makeItemClassByType(item.item.type)"-->
-<!--                           :id="wrapId([keyContainer,keyGroup,item.ID])"-->
-<!--                           :ID="item.ID"-->
-<!--                           :item="item.item"-->
-<!--                           :key="item.ID"-->
-<!--            ></Item>-->
-<!--            &lt;!&ndash;    Task palceholder maybe later        &ndash;&gt;-->
-<!--            &lt;!&ndash;            <div :id="makePlaceholderId([keyContainer,keyGroup])" class="groupPlaceholder"> <p> Hi, I'm a placeholder for {{keyGroup}}</p></div>&ndash;&gt;-->
-<!--          </template>-->
+          <template v-slot:GroupItems>
+            <Item v-for="item in this.getItems(group)"
+                  :class="makeItemClassByType(item.item.type)"
+                  :id="wrapId([keyContainer,keyGroup,item.ID])"
+                  :ID="item.ID"
+                  :item="item.item"
+                  :key="item.ID"
+            ></Item>
+            <!--    Task palceholder maybe later        -->
+            <!--            <div :id="makePlaceholderId([keyContainer,keyGroup])" class="groupPlaceholder"> <p> Hi, I'm a placeholder for {{keyGroup}}</p></div>-->
+          </template>
 
         </Group>
         <div
@@ -95,21 +95,18 @@
 <script>
 
 import Container from "@/components/grid/GridBaseElements/Container";
-import Drag from "@/components/grid/GridBaseElements/Drag";
 import ContainerMenu from "@/components/grid/GridBaseElements/ContainerMenu";
 import Group from "@/components/grid/GridBaseElements/Group";
-import Item from "@/components/grid/GridBaseElements/Item";
 import GroupMenu from "@/components/grid/GridBaseElements/GroupMenu"; // on right click open menu
+import Item from "@/components/grid/GridBaseElements/Item";
+import ItemMenu from "@/components/grid/GridBaseElements/ItemMenu";
+import Drag from "@/components/grid/GridBaseElements/Drag";
+
 
 export default {
-  name: "Grid",
+  name: "Dashboard",
   components:{
-    GroupMenu,
-    Item,
-    Group,
-    ContainerMenu,
-    Drag,
-    Container },
+    Container, Group, GroupMenu,Item,Drag,ContainerMenu,ItemMenu},
   props: {
     items: {
       type: Object
@@ -126,6 +123,14 @@ export default {
   },
   data(){
     return{
+      dashboardData:{ // podaci o glavnom gridu, dashbordu
+        dashboardId:'dash-01',
+        dashboardClass: 'dashboard',
+        dashboardTarget:'', //== document.getElemetById(dashboardData.dashboardId)
+        grid:{top:0,left:0,width:0,height:0,x:0,y:0}, // not used
+        gridColNum:5,
+        gridRowNum:4,
+      },
       mouseData:{
         hasClicked:false, // was there a click?
         dragId:'',  // id of drag element
@@ -184,8 +189,6 @@ export default {
 
       this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.groupId);
       this.mouseData.mouseDownTarget.style.position = 'absolute';
-
-      console.log(this.mouseData)
     },
     onContainerMouseDown(event){
       this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
@@ -206,7 +209,6 @@ export default {
       let posX = (event.clientX - this.gridData.grid.left);
       let posY = (event.clientY - this.gridData.grid.top);
 
-      // TODO change css pointer-events
       this.mouseData.mouseDownTarget.style.left = (posX + 10) + 'px'; // make container follow the cursor
       this.mouseData.mouseDownTarget.style.top = (posY + 10) + 'px';  // adds 10px bcz if not then cursor is always above the dragged element
 
@@ -216,7 +218,6 @@ export default {
           x: Math.floor((posX/this.gridData.grid.width) * this.gridData.gridColNum) + 1, // FIXME nes sam zeznuo, prob pobrkao col/row negdje jer radi ok a nebi trebalo
           y: Math.floor((posY/this.gridData.grid.height) * this.gridData.gridRowNum) + 1
         }
-
         let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
           x: gridSector.x,
           y: gridSector.y,
@@ -243,8 +244,8 @@ export default {
       }
       else if(this.mouseData.type == 'group'){  // if the user is dragging a group element,
         let hoveredOverElement = event.target;
-        console.log(hoveredOverElement)
-        let firstHoveredContainer = this.firstParentWithTargetClass(hoveredOverElement,'dashboardContainer',this.gridData.gridClass)
+        // console.log(hoveredOverElement)                                         // DONJI class name treba biti isti kao glavna klasa kontejnera
+        let firstHoveredContainer = this.firstParentWithTargetClass(hoveredOverElement,'container',this.gridData.gridClass) // CLASS OF Container element
         if(firstHoveredContainer === null){
           this.mouseData.prevHoveredOverGroupPlaceholderElement.style.display = 'none';
           return;

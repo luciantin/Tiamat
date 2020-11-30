@@ -20,7 +20,6 @@
 
 <!--        <div id="img"></div>-->
   </div>
-  <router-view/>
 </template>
 
 <script>
