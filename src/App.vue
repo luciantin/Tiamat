@@ -1,14 +1,7 @@
 <template>
 
-    <Navbar v-if="isDisplayNavbar()" />
+  <Navbar v-if="isDisplayNavbar()" />
 
-<!--  <Dashboard />-->
-<!--  <Grid-->
-<!--      :items="this.items"-->
-<!--      :containers="containers"-->
-<!--      :groups="groups"-->
-<!--      :gridData="gridData"-->
-<!--  />-->
   <router-view/>
 
 </template>
@@ -30,7 +23,7 @@ export default {
   },
   methods:{
     isDisplayNavbar(){
-      let navbarRoutes = ["/","/login","/signup","/about","/pricing","/demo","/"];
+      let navbarRoutes = ["/","/login","/signup","/about","/pricing","/demo","/features"];
       return navbarRoutes.includes(this.$route.path);
     }
   }

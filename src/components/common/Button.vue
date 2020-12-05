@@ -1,6 +1,6 @@
 <template>
   <div class="Button">
-    {{this.text}}
+    <h2>{{text}}</h2>
   </div>
 </template>
 
@@ -14,7 +14,22 @@ export default {
     text:{
       type: String
     }
-  }
+  },
+  // data(){
+  //   return{
+  //     hoveredOver:false,
+  //   }
+  // },
+  // computed:{
+  //   buttonColor(){
+  //
+  //   },
+  // },
+  // methods:{
+  //   mouseOver(){
+  //     this.hoveredOver = !this.hoveredOver;
+  //   }
+  // }
 }
 </script>
 
@@ -23,12 +38,17 @@ export default {
 <style  lang="scss">
 
 .Button{
-  display: inline;
   background-color: $color-action-primary;
   color: $color-action-text;
   box-shadow: $box-shadow-s;
-  margin: 10px;
-  padding: 20px 40px;
+
+  display: inline-block;
+  margin: 0.5em 0;
+  padding: 1em 2em;
+
+  font-size: 1em;
+  line-height: 1;
+  cursor: pointer;
 
   &:hover{
     background-color: $color-action-secondary;
