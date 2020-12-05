@@ -38,7 +38,7 @@ export default {
   width: 100%;
   height: 10vh;
   pointer-events: none;
-
+  z-index: 100;
 
   #content{
     z-index: 2;
