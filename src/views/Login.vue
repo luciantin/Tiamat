@@ -1,37 +1,152 @@
 <template>
-  <div class="login">
-    <section class="content">
-      <img src="#/assets/img/Rectangle.svg"/>
-    </section>
+  <div class="loginPage">
+    <div class="login">
+      <section class="content">
+        <img src="@/assets/img/Rectangle.svg"/>
+      </section>
 
-    <section form>
 
-    </section>
+      <section class="form">
 
-<!--    <Button text="Sign Up" />-->
+        <div class="main">
+          <div class="inputs">
+<!--            <InputField-->
+<!--                v-model="username"-->
+<!--                placeholder="username"-->
+<!--                title="Username"-->
+<!--                :is-ok="passwordCheck"-->
+<!--            />-->
+            <InputField
+                v-model="email"
+                placeholder="Email"
+                title="Email"
+                :is-ok="passwordCheck"
+                type="email"
+            />
+            <InputField
+                v-model="password"
+                placeholder="password"
+                title="Password"
+                :is-ok="passwordCheck"
+                type="password"
+            />
+          </div>
 
-<!--    <router-link to="/dashboard">Dashboard</router-link> |-->
-<!--    <router-link to="/taskspace">Taskspace</router-link> |-->
+          <Button class="buttonLogin" text="Sign In" @buttonClick="onClickSubmit" />
 
+        </div>
+
+        <div class="links">
+          <router-link class="link" to="/signup">Create an account</router-link>
+          <router-link class="link" to="/signup">Forgot Password?</router-link>
+        </div>
+
+      </section>
+
+    </div>
   </div>
 </template>
 <script>
 import Button from "@/components/common/Button";
+import InputField from "@/components/common/InputField";
+import {firebase} from '@/firebase'
+
 export default {
-  components: {Button}
+  components: {InputField, Button},
+  data(){
+    return{
+      password:'',
+      email:'',
+      // username:'',
+    }
+  },
+  methods:{
+    onClickSubmit(){
+      console.log('asd');
+      firebase.auth()
+          .signInWithEmailAndPassword(this.email,this.password)
+          .then((msg)=>{
+            console.log('OK',msg)
+          })
+          .catch((err)=>{
+            console.error('nope',err)
+          })
+    },
+    passwordCheck(val){
+      return val.length >= 4;
+    }
+  }
 }
 </script>
 
 
 <style scoped lang="scss">
-  .login{
+  .loginPage{
     background: rgb(83,160,232);
     background: linear-gradient(239deg, rgba(83,160,232,1) 59%, rgba(255,255,255,1) 59%);
     width: 100vw;
-    height: 100vw;
+    height: 100vh;
 
-    display: flex;
-    flex-direction: row;
+    .login{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-evenly;
+      padding-top: 30vh;
+
+      .content{
+        flex-shrink: 1;
+      }
+
+      .form{
+
+        .main{
+          background: #FFFFFF;
+          box-shadow: 5px 5px 4px rgba(0, 0, 0, 0.25);
+          border-radius: 20px;
+          display: flex;
+          flex-direction: column;
+          justify-content: end;
+          min-width: 25vw;
+          flex-shrink: 0;
+          height: 40vh;
+
+
+          .inputs{
+            display: flex;
+            flex-direction: column;
+            flex-grow: 20;
+            justify-content: space-evenly;
+            text-align: left;
+          }
+
+          .buttonLogin{
+            border-radius: 0px 0px 18px 18px;
+            //width: 22vw;
+            align-self: end;
+            flex-grow: 1;
+            //min-width: 30vw;
+            width: 100%;
+          }
+        }
+
+        .links{
+          margin-top: 20px;
+          .link{
+            text-decoration: none;
+            color: white;
+            margin-left: 20px;
+
+            &:first-of-type{
+              margin: 0;
+              margin-right: 20px;
+            }
+          }
+        }
+
+
+      }
+    }
   }
 
 </style>
+

@@ -1,5 +1,5 @@
 <template>
-  <div class="Button">
+  <div class="Button" @click="$emit('buttonClick')">
     <h2>{{text}}</h2>
   </div>
 </template>
@@ -7,29 +7,8 @@
 <script>
 export default {
   name: "Button",
-  props:{
-    bType:{  // "action"
-      type: String
-    },
-    text:{
-      type: String
-    }
-  },
-  // data(){
-  //   return{
-  //     hoveredOver:false,
-  //   }
-  // },
-  // computed:{
-  //   buttonColor(){
-  //
-  //   },
-  // },
-  // methods:{
-  //   mouseOver(){
-  //     this.hoveredOver = !this.hoveredOver;
-  //   }
-  // }
+  props:['text'],
+  emits:['buttonClick'],
 }
 </script>
 
@@ -41,9 +20,9 @@ export default {
   background-color: $color-action-primary;
   color: $color-action-text;
   box-shadow: $box-shadow-s;
-
+  border: none;
   display: inline-block;
-  margin: 0.5em 0;
+  //margin: 0.5em 0;
   padding: 1em 2em;
 
   font-size: 1em;
