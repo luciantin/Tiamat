@@ -49,7 +49,8 @@
 <script>
 import Button from "@/components/common/Button";
 import InputField from "@/components/common/InputField";
-import {firebase} from '@/firebase'
+import {firebase} from '@/firebase/firebase'
+import router from "@/router/routes";
 
 export default {
   components: {InputField, Button},
@@ -63,13 +64,17 @@ export default {
   methods:{
     onClickSubmit(){
       console.log('asd');
-      firebase.auth()
-          .signInWithEmailAndPassword(this.email,this.password)
-          .then((msg)=>{
-            console.log('OK',msg)
+      this.$store
+          .dispatch('login',{
+            email:this.email,
+            password:this.password
           })
-          .catch((err)=>{
-            console.error('nope',err)
+          .then(()=>{
+            console.log('testestsetttetsetseet')
+            this.$router.push({path:'/dashboard'});
+          })
+          .catch((error)=>{
+
           })
     },
     passwordCheck(val){

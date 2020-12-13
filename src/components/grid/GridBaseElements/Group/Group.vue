@@ -4,15 +4,15 @@
       <slot name="GroupHeader"></slot>
     </div>
     <div class="groupItems">
-      <slot name="GroupItems"></slot>
+      <slot name="GroupContent"></slot>
     </div>
   </div>
 </template>
 
 <script>
 
-//import DashboardTask from "@/components/dashboard/DashboardTask";
-//import DashboardDrag from "@/components/dashboard/DashboardDrag";
+//import DashboardTask from "@/components/dashboard.old/DashboardTask";
+//import DashboardDrag from "@/components/dashboard.old/DashboardDrag";
 
 export default {
   name: "Group",

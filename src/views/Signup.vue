@@ -49,7 +49,7 @@
 <script>
 import Button from "@/components/common/Button";
 import InputField from "@/components/common/InputField";
-import {firebase} from '@/firebase'
+
 
 export default {
   components: {InputField, Button},
@@ -63,14 +63,16 @@ export default {
   methods:{
     onClickSubmit(){
       console.log('asd');
-      firebase.auth()
-          .createUserWithEmailAndPassword(this.email,this.password)
-          .then((msg)=>{
-            console.log('OK',msg)
-          })
-          .catch((err)=>{
-            console.error('nope',err)
-          })
+
+      this.$store.dispatch('signup',{
+        email:this.email,
+        password:this.password
+      }).then(()=>{
+        console.log("thjecsa")
+      }).catch((error)=>{
+
+      })
+
     },
     passwordCheck(val){
       return val.length >= 4;

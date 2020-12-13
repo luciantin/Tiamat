@@ -17,7 +17,7 @@
 
 <script>
 
-// import DashboardGroup from "@/components/dashboard/DashboardGroup";
+// import DashboardGroup from "@/components/dashboard.old/DashboardGroup";
 
 export default {
   name: "Container",

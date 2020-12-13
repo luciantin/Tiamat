@@ -9,7 +9,7 @@
 <script>
 // @ is an alias to /src
 import Navbar from "@/components/common/Navbar";
-import Dashboard from "@/components/dashboard/Dashboard";
+import Dashboard from "@/components/dashboard.old/Dashboard";
 import Button from "@/components/common/Button";
 import Grid from "@/components/grid/Grid.vue";
 
@@ -32,7 +32,6 @@ export default {
 
 <style lang="scss">
 
-//@import "scss/variables/colors";
 
 *{
   box-sizing: border-box;

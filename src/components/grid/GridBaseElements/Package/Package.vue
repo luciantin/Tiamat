@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: "Item",
+  name: "Package",
   props:{
     item:{
       type: Object,

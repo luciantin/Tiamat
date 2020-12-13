@@ -11,8 +11,8 @@
 
 <script>
 
-import DashboardTask from "@/components/dashboard/DashboardTask";
-import DashboardDrag from "@/components/dashboard/DashboardDrag";
+import DashboardTask from "@/components/dashboard.old/DashboardTask";
+import DashboardDrag from "@/components/dashboard.old/DashboardDrag";
 
 export default {
   name: "DashboardGroup",

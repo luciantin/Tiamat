@@ -46,21 +46,21 @@
         >
 
           <template v-slot:GroupHeader>
-            <div class="dashboardGroupHeader">
+            <div v-if="group.attributes.title" class="dashboardGroupHeader">
               <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>
               <p class="dashboardGroupTitle">Group {{keyGroup}}</p>
               <GroupMenu class="dashboardHoverMenu"></GroupMenu>
             </div>
           </template>
 
-          <template v-slot:GroupItems>
-            <Item v-for="item in this.getItems(group)"
-                  :class="makeItemClassByType(item.item.type)"
-                  :id="wrapId([keyContainer,keyGroup,item.ID])"
-                  :ID="item.ID"
-                  :item="item.item"
-                  :key="item.ID"
-            ></Item>
+          <template v-slot:GroupContent>
+            <Package v-for="content in this.getContent(group)"
+                  :class="makeContentClassByType(content.content.type)"
+                  :id="wrapId([keyContainer,keyGroup,content.ID])"
+                  :ID="content.ID"
+                  :item="content.content"
+                  :key="content.ID"
+            ></Package>
             <!--    Task palceholder maybe later        -->
             <!--            <div :id="makePlaceholderId([keyContainer,keyGroup])" class="groupPlaceholder"> <p> Hi, I'm a placeholder for {{keyGroup}}</p></div>-->
           </template>
@@ -94,21 +94,21 @@
 
 <script>
 
-import Container from "@/components/grid/GridBaseElements/Container";
-import ContainerMenu from "@/components/grid/GridBaseElements/ContainerMenu";
-import Group from "@/components/grid/GridBaseElements/Group";
-import GroupMenu from "@/components/grid/GridBaseElements/GroupMenu"; // on right click open menu
-import Item from "@/components/grid/GridBaseElements/Item";
-import ItemMenu from "@/components/grid/GridBaseElements/ItemMenu";
-import Drag from "@/components/grid/GridBaseElements/Drag";
+import Container from "@/components/grid/GridBaseElements/Container/Container";
+import ContainerMenu from "@/components/grid/GridBaseElements/Container/ContainerMenu";
+import Group from "@/components/grid/GridBaseElements/Group/Group";
+import GroupMenu from "@/components/grid/GridBaseElements/Group/GroupMenu"; // on right click open menu
+import Package from "@/components/grid/GridBaseElements/Package/Package";
+import PackageMenu from "@/components/grid/GridBaseElements/Package/PackageMenu";
+import Drag from "@/components/grid/GridBaseElements/Common/Drag";
 
 
 export default {
-  name: "Dashboard",
+  name: "Grid",
   components:{
-    Container, Group, GroupMenu,Item,Drag,ContainerMenu,ItemMenu},
+    Container, Group, GroupMenu,Package,Drag,ContainerMenu,PackageMenu},
   props: {
-    items: {
+    content: {
       type: Object
     },
     groups: {
@@ -411,10 +411,10 @@ export default {
       for( key in this.groups) if(groupList.includes(key)) res[key] = this.groups[key];
       return res;
     },
-    getItems(group){ // join all the tasks of a group in an array
+    getContent(group){ // join all the tasks of a group in an array
       let itemList = group.items;
       let res = [], key;
-      for( key of itemList) res.push({ID:key,item:this.items[key]})
+      for( key of itemList) res.push({ID:key,content:this.content[key]})
       return res;
     },
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -448,7 +448,7 @@ export default {
     unwrapId(id){ // splits the id
       return id.split('+');
     },
-    makeItemClassByType(tskType){ // TODO, used later
+    makeContentClassByType(tskType){ // TODO, used later
       return 'dashboardTask'+'-'+tskType;
     },
     /////////////////////////////////////////////////////////////////////////////////////////////
@@ -471,7 +471,7 @@ export default {
     calculateGroupSize(){ // before mount calculate the best size for group,
 
     },
-    calculateContainerPos(){ //not used yet, it should calculate the container position making the dashboard more responsive
+    calculateContainerPos(){ //not used yet, it should calculate the container position making the dashboard.old more responsive
 
     },
     calculateGroupPos(){ //not used yet, same as above

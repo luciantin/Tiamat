@@ -94,13 +94,13 @@
 
 <script>
 
-import DashboardContainer from "@/components/dashboard/DashboardContainer";
-import DashboardGroup from "@/components/dashboard/DashboardGroup";
-import DashboardTask from "@/components/dashboard/DashboardTask";
-import DashboardDrag from "@/components/dashboard/DashboardDrag";
-import DashboardContainerMenu from "@/components/dashboard/DashboardMenus/DashboardContainerMenu";
-import DashboardGroupMenu from "@/components/dashboard/DashboardMenus/DashboardGroupMenu";
-import DashboardTaskMenu from "@/components/dashboard/DashboardMenus/DashboardTaskMenu"; // on right click open menu
+import DashboardContainer from "@/components/dashboard.old/DashboardContainer";
+import DashboardGroup from "@/components/dashboard.old/DashboardGroup";
+import DashboardTask from "@/components/dashboard.old/DashboardTask";
+import DashboardDrag from "@/components/dashboard.old/DashboardDrag";
+import DashboardContainerMenu from "@/components/dashboard.old/DashboardMenus/DashboardContainerMenu";
+import DashboardGroupMenu from "@/components/dashboard.old/DashboardMenus/DashboardGroupMenu";
+import DashboardTaskMenu from "@/components/dashboard.old/DashboardMenus/DashboardTaskMenu"; // on right click open menu
 
 export default {
   name: "Dashboard",
@@ -525,7 +525,7 @@ export default {
     calculateGroupSize(){ // before mount calculate the best size for group,
 
     },
-    calculateContainerPos(){ //not used yet, it should calculate the container position making the dashboard more responsive
+    calculateContainerPos(){ //not used yet, it should calculate the container position making the dashboard.old more responsive
 
     },
     calculateGroupPos(){ //not used yet, same as above
