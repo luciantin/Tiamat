@@ -1,3 +1,5 @@
+import {dbUser} from "@/firebase/rtDatabase";
+
 const state = {
     test: 'My first state!'
 };

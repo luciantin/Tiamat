@@ -14,6 +14,7 @@
       <div id="right">
         <router-link to="/login">Login</router-link>
         <router-link to="/signup">SignUp</router-link>
+        <router-link to="/dashboard">dash</router-link>
       </div>
     </div>
     <img alt="Vue logo" src="../../assets/img/navbar/BG.svg">

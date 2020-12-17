@@ -51,7 +51,7 @@ export const routes = [
     name: 'Stuffspace',
     component: () => import('../views/StuffSpace.vue'),
     meta:{
-      auth:true,
+      auth:false,
       nav:false
     }
   },
@@ -60,7 +60,7 @@ export const routes = [
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue'),
     meta:{
-      auth:true,
+      auth:false,
       nav:false
     }
   },
