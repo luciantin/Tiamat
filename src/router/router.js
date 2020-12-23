@@ -6,6 +6,7 @@ import {firebase} from '@/firebase/firebase'
 
 const router = createRouter({
     history: createWebHistory(process.env.BASE_URL),
+    base: "/piApp/",
     routes
 })
 
