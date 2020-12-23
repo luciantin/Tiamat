@@ -304,6 +304,21 @@ export default {
             return res;
         },
 
+        createGridArea(groupPos){
+            let gridColumnStart= groupPos.x ;
+            let gridColumnEnd= groupPos.x + groupPos.w ;
+            let gridRowStart= groupPos.y  ;
+            let gridRowEnd= groupPos.y + groupPos.h ;
+
+            let grdAr = `${gridRowStart} / ${gridColumnStart} / ${gridRowEnd} / ${gridColumnEnd}`
+
+            console.log(grdAr)
+
+            return {
+                gridArea:grdAr
+            }
+        },
+
         addGrid(){
             this.$store.dispatch('logOut');
 

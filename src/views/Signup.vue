@@ -94,8 +94,8 @@ export default {
           pos:{w:1,h:1,x:1,y:1},
           innerGrid:{rows:2,cols:2},
           groupPos:{
-            '0':{w:1,h:1,x:0,y:0},
-            '1':{w:1,h:1,x:1,y:0}
+            '0':{w:1,h:1,x:1,y:1},
+            '1':{w:1,h:1,x:2,y:1}
           },
           meta:meta
         })

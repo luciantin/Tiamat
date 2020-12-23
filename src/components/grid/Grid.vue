@@ -39,12 +39,9 @@
             :id="wrapId([keyContainer,keyGroup])"
             :group="group"
             :key="keyGroup"
-            :style="{
-              gridColumnStart: container.groupPos[keyGroup].x,
-              gridColumnEnd: container.groupPos[keyGroup].x + container.groupPos[keyGroup].w ,
-              gridRowStart: container.groupPos[keyGroup].y,
-              gridRowEnd: container.groupPos[keyGroup].y + container.groupPos[keyGroup].h ,
-            }"
+            :style="
+              createGridArea(container.groupPos[keyGroup])
+            "
         >
 <!--v-if="group.attributes.title"-->
           <template v-slot:GroupHeader>
