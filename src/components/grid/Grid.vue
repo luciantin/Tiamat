@@ -46,9 +46,9 @@
               gridRowEnd: container.groupPos[keyGroup].y + container.groupPos[keyGroup].h ,
             }"
         >
-
+<!--v-if="group.attributes.title"-->
           <template v-slot:GroupHeader>
-            <div v-if="group.attributes.title" class="dashboardGroupHeader">
+            <div  class="dashboardGroupHeader">
               <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>
               <p class="dashboardGroupTitle">Group {{keyGroup}}</p>
               <GroupMenu class="dashboardHoverMenu"></GroupMenu>
@@ -58,7 +58,7 @@
           <template v-slot:GroupContent>
 
             <Package
-              :id="wrapId([group.items])"
+              :id="wrapId([1])"
               :sectionID="group.items"
             />
 

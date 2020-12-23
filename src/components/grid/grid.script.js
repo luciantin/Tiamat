@@ -219,7 +219,7 @@ export default {
                 this.containers[firstHoveredContainerKey].groupPlaceholderPos.x = gridSector.x;
                 this.containers[firstHoveredContainerKey].groupPlaceholderPos.y = gridSector.y;
 
-                let isCopyOfGroupAlreadyInContainer = this.containers[firstHoveredContainerKey].groups.includes(this.mouseData.groupKey);
+                let isCopyOfGroupAlreadyInContainer = this.containers[firstHoveredContainerKey].groupID.includes(this.mouseData.groupKey);
                 let isCopyComingFromDifferentContainer = this.mouseData.containerKey != firstHoveredContainerKey;
 
                 // console.log(this.containers[firstHoveredContainerKey].groups);
@@ -297,9 +297,10 @@ export default {
         },
         /////////////////////////////////////////////////////////////////////////////////////////////////
         getGroups(container) { // join all the groups of a container in an array
-            let groupList = container.groups;
+            let groupList = container.groupID;
             let res = {}, key;
-            for( key in this.groups) if(groupList.includes(key)) res[key] = this.groups[key];
+            for( key in groupList) if(this.groups[key]) res[key] = this.groups[key];
+            // console.log(res,this.groups,container.groupID)
             return res;
         },
 
@@ -339,63 +340,55 @@ export default {
                 }).then(cnt=> {
                     console.log(cnt)
 
-                    this.content={
-                        'tsk-1':{title:'Task 1',data:{text:'Hi, I\'m task 1'},attributes:{completed:false,},type:'text',subtasks:[]},
-                        'tsk-2':{title:'Task 2',data:{text:'Hi, I\'m task 2'},attributes:{completed:true, },type:'text',subtasks:[]},
-                        'tsk-3':{title:'Task 3',data:{text:'Hi, I\'m task 3'},attributes:{completed:false,},type:'text',subtasks:[]},
-                        'tsk-4':{title:'Task 4',data:{text:'Hi, I\'m task 4'},attributes:{completed:false,},type:'text',subtasks:[]},
-                        'tsk-5':{title:'Task 5',data:{text:'Hi, I\'m task 5'},attributes:{completed:false,},type:'text',subtasks:[]},
-                        'tsk-6':{title:'Task 6',data:{text:'Hi, I\'m task 6'},attributes:{completed:false,},type:'text',subtasks:[]},
-                    }
-
-                    this.groups={
-                        'grp-1':{title:'Group 1',attributes:{completed:false,locked:false,title:false,},items:['tsk-1'],},
-                        'grp-2':{title:'Group 2',attributes:{completed:false,locked:false,title:true,},items:['tsk-4'],},
-                        'grp-3':{title:'Group 3',attributes:{completed:false,locked:false,title:true,},items:['tsk-3'],},
-                        'grp-4':{title:'Group 4',attributes:{completed:false,locked:false,title:true,},items:['tsk-5'],},
-                        'grp-5':{title:'Group 5',attributes:{completed:false,locked:false,title:true,},items:['tsk-6'],},
-                    }
-
-                    this.containers={
-                        'cnt-1':{
-                            title:'Container 1',
-                            groups:['grp-1'],
-                            pos:{w:1,h:1,x:4,y:3},
-                            innerGrid:{rows: 1,cols: 1},
-                            groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                            groupPos:{
-                                'grp-1':{w:1,h:1,x:1,y:1},
-                            }},
-                        'cnt-2':{
-                            title:'Container 1',
-                            groups:['grp-2'],
-                            pos:{w:1,h:1,x:1,y:3},
-                            innerGrid:{rows: 1,cols: 1},
-                            groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                            groupPos:{
-                                'grp-2':{w:1,h:1,x:1,y:1},
-                            }},
-                        'cnt-3':{
-                            title:'Container 1',
-                            groups:['grp-4'],
-                            pos:{w:1,h:1,x:1,y:1},
-                            innerGrid:{rows: 1,cols: 1},
-                            groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                            groupPos:{
-                                'grp-4':{w:1,h:1,x:1,y:1},
-                            }},
-                        'cnt-4':{
-                            title:'Container 1',
-                            groups:['grp-5','grp-2','grp-1'],
-                            pos:{w:2,h:1,x:3,y:1},
-                            innerGrid:{rows: 3,cols: 1},
-                            groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                            groupPos:{
-                                'grp-2':{w:2,h:1,x:1,y:1},
-                                'grp-5':{w:1,h:1,x:1,y:2},
-                                'grp-1':{w:1,h:1,x:1,y:3},
-                            }},
-                    }
+                    this.containers = cnt;
+                    // this.groups={
+                    //     'grp-1':{title:'Group 1',attributes:{completed:false,locked:false,title:false,},items:['tsk-1'],},
+                    //     'grp-2':{title:'Group 2',attributes:{completed:false,locked:false,title:true,},items:['tsk-4'],},
+                    //     'grp-3':{title:'Group 3',attributes:{completed:false,locked:false,title:true,},items:['tsk-3'],},
+                    //     'grp-4':{title:'Group 4',attributes:{completed:false,locked:false,title:true,},items:['tsk-5'],},
+                    //     'grp-5':{title:'Group 5',attributes:{completed:false,locked:false,title:true,},items:['tsk-6'],},
+                    // }
+                    //
+                    // this.containers={
+                    //     'cnt-1':{
+                    //         title:'Container 1',
+                    //         groups:['grp-1'],
+                    //         pos:{w:1,h:1,x:4,y:3},
+                    //         innerGrid:{rows: 1,cols: 1},
+                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
+                    //         groupPos:{
+                    //             'grp-1':{w:1,h:1,x:1,y:1},
+                    //         }},
+                    //     'cnt-2':{
+                    //         title:'Container 1',
+                    //         groups:['grp-2'],
+                    //         pos:{w:1,h:1,x:1,y:3},
+                    //         innerGrid:{rows: 1,cols: 1},
+                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
+                    //         groupPos:{
+                    //             'grp-2':{w:1,h:1,x:1,y:1},
+                    //         }},
+                    //     'cnt-3':{
+                    //         title:'Container 1',
+                    //         groups:['grp-4'],
+                    //         pos:{w:1,h:1,x:1,y:1},
+                    //         innerGrid:{rows: 1,cols: 1},
+                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
+                    //         groupPos:{
+                    //             'grp-4':{w:1,h:1,x:1,y:1},
+                    //         }},
+                    //     'cnt-4':{
+                    //         title:'Container 1',
+                    //         groups:['grp-5','grp-2','grp-1'],
+                    //         pos:{w:2,h:1,x:3,y:1},
+                    //         innerGrid:{rows: 3,cols: 1},
+                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
+                    //         groupPos:{
+                    //             'grp-2':{w:2,h:1,x:1,y:1},
+                    //             'grp-5':{w:1,h:1,x:1,y:2},
+                    //             'grp-1':{w:1,h:1,x:1,y:3},
+                    //         }},
+                    // }
 
 
 
@@ -403,9 +396,9 @@ export default {
                     this.$store.dispatch('getElements',{
                         type:'group',
                         id:cnt[0].groupID
-                    }).then(a=> {
-
-                            console.log(a)
+                    }).then(grp=> {
+                            this.groups = grp;
+                            console.log(grp)
                         }
                     )
                 })
@@ -430,16 +423,14 @@ export default {
     },
     watch:{
         // ako korisnik refresha stranicu mora se svaki put provjeriti dali je jos uvijek baza spremna te se tek onda grid popunjava s podacima
-        isDbReady(newState,oldState) {
+        isDbReady(newState,oldState) { // TODO ELSE loading
             // console.log('DB state change, new :',newState)
             if(newState){
-
                 // this.setElement({
                 //     type:'group',
                 //     id:8,
                 //     val:a[0]
                 // })
-
                 this.loadData();
             }
         },
@@ -451,7 +442,7 @@ export default {
     beforeMount() {
 
         this.ID=this.$route.query.id;
-
+        if(this.isDbReady) this.loadData(); //ako je vec baza spremna ucitaj podatke
 
 
         // this.gridData={ // podaci o glavnom gridu, dashbordu
