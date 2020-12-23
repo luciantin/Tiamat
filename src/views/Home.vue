@@ -5,6 +5,7 @@
       <h1 class="section-heading">Organisation</h1>
       <div class="section-content">
         content
+        {{testing}}
       </div>
     </section>
 
@@ -41,7 +42,25 @@
 
 export default {
   name: 'Home',
-  components: {
+  computed: {
+    testing(){
+      // this.$store.dispatch('testAction').then(a=>console.log(a))
+      // return this.$store.getters.getTest2;
+    }
+  },
+  methods:{
+    callMe(){
+
+    }
+  },
+  mounted() {
+    // this.$store.dispatch('initDB')
+    // this.$store.dispatch('testAction')
+    // this.$store.dispatch('getElement',{
+    //   type:'dashboard',
+    //   id:1
+    // }).then(a=>console.log(a))
+  //   // console.log(this.$store.getters.)
   }
 }
 </script>

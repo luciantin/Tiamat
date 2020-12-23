@@ -46,10 +46,13 @@
     </div>
   </div>
 </template>
+
+
 <script>
 import Button from "@/components/common/Button";
 import InputField from "@/components/common/InputField";
-
+import {UserFactory} from "@/factory/userFactory/userFactory";
+import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
 
 export default {
   components: {InputField, Button},
@@ -62,18 +65,80 @@ export default {
   },
   methods:{
     onClickSubmit(){
-      console.log('asd');
+      // console.log('asd');
 
       this.$store.dispatch('signup',{
         email:this.email,
         password:this.password
-      }).then(()=>{
-        console.log("thjecsa")
+      }).then(()=>{ // signup succ., init db data for new user
+        let userData = new UserFactory().createUser(this.username,[0]);
+        let elFac = new ElementsFactory();
+
+        let stfID = [0];
+        let cntID = [0];
+        let meta = elFac.createMeta({
+          title:'Dash',
+          description:'new Dash',
+          tags: ['Dash']
+        })
+        let GridData = elFac.createGridData({
+          gridID : 'newDash',
+          gridClass: 'dashboard',
+          gridColNum:5,
+          gridRowNum:5
+        })
+
+        let firstDash = elFac.createDashboard({stuffspaceID:stfID,containerID:cntID,meta:meta,gridData:GridData});
+        let firstCnt = elFac.createContainer({
+          groupID:[0,1],
+          pos:{w:1,h:1,x:1,y:1},
+          innerGrid:{rows:2,cols:2},
+          groupPos:{
+            '0':{w:1,h:1,x:0,y:0},
+            '1':{w:1,h:1,x:1,y:0}
+          },
+          meta:meta
+        })
+        let grpOne = elFac.createGroup({
+          sectionID:[0],
+          meta:meta
+        })
+        let grpTwo = elFac.createGroup({
+          sectionID:[1],
+          meta:meta
+        })
+
+        // this.$store.dispatch('initDB');
+        this.$store.dispatch('setUser',userData);
+        this.$store.dispatch('setElement',{
+          type:'dashboard',
+          id:0,
+          val:firstDash
+        })
+        this.$store.dispatch('setElement',{
+          type:'container',
+          id:0,
+          val:firstCnt
+        })
+        this.$store.dispatch('setElement',{
+          type:'group',
+          id:0,
+          val:grpOne
+        })
+        this.$store.dispatch('setElement',{
+          type:'group',
+          id:1,
+          val:grpTwo
+        })
+
+        this.$router.push({path:'/dashboard',query:{id:0}});
+
       }).catch((error)=>{
 
       })
 
     },
+
     passwordCheck(val){
       return val.length >= 4;
     }

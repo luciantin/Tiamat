@@ -1,5 +1,16 @@
 <template>
-  <div class="loginPage">
+
+  <div v-if="loading" class="loading">
+    <h1>LOADING</h1>
+    <h1>LOADING</h1>
+    <h1>LOADING</h1>
+    <h1>LOADING</h1>
+    <h1>LOADING</h1>
+    <h1>LOADING</h1>
+    <h1>LOADING</h1>
+  </div>
+
+  <div v-if="!loading" class="loginPage">
     <div class="login">
       <section class="content">
         <img src="@/assets/img/Rectangle.svg"/>
@@ -58,28 +69,41 @@ export default {
     return{
       password:'',
       email:'',
+      loading:false,
       // username:'',
     }
   },
   methods:{
     onClickSubmit(){
-      console.log('asd');
+
       this.$store
           .dispatch('login',{
             email:this.email,
             password:this.password
           })
-          .then(()=>{
-            console.log('testestsetttetsetseet')
-            this.$router.push({path:'/dashboard'});
+          .then((a)=>{
+            // console.log('testestsetttetsetseet',a) // todo catch login error
+            // this.$store.dispatch('initDB');
+            this.sendUserToFirstDash();
           })
           .catch((error)=>{
 
           })
     },
+    sendUserToFirstDash(){
+      this.loading = true;
+      this.$store.dispatch('getUser').then(a=>{
+        // console.log(a);
+        this.$router.push({path:'/dashboard',query:{id:a.dashboardID[0]}}); // open dashboard component with first dash id
+      })
+    },
     passwordCheck(val){
       return val.length >= 4;
     }
+  },
+  mounted() {
+    // console.log(this.$store.getters.isAuth)
+    if(this.$store.getters.isAuth) this.sendUserToFirstDash();
   }
 }
 </script>

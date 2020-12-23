@@ -1,22 +1,26 @@
 import {database} from "@/firebase/firebase";
-import {DatabaseUser} from "@/firebase/databaseModules/DatabaseUser";
-import {DatabaseUserData} from "@/firebase/databaseModules/DatabaseUserData";
+import {DatabaseHandler} from "@/firebase/databaseModules/DatabaseHandler.module";
 
-const tstUID = '4HtPwiDl2wVwXSjtXizvXfOLYVD2';
+// const tstUID = '4HtPwiDl2wVwXSjtXizvXfOLYVD2';
 
-const dbUser = new DatabaseUser(database);
-
+const dbHandler = new DatabaseHandler(database);
 
 
 // prepare object
-// dbUser.setUID(tstUID);
-// dbUser.qNextDashboardID.set(10)
-// dbUser.qNextDashboardID.get().then(a=> console.log(a))
+// dbUser.qUID.set(tstUID);
+// dbUser.qUserMeta.set({
+//     test:'test'
+// })
+// dbUser.qUserMeta.get().then(a=>console.log(a))
+// dbUser.qElement.getKey('container',2,'title').then(a=>console.log(a))
+// dbUser.qElement.set('container',2,{
+//     title:'312'
+// })
 // dbUser.qUsername.get().then(a=>console.log(a))
 
 
 export  {
-    dbUser
+    dbHandler
 }
 
 

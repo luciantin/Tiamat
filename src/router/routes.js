@@ -47,11 +47,20 @@ export const routes = [
     }
   },
   {
+    path: '/logout',
+    name: 'Logout',
+    component: () => import('../views/Logout.vue'),
+    meta:{
+      auth:false,
+      nav:true
+    }
+  },
+  {
     path: '/stuffspace',
     name: 'Stuffspace',
     component: () => import('../views/StuffSpace.vue'),
     meta:{
-      auth:false,
+      auth:true,
       nav:false
     }
   },
@@ -60,7 +69,7 @@ export const routes = [
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue'),
     meta:{
-      auth:false,
+      auth:true,
       nav:false
     }
   },

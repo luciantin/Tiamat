@@ -1,6 +1,7 @@
 <template>
   <div class="Item">
     <p>{{ID}}</p>
+    <p>{{sectionID}}</p>
   </div>
 </template>
 
@@ -8,7 +9,7 @@
 export default {
   name: "Package",
   props:{
-    item:{
+    sectionID:{
       type: Object,
       // required: true,
     },

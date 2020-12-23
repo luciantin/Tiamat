@@ -1,0 +1,67 @@
+
+.actionButton{
+  position: fixed;
+  bottom: 100px;
+  left: 100px;
+}
+
+.dashboard {
+  display: grid;
+
+  background-color: cornsilk;
+  grid-gap: 10px;
+  width: 100vw;
+  height: 100vh;
+  padding: 20px;
+
+  overflow: hidden;
+
+  .dashboardPlaceholder{
+    background-color: green;
+    color: black;
+    display: none;
+  }
+
+  .containerPlaceholder{
+    background-color: green;
+    color: black;
+    display: none;
+  }
+
+  .dashboardContainerHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    //justify-content: center;
+    &:hover{
+      .dashboardHoverMenu{
+        visibility: initial;
+      }
+    }
+    .dashboardHoverMenu{
+      visibility: hidden;
+    }
+    .dashboardContainerTitle{
+      color: cornsilk;
+    }
+  }
+
+  .dashboardGroupHeader{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    //justify-content: center;
+    &:hover{
+      .dashboardHoverMenu{
+        visibility: initial;
+      }
+    }
+    .dashboardHoverMenu{
+      visibility: hidden;
+    }
+    .dashboardGroupTitle{
+      color: cornsilk;
+    }
+  }
+
+}

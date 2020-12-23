@@ -1,15 +1,20 @@
 <template>
   <div id="dashboard">
-    <h1>TERST</h1>
+<!--    <h1>TERST</h1>-->
     <Grid
-        :content="content"
-        :containers="containers"
-        :groups="groups"
-        :gridData="gridData"
+        :type="type"
     />
   </div>
 </template>
 <script>
+// :content="content"
+// :containers="containers"
+// :groups="groups"
+// :gridData="gridData"
+// <!--        :ID="renderID"-->
+// :gridData="gridData"
+
+
 import Grid from "@/components/grid/Grid";
 export default {
   name:'Dashboard',
@@ -19,6 +24,9 @@ export default {
   },
   data(){
     return{
+      renderID : 0,
+      type : 'dashboard',
+
       gridData:{ // podaci o glavnom gridu, dashbordu
         gridID:'dash-01',
         gridClass: 'dashboard',
@@ -93,6 +101,9 @@ export default {
           }},
       },
     }
+  },
+  mounted() {
+    this.renderID = this.$route.query.id; // set render id from query string
   }
 
 }

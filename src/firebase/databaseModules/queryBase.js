@@ -1,9 +1,10 @@
 export class QueryBase {
-    constructor() {
+    constructor(database) {
+        this.database = database;
     }
 
     qGetOnce(path,key){
-        console.log(path,key)
+        // console.log(path,key)
        return this.database.ref(`${path}/${key}`).once('value').then((snapshot) => { return  snapshot.val() })
     }
     qGetListen(path,key,boundVar){

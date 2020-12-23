@@ -12,9 +12,12 @@
       </div>
 
       <div id="right">
-        <router-link to="/login">Login</router-link>
-        <router-link to="/signup">SignUp</router-link>
-        <router-link to="/dashboard">dash</router-link>
+        <router-link v-if="!this.$store.getters.isAuth" to="/login">Login</router-link>
+        <router-link v-if="!this.$store.getters.isAuth" to="/signup">SignUp</router-link>
+
+        <router-link v-if="this.$store.getters.isAuth" to="/login">Dashboard</router-link>
+        <router-link v-if="this.$store.getters.isAuth" to="/logout">LogOut</router-link>
+
       </div>
     </div>
     <img alt="Vue logo" src="../../assets/img/navbar/BG.svg">
@@ -24,8 +27,6 @@
 </template>
 
 <script>
-
-
 export default {
   name: "Navbar"
 }
