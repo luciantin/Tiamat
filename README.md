@@ -8,7 +8,7 @@
 - Opis :
   - Task manager sa nekakvim gridom i taskovima koji se micu misem,.....
   
-- Ostalo : [Figma](https://www.figma.com/file/ol9SwO3y4DHBMqQ0130ajK/WebPage?node-id=688%3A736 "Figma"), [Web](http://tin.blue/piApp "Web")
+- Ostalo : [Figma](https://www.figma.com/file/ol9SwO3y4DHBMqQ0130ajK/WebPage?node-id=688%3A736 "Figma"), [Web](http://tiamat.tin.blue "Web")
 
 
 #### Otp. kako funkcionira
