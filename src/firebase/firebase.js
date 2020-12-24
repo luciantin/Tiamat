@@ -37,7 +37,11 @@ firebase.auth().onAuthStateChanged((user)=>{
     }
     else{
         store.commit('unauthUser',)
-        router.push({path:'/'})
+        // router.push({path:'/'})
+        console.log(router.currentRoute)
+        if(router.currentRoute.value.path === '/dashboard' || router.currentRoute.value.path === '/taskspace') router.push({path:'/'})
+        console.log()
+        // if(router.currentRoute.path)
     }
 })
 
