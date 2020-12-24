@@ -5,7 +5,7 @@ npm install express --save
 npm install --save connect-history-api-fallback
 ```
 
-### server.js
+### server.js  OLD
 ```
 const express = require('express');
 const history = require('connect-history-api-fallback');
@@ -31,7 +31,9 @@ app.listen(port, () => {
 
 #### ServerDemon.sh
 - /home/protected/ <br>
-```node server```
+```
+node server
+```
 
 
 #### Proxy
@@ -43,7 +45,7 @@ app.listen(port, () => {
 #### ci/cd heh
 - server.js server files from /home/public/dist
 
-#### UpdateMe.sh
+#### UpdateMe.sh TODO
 ```
 cd /home/public
 rm -rf dist
