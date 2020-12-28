@@ -36,16 +36,18 @@ export class DatabaseHandler extends QueryBase{
         setKey: (type,id,key,val)=>{ return this.qSet(`/${type}/${this.UID}+${this.elementTypePath[type]}-${id}`,key,val) },
     }
 
-    qUserMeta = {
-        get: ()=>{ return this.qGetOnce(`/${this.path}/${this.UID}`,'meta')},
-        set: (val)=>{return this.qSet(`/${this.path}/${this.UID}`,'meta',val)},
-        // getKey: (key)=>{ return this.qGetOnce(`/${this.path}/${this.UID}/meta/${key}`)}, FIXME
-        // setKey: (key,val)=>{ return this.qSet(`//${this.path}/${this.UID}/meta`,key,val) }, FIXME
-    }
+    // qUserMeta = {
+    //     get: ()=>{ return this.qGetOnce(`/${this.path}/${this.UID}`,'meta')},
+    //     set: (val)=>{return this.qSet(`/${this.path}/${this.UID}`,'meta',val)},
+    //     // getKey: (key)=>{ return this.qGetOnce(`/${this.path}/${this.UID}/meta/${key}`)}, FIXME
+    //     // setKey: (key,val)=>{ return this.qSet(`//${this.path}/${this.UID}/meta`,key,val) }, FIXME
+    // }
 
     qUser = {
         get: ()=>{ return this.qGetOnce(`/${this.path}`,this.UID)},
         set: (val)=>{return this.qSet(`/${this.path}`,this.UID,val)},
+        getCounterKey: (key) => {return this.qGetOnce(`/${this.path}/${this.UID}/counters`,key)},
+        setCounterKey: (key,val) => {return this.qSet(`/${this.path}/${this.UID}/counters`,key,val)}
     }
 
     qUID = {

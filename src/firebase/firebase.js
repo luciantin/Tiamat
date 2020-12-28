@@ -20,7 +20,7 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 firebase.analytics();
 
-// firebase.database.enableLogging(true);
+firebase.database.enableLogging(true);
 
 
 

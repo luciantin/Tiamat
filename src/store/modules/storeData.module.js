@@ -2,12 +2,12 @@ import { dbHandler } from "@/firebase/rtDatabase";
 import {firebase} from "@/firebase/firebase";
 
 const state = {
-    dashboard: [],
-    stuffspace: [],
-    container: [],
-    group:[],
-    section:[],
-    item:[],
+    dashboard: {},
+    stuffspace: {},
+    container: {},
+    group:{},
+    section:{},
+    item:{},
 
     isDbReady:false,
 };
@@ -16,6 +16,7 @@ const getters = {
         return state.test2;
     },
     getElement: (state) => ({type,id}) => {  return state[type][id];   },
+    getElementByKey: (state) => ({type,id,key}) => {  return state[type][id][key];   },
 
     getDash: (state)=> {   return state.dashboard;  },
     getCnt: (state)=> {  return state.container;  },
@@ -50,16 +51,29 @@ const actions = {
     },
 
     async getElements(context,{type,id}){
+        let elementsArray = new Array();
+        let elementsDic = new Object();
+        await Object.keys(id).map((key,index)=>{
+            let newElem = context.dispatch('getElement',{type:type,id:id[index]});
+            elementsDic[id[key]] = newElem;
+            elementsArray.push(newElem)
+        })
+        console.log(elementsDic)
+        console.log(elementsArray)
+        // await
+        await Promise.all(elementsArray);
         return new Promise((resolve, reject) =>{
-            resolve(
-                Promise.all(
-                    id.map(a=>context.dispatch('getElement',{
-                        type:type,
-                        id:a
-            }))))
 
-        } )
+            Object.keys(elementsDic).map(a=>elementsDic[a].then(b=>elementsDic[a]=b))
+            resolve(elementsDic)
+        })
     },
+//.then(arr=>{
+//                 Object.keys(elementsDic).forEach((key,elem)=> elementsDic[key] = elementsDic[key].then(a=>{return a}))
+//             }
+// id.map(a=>context.dispatch('getElement',{
+//     type:type,
+//     id:a
 
     setElement(context,{type,id,val}){
         context.commit('setElement',{type,id,val})
@@ -68,30 +82,42 @@ const actions = {
         // inform db of change
     },
 
-    // testAction(context){
-    //     // dbHandler.qElement.getKey('container',2,'title').then(a=>console.log(a))
-    //
-    //     // setInterval(() => {
-    //     //     context.commit('increment')
-    //     // }, 1000)
-    //
-    //     return context.getters.test2;
-    // }
+
+    async getElementByKey(context,{type,id,key}){
+        if( await context.getters.getElement({type,id}) === undefined){
+            await context.commit('setElement',{
+                type,
+                id,
+                val: await dbHandler.qElement.get(type,id),
+            })
+            return context.getters.getElementByKey({type,id,key})
+        }
+        else{
+            return context.getters.getElementByKey({type,id,key})
+        }
+    },
+    setElementByKey(context,{type,id,val,key}){
+        context.commit('setElementByKey',{type,id,val,key})
+        dbHandler.qElement.setKey(type,id,key,val);
+    },
 
 
 };
 const mutations = {
     initState(state){ // tu se treba sve izbrisati i unbinding napravit
-        state.dashboard = [];
-        state.stuffspace = [];
-        state.container = [];
-        state.group = [];
-        state.section = [];
-        state.item = [];
+        state.dashboard = {};
+        state.stuffspace = {};
+        state.container = {};
+        state.group = {};
+        state.section = {};
+        state.item = {};
     },
 
     setElement(state,{type,id,val}){
         state[type][id] = val;
+    },
+    setElementByKey(state,{type,id,val,key}){
+        state[type][id][key] = val;
     },
 
     setDbReady(state){

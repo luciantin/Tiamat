@@ -11,6 +11,7 @@ import Button from "@/components/common/Button";
 
 import {makePlaceholderId,makeDragId,wrapId,unwrapId } from "@/components/grid/gridID.factory";
 import {isRectangleACollidedWithRectangleB,areRectanglesCollidedWithRectangle} from "@/components/grid/gridCollision.module";
+import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
 
 import {mapActions, mapGetters, mapMutations} from "vuex";
 
@@ -247,6 +248,14 @@ export default {
                 if(this.mouseData.canBeDropped){
                     this.containers[this.mouseData.containerKey].pos.x = this.tmpContainerData.placeholderPos.x;
                     this.containers[this.mouseData.containerKey].pos.y = this.tmpContainerData.placeholderPos.y;
+                    // console.log(this.containers[this.mouseData.containerKey])
+
+                    this.$store.dispatch('setElement',{
+                        type: 'container',
+                        id: this.mouseData.containerKey,
+                        val: this.containers[this.mouseData.containerKey],
+                    })
+
                 }
                 let placeholder = document.getElementById(this.makePlaceholderId([this.gridData.gridID]));
                 placeholder.style.display = "none"; // TODO move display style to mouseDown
@@ -312,31 +321,103 @@ export default {
 
             let grdAr = `${gridRowStart} / ${gridColumnStart} / ${gridRowEnd} / ${gridColumnEnd}`
 
-            console.log(grdAr)
+            // console.log(grdAr)
 
             return {
                 gridArea:grdAr
             }
         },
 
-        addGrid(){
-            this.$store.dispatch('logOut');
+        async addGrid(){
+            // this.$store.dispatch('logOut');
 
-            this.containers['cnt-5'] = {
-                title:'Container 1',
-                groups:['grp-1'],
-                pos:{w:1,h:1,x:2,y:3},
-                innerGrid:{rows: 1,cols: 1},
-                groupPlaceholderPos:{w:1,h:1,x:1,y:1},
+            let newId = await this.createNew();
+
+            console.log(this.makeDragId([newId]))
+
+            // this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
+            // this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
+            // this.mouseData.type = 'container'; // used in mouseMove to know the type
+            // this.mouseData.containerId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); // drag elements id : drag+
+            // // console.log(this.mouseData.containerId)
+            // this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
+            // this.mouseData.mouseDownTarget.style.position = 'absolute'; // 'unlock' the container so it can be moved
+            // this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
+            // this.refreshTmpContainerPosDic(); // used for collision detection
+            // this.tmpContainerData.placeholderPos.w = this.containers[this.mouseData.containerKey].pos.w; // set placeholder w and h to be the same as current dragged elem.
+            // this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
+
+
+
+        },
+        createNew(){
+
+            let elFac = new ElementsFactory();
+
+            let meta = elFac.createMeta({
+                title:'Dash',
+                description:'new Dash',
+                tags: ['Dash']
+            })
+
+
+            let firstCnt = elFac.createContainer({
+                groupID:[0,1],
+                pos:{w:1,h:2,x:1,y:1},
+                innerGrid:{rows:1,cols:1},
                 groupPos:{
-                    'grp-1':{w:1,h:1,x:1,y:1},
-                }}
+                    '0':{w:1,h:1,x:1,y:1},
+                    '1':{w:1,h:1,x:1,y:2}
+                },
+                meta:meta
+            })
+
+
+
+        return new Promise((resolve, reject) => {
+
+            this.$store.dispatch('getNewID',{type:'container'}).then(newKey => {
+
+                this.$store.dispatch('getElementByKey',{
+                    type:'dashboard',
+                    id:0,
+                    key:'containerID'
+                }).then(a=>{ // a je Object... not iterable
+
+                    console.log(a);
+                    let IDs = Object.values(a);
+                    IDs.push(newKey)
+                    console.log(IDs);
+
+                    Promise.all([
+
+                        this.$store.dispatch('setElement',{
+                            type:'container',
+                            id:newKey,
+                            val:firstCnt
+                        }),
+
+                        this.$store.dispatch('setElementByKey',{
+                            type:'dashboard',
+                            id:0,
+                            key:'containerID',
+                            val:IDs
+                        }),
+                    ]).then(values =>{
+                        this.loadData()
+                        resolve(IDs.length)
+                    }).catch(err=>{
+                        reject(err)
+                    })
+                })
+            })
+        })
         },
 
         loadData(){
 
             // console.log(this.ID)
-
+            // console.log(this.$store.getters.getCnt)
             // get dash
             this.$store.dispatch('getElement',{
                 type:'dashboard',
@@ -353,69 +434,27 @@ export default {
                     type:'container',
                     id:dash.containerID
                 }).then(cnt=> {
+
                     console.log(cnt)
 
+                    // let grpIDs = [];
+                    // cnt.map(val=>{
+                    //     grpIDs = [...grpIDs, val.groupID]
+                    // })
+                    // console.log(grpIDs)
+
                     this.containers = cnt;
-                    // this.groups={
-                    //     'grp-1':{title:'Group 1',attributes:{completed:false,locked:false,title:false,},items:['tsk-1'],},
-                    //     'grp-2':{title:'Group 2',attributes:{completed:false,locked:false,title:true,},items:['tsk-4'],},
-                    //     'grp-3':{title:'Group 3',attributes:{completed:false,locked:false,title:true,},items:['tsk-3'],},
-                    //     'grp-4':{title:'Group 4',attributes:{completed:false,locked:false,title:true,},items:['tsk-5'],},
-                    //     'grp-5':{title:'Group 5',attributes:{completed:false,locked:false,title:true,},items:['tsk-6'],},
-                    // }
-                    //
-                    // this.containers={
-                    //     'cnt-1':{
-                    //         title:'Container 1',
-                    //         groups:['grp-1'],
-                    //         pos:{w:1,h:1,x:4,y:3},
-                    //         innerGrid:{rows: 1,cols: 1},
-                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                    //         groupPos:{
-                    //             'grp-1':{w:1,h:1,x:1,y:1},
-                    //         }},
-                    //     'cnt-2':{
-                    //         title:'Container 1',
-                    //         groups:['grp-2'],
-                    //         pos:{w:1,h:1,x:1,y:3},
-                    //         innerGrid:{rows: 1,cols: 1},
-                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                    //         groupPos:{
-                    //             'grp-2':{w:1,h:1,x:1,y:1},
-                    //         }},
-                    //     'cnt-3':{
-                    //         title:'Container 1',
-                    //         groups:['grp-4'],
-                    //         pos:{w:1,h:1,x:1,y:1},
-                    //         innerGrid:{rows: 1,cols: 1},
-                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                    //         groupPos:{
-                    //             'grp-4':{w:1,h:1,x:1,y:1},
-                    //         }},
-                    //     'cnt-4':{
-                    //         title:'Container 1',
-                    //         groups:['grp-5','grp-2','grp-1'],
-                    //         pos:{w:2,h:1,x:3,y:1},
-                    //         innerGrid:{rows: 3,cols: 1},
-                    //         groupPlaceholderPos:{w:1,h:1,x:1,y:1},
-                    //         groupPos:{
-                    //             'grp-2':{w:2,h:1,x:1,y:1},
-                    //             'grp-5':{w:1,h:1,x:1,y:2},
-                    //             'grp-1':{w:1,h:1,x:1,y:3},
-                    //         }},
-                    // }
 
+                    // console.log(this.$store.getters.getCnt)
 
-
-
-                    this.$store.dispatch('getElements',{
-                        type:'group',
-                        id:cnt[0].groupID
-                    }).then(grp=> {
-                            this.groups = grp;
-                            console.log(grp)
-                        }
-                    )
+                    // this.$store.dispatch('getElements',{
+                    //     type:'group',
+                    //     id:cnt[0].groupID
+                    // }).then(grp=> {
+                    //         this.groups = grp;
+                    //         console.log(grp)
+                    //     }
+                    // )
                 })
             })
         },
@@ -450,7 +489,7 @@ export default {
             }
         },
         getGroup(newS,oldS){
-            console.log(newS)
+            // console.log(newS)
         }
 
     },

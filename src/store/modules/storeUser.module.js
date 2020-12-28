@@ -4,14 +4,23 @@ import { dbHandler } from "@/firebase/rtDatabase";
 
 const state = {
 
-    User:{}
+    User:{},
+    elementIdTypeKey : {
+        'dashboard':'nextDsbID',
+        'stuffspace':'nextStfID',
+        'container':'nextCntID',
+        'group':'nextGrpID',
+        'section':'nextSecID',
+        'item':'nextItemID'
+    }
 
 };
 const getters = {
 
     getUser(state){
         return state.User;
-    }
+    },
+    // getCounter: (state) => (type) => { return state.User.counters[state.elementIdTypeKey[type]]}
 
     // getUser: (state) => ({type,id}) => {
     //     console.log(state,type,id)
@@ -32,6 +41,13 @@ const actions = {
         // inform db of change
     },
 
+    async getNewID(context,{type}){
+        let key = context.state.elementIdTypeKey[type]
+        let oldVal = await dbHandler.qUser.getCounterKey(key)
+        dbHandler.qUser.setCounterKey(key,oldVal+1);
+        return oldVal+1;
+    }
+
 };
 const mutations = {
     initState(state){ // tu se treba sve izbrisati i unbinding napravit
@@ -41,6 +57,9 @@ const mutations = {
     setUser(state,val){
         state.User = val;
     },
+    // incCounter(state,type){
+    //     state.User.counters[state.elementIdTypeKey[type]] += 1;
+    // }
 
 };
 export default {

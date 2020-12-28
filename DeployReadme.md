@@ -32,7 +32,8 @@ app.listen(port, () => {
 #### ServerDemon.sh
 - /home/protected/ <br>
 ```
-node server
+cd /home/protected
+node serve
 ```
 
 

@@ -87,8 +87,8 @@
     > <p> Hi, I'm a placeholder for dashboard</p></div>
   </div>
 
-  <Button text="Action" @buttonClick="addGrid" class="actionButton"/>
-
+  <Button text="+" @mousedown="addGrid" class="actionButton"/>
+<!--   @buttonClick="addGrid" -->
 </template>
 
 
