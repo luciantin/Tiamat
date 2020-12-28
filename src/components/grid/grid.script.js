@@ -429,6 +429,8 @@ export default {
                 this.gridData.dashboardTarget = document.getElementById(this.ID);
                 this.gridData.grid = this.gridData.dashboardTarget.getBoundingClientRect();
 
+                console.log(dash)
+
                 // get containers
                 this.$store.dispatch('getElements',{
                     type:'container',
@@ -436,25 +438,25 @@ export default {
                 }).then(cnt=> {
 
                     console.log(cnt)
-
-                    // let grpIDs = [];
-                    // cnt.map(val=>{
-                    //     grpIDs = [...grpIDs, val.groupID]
-                    // })
-                    // console.log(grpIDs)
-
                     this.containers = cnt;
+
+                    let groupIDs = Object.values(cnt).map(a=>a.groupID);
+                    groupIDs = groupIDs.flat();
+                    groupIDs = new Set(groupIDs);
+                    groupIDs = {...Array.from(groupIDs)};
+                    // console.log({...groupIDs})
+                    // console.log()
 
                     // console.log(this.$store.getters.getCnt)
 
-                    // this.$store.dispatch('getElements',{
-                    //     type:'group',
-                    //     id:cnt[0].groupID
-                    // }).then(grp=> {
-                    //         this.groups = grp;
-                    //         console.log(grp)
-                    //     }
-                    // )
+                    this.$store.dispatch('getElements',{
+                        type:'group',
+                        id:groupIDs
+                    }).then(grp=> {
+                            this.groups = grp;
+                            console.log(grp)
+                        }
+                    )
                 })
             })
         },

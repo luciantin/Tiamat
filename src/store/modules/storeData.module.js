@@ -53,9 +53,10 @@ const actions = {
     async getElements(context,{type,id}){
         let elementsArray = new Array();
         let elementsDic = new Object();
-        await Object.keys(id).map((key,index)=>{
+        await Object.keys(id).map((index,key)=>{
+            console.log(key,index,id[key],id[index])
             let newElem = context.dispatch('getElement',{type:type,id:id[index]});
-            elementsDic[id[key]] = newElem;
+            elementsDic[id[index]] = newElem;
             elementsArray.push(newElem)
         })
         console.log(elementsDic)
