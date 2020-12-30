@@ -29,26 +29,26 @@
           <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer])" @mousedown="onContainerMouseDown($event)"  ></Drag>
           <p class="dashboardContainerTitle">Container {{keyContainer}}</p>
           <!--          // TODO dashboardTitle component-->
-          <ContainerMenu class="dashboardHoverMenu" ></ContainerMenu>
+          <ContainerMenu :container-i-d="keyContainer"  :type="type" class="dashboardHoverMenu" ></ContainerMenu>
         </div>
       </template>
 
       <template v-slot:ContainerGroups>
         <Group
             v-for="(group,keyGroup) in this.getGroups(container)"
-            :id="wrapId([keyContainer,keyGroup])"
+            :id="wrapId([keyContainer,container.groupID[keyGroup]])"
             :group="group"
-            :key="keyGroup"
+            :key="container.groupID[keyGroup]"
             :style="
-              createGridArea(container.groupPos[keyGroup])
+              createGridArea({container,keyGroup})
             "
         >
 <!--v-if="group.attributes.title"-->
           <template v-slot:GroupHeader>
             <div  class="dashboardGroupHeader">
-              <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>
-              <p class="dashboardGroupTitle">Group {{keyGroup}}</p>
-              <GroupMenu class="dashboardHoverMenu"></GroupMenu>
+              <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupMouseDown($event)"  ></Drag>
+              <p class="dashboardGroupTitle">Group {{container.groupID[keyGroup]}}</p>
+              <GroupMenu :group-i-d="keyGroup" :type="type" class="dashboardHoverMenu"></GroupMenu>
             </div>
           </template>
 

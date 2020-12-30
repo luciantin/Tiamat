@@ -90,12 +90,13 @@ export default {
 
         let firstDash = elFac.createDashboard({stuffspaceID:stfID,containerID:cntID,meta:meta,gridData:GridData});
         let firstCnt = elFac.createContainer({
-          groupID:[0,1],
+          groupID:[0,1,2],
           pos:{w:1,h:1,x:1,y:1},
           innerGrid:{rows:2,cols:2},
           groupPos:{
             '0':{w:1,h:1,x:1,y:1},
-            '1':{w:1,h:1,x:2,y:1}
+            '1':{w:1,h:1,x:2,y:1},
+            '2':{w:1,h:1,x:2,y:2},
           },
           meta:meta
         })
@@ -105,6 +106,10 @@ export default {
         })
         let grpTwo = elFac.createGroup({
           sectionID:[1],
+          meta:meta
+        })
+        let grpThree = elFac.createGroup({
+          sectionID:[2],
           meta:meta
         })
 
@@ -129,6 +134,11 @@ export default {
           type:'group',
           id:1,
           val:grpTwo
+        })
+        this.$store.dispatch('setElement',{
+          type:'group',
+          id:2,
+          val:grpThree
         })
 
         this.$router.push({path:'/dashboard',query:{id:0}});

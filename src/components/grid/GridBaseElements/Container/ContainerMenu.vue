@@ -1,10 +1,30 @@
 <template>
-  <div class="containerMenu"></div>
+  <div class="containerMenu"  @mouseenter="mouseEnterMenu" @mouseleave="mouseLeaveMenu">
+
+  </div>
 </template>
 
 <script>
 export default {
-  name: "ContainerMenu"
+  name: "ContainerMenu",
+  props:{
+    type:String,
+    containerID: String,
+  },
+  data(){
+    return{
+      isHovered:false,
+    }
+  },
+  methods:{
+    mouseEnterMenu(){
+      this.isHovered = true;
+      console.log(this.containerID)
+    },
+    mouseLeaveMenu(){
+      this.isHovered = false;
+    }
+  }
 }
 </script>
 

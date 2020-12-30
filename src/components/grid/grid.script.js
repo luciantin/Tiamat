@@ -11,33 +11,21 @@ import Button from "@/components/common/Button";
 
 import {makePlaceholderId,makeDragId,wrapId,unwrapId } from "@/components/grid/gridID.factory";
 import {isRectangleACollidedWithRectangleB,areRectanglesCollidedWithRectangle} from "@/components/grid/gridCollision.module";
-import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
+import {CreateNewStuffspace,CreateNewContainer} from "@/components/grid/ElementHelpers/elementCreate";
+
 
 import {mapActions, mapGetters, mapMutations} from "vuex";
+
+
 
 export default {
     name: "Grid",
     components:{
         Container, Group, GroupMenu,Package,Drag,ContainerMenu,PackageMenu,Button},
     props: {
-        // content: {
-        //     type: Object
-        // },
-        // groups: {
-        //     type: Object
-        // },
-        // containers: {
-        //     type: Object
-        // },
-        // gridData: {
-        //     type: Object
-        // },
         type:{
             type:String
         },
-        // ID:{
-        //     type:Number
-        // }
     },
     data(){
         return{
@@ -68,6 +56,8 @@ export default {
                 placeholderPos : {w:1,h:1,x:1,y:1}, // position of container placeholder
             },
 
+
+            // Bindig funkcija tako da se lakse promijene kasnije, .. nikada ali ipak....
             makePlaceholderId:makePlaceholderId,
             makeDragId:makeDragId,
             wrapId:wrapId,
@@ -75,6 +65,10 @@ export default {
 
             isRectangleACollidedWithRectangleB:isRectangleACollidedWithRectangleB,
             areRectanglesCollidedWithRectangle:areRectanglesCollidedWithRectangle,
+
+            CreateNewStuffspace:CreateNewStuffspace,
+            CreateNewContainer:CreateNewContainer,
+
         }
     },
     methods:{
@@ -92,9 +86,6 @@ export default {
             return str;
         },
 
-        /* onGroupMouseDown and onContainerMouseDown are mostly the same
-        **
-        */
         onGroupMouseDown(event){
             this.mouseData.hasClicked = true; //
             this.mouseData.dragId = event.target.id;
@@ -177,11 +168,11 @@ export default {
                     this.mouseData.prevHoveredOverGroupPlaceholderElement.style.display = 'none';
                     return;
                 }
-
                 let firstHoveredContainerKey = this.unwrapId(firstHoveredContainer.id)[0];
                 let containerSize = firstHoveredContainer.getBoundingClientRect(); // to ccalculate relative mouse pos and sectors inside the container
                 this.mouseData.prevHoveredOverContainerKey = firstHoveredContainerKey;
 
+                // console.log(firstHoveredContainerKey) OK
                 // mouse pos relative to inside the container
                 let cntPosX = (event.clientX - containerSize.left);
                 let cntPosY = (event.clientY - containerSize.top);
@@ -192,11 +183,9 @@ export default {
                     y: Math.floor((cntPosY/containerSize.height) * this.containers[firstHoveredContainerKey].innerGrid.rows) + 1
                 }
 
-                let isInsideInnerGrid =
-                    ( (gridSector.x) <= this.containers[firstHoveredContainerKey].innerGrid.rows) &&
-                    ( (gridSector.y) <= this.containers[firstHoveredContainerKey].innerGrid.cols);
-
-                // if(!isInsideInnerGrid) return;
+                // let isInsideInnerGrid =
+                //     ( (gridSector.x) <= this.containers[firstHoveredContainerKey].innerGrid.rows) &&
+                //     ( (gridSector.y) <= this.containers[firstHoveredContainerKey].innerGrid.cols);
 
                 let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
                     x: gridSector.x,
@@ -204,10 +193,7 @@ export default {
                     w: this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].w, //w and h of the dragged group eleemnt
                     h: this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].h,
                 }
-
-                // console.table(gridSector);
-                // console.log("Hovered OVER TARGET : ",firstHoveredContainerKey)
-
+                console.log(this.mouseData)
                 let isCollision = this.areRectanglesCollidedWithRectangle(this.containers[firstHoveredContainerKey].groupPos,currentContainerPos,[this.mouseData.groupKey])
 
                 let groupPlaceholderId = this.makePlaceholderId([firstHoveredContainerKey]);
@@ -217,15 +203,25 @@ export default {
                     this.mouseData.prevHoveredOverGroupPlaceholderElement = groupPlaceholderElement;
                 }
 
-                this.containers[firstHoveredContainerKey].groupPlaceholderPos.x = gridSector.x;
-                this.containers[firstHoveredContainerKey].groupPlaceholderPos.y = gridSector.y;
+                // this.containers[firstHoveredContainerKey].groupPlaceholderPos.x = gridSector.x;
+                // this.containers[firstHoveredContainerKey].groupPlaceholderPos.y = gridSector.y;
 
+                this.$store.commit('setElementByKey',{
+                    type:'container',
+                    id:firstHoveredContainerKey,
+                    val:{
+                        x:gridSector.x,
+                        y:gridSector.y,
+                        w:Number(this.containers[firstHoveredContainerKey].groupPlaceholderPos.w),
+                        h:Number(this.containers[firstHoveredContainerKey].groupPlaceholderPos.h),
+                    },
+                    key:'groupPlaceholderPos',
+                })
+
+
+                //  TODO ERROR
                 let isCopyOfGroupAlreadyInContainer = this.containers[firstHoveredContainerKey].groupID.includes(this.mouseData.groupKey);
                 let isCopyComingFromDifferentContainer = this.mouseData.containerKey != firstHoveredContainerKey;
-
-                // console.log(this.containers[firstHoveredContainerKey].groups);
-                // console.log(isCopyOfGroupAlreadyInContainer)
-                // console.log(isCopyOfGroupAlreadyInContainer, isCopyComingFromDifferentContainer)
 
                 if(isCollision.isCollided || (isCopyOfGroupAlreadyInContainer && isCopyComingFromDifferentContainer)){
                     groupPlaceholderElement.style.backgroundColor = "red";
@@ -240,7 +236,7 @@ export default {
             }
         },
 
-        onMouseReleaseDrag(){ // should have called it onMouseReleaseDrag
+        onMouseReleaseDrag(){
             if(!this.mouseData.hasClicked) return;
             this.mouseData.hasClicked = false;
 
@@ -248,8 +244,6 @@ export default {
                 if(this.mouseData.canBeDropped){
                     this.containers[this.mouseData.containerKey].pos.x = this.tmpContainerData.placeholderPos.x;
                     this.containers[this.mouseData.containerKey].pos.y = this.tmpContainerData.placeholderPos.y;
-                    // console.log(this.containers[this.mouseData.containerKey])
-
                     this.$store.dispatch('setElement',{
                         type: 'container',
                         id: this.mouseData.containerKey,
@@ -274,7 +268,7 @@ export default {
                     }
                     else{
                         this.moveGroupFromACntToBCnt(
-                            this.mouseData.groupKey,
+                            Number(this.mouseData.groupKey),
                             this.containers[cntB].groupPlaceholderPos,
                             this.mouseData.containerKey,
                             cntB
@@ -283,7 +277,6 @@ export default {
                 }
                 this.mouseData.prevHoveredOverGroupPlaceholderElement.style.display = 'none';
             }
-
             this.mouseData.mouseDownTarget.style.position = 'static';
             this.mouseData.canBeDropped = false;
         },
@@ -298,22 +291,73 @@ export default {
             this.containers[cntKey].groupPos[groupKey] = {... groupPos}; //FIXME delete the prev dict or just overwrite
         },
         moveGroupFromACntToBCnt(groupKey,groupPos,cntAKey,cntBKey){
-            this.containers[cntBKey].groups.push(groupKey);
-            this.containers[cntBKey].groupPos[groupKey] = {... groupPos};
-            delete this.containers[cntAKey].groupPos[groupKey];
-            delete this.containers[cntAKey].groups[this.containers[cntAKey].groups.indexOf(groupKey)];
-            console.log(this.containers)
+            let cntAGrpID,cntBGrpID,cntAGrpPos,cntBGrpPos;
+
+            cntAGrpID = Array.from(this.containers[cntAKey].groupID);
+            cntBGrpID = Array.from(this.containers[cntBKey].groupID);
+
+            cntAGrpPos = Object.assign({},this.containers[cntAKey].groupPos);
+            cntBGrpPos = Object.assign({},this.containers[cntBKey].groupPos);
+
+            cntAGrpID.splice(cntAGrpID.indexOf(groupKey),1);
+            cntBGrpID.push(groupKey);
+
+            delete cntAGrpPos[groupKey];
+            cntBGrpPos[groupKey] = groupPos
+
+            // console.log(cntAKey,cntBKey, groupKey)
+            // console.log(cntAGrpID,cntBGrpID)
+            // console.log(cntAGrpPos,cntBGrpPos)
+
+            // this.containers[cntBKey].groupID.push(groupKey);
+            // this.containers[cntBKey].groupPos[groupKey] = {... groupPos};
+            // delete this.containers[cntAKey].groupPos[groupKey];
+            // delete this.containers[cntAKey].groupID[this.containers[cntAKey].groupID.indexOf(groupKey)];
+
+            this.$store.dispatch('setElementByKey',{
+                type:'container',
+                id:cntAKey,
+                val:cntAGrpID,
+                key:'groupID',
+            })
+
+            this.$store.dispatch('setElementByKey',{
+                type:'container',
+                id:cntBKey,
+                val:cntBGrpID,
+                key:'groupID',
+            })
+
+            this.$store.dispatch('setElementByKey',{
+                type:'container',
+                id:cntAKey,
+                val:cntAGrpPos,
+                key:'groupPos',
+            })
+
+            this.$store.dispatch('setElementByKey',{
+                type:'container',
+                id:cntBKey,
+                val:cntBGrpPos,
+                key:'groupPos',
+            })
+
+            // console.log(this.containers[cntAKey],this.containers[cntBKey])
         },
         /////////////////////////////////////////////////////////////////////////////////////////////////
         getGroups(container) { // join all the groups of a container in an array
             let groupList = container.groupID;
             let res = {}, key;
             for( key in groupList) if(this.groups[key]) res[key] = this.groups[key];
-            // console.log(res,this.groups,container.groupID)
             return res;
         },
 
         createGridArea(groupPos){
+            // console.log(groupPos)
+            // console.log(this.getGroups(groupPos.container))
+            groupPos = groupPos.container.groupPos[groupPos.container.groupID[groupPos.keyGroup]];
+            // console.log(groupPos)
+
             let gridColumnStart= groupPos.x ;
             let gridColumnEnd= groupPos.x + groupPos.w ;
             let gridRowStart= groupPos.y  ;
@@ -321,140 +365,86 @@ export default {
 
             let grdAr = `${gridRowStart} / ${gridColumnStart} / ${gridRowEnd} / ${gridColumnEnd}`
 
-            // console.log(grdAr)
-
             return {
                 gridArea:grdAr
             }
         },
 
         async addGrid(){
-            // this.$store.dispatch('logOut');
+            let newId = await this.CreateNewContainer(this.ID) ;
+            await this.loadData()
 
-            let newId = await this.createNew();
+            // moram pricekati da vue ucita promijene
+            await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
 
-            console.log(this.makeDragId([newId]))
-
-            // this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
-            // this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
-            // this.mouseData.type = 'container'; // used in mouseMove to know the type
-            // this.mouseData.containerId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); // drag elements id : drag+
-            // // console.log(this.mouseData.containerId)
-            // this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
-            // this.mouseData.mouseDownTarget.style.position = 'absolute'; // 'unlock' the container so it can be moved
-            // this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
-            // this.refreshTmpContainerPosDic(); // used for collision detection
-            // this.tmpContainerData.placeholderPos.w = this.containers[this.mouseData.containerKey].pos.w; // set placeholder w and h to be the same as current dragged elem.
-            // this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
-
-
-
-        },
-        createNew(){
-
-            let elFac = new ElementsFactory();
-
-            let meta = elFac.createMeta({
-                title:'Dash',
-                description:'new Dash',
-                tags: ['Dash']
-            })
-
-
-            let firstCnt = elFac.createContainer({
-                groupID:[0,1],
-                pos:{w:1,h:2,x:1,y:1},
-                innerGrid:{rows:1,cols:1},
-                groupPos:{
-                    '0':{w:1,h:1,x:1,y:1},
-                    '1':{w:1,h:1,x:1,y:2}
-                },
-                meta:meta
-            })
-
-
-
-        return new Promise((resolve, reject) => {
-
-            this.$store.dispatch('getNewID',{type:'container'}).then(newKey => {
-
-                this.$store.dispatch('getElementByKey',{
-                    type:'dashboard',
-                    id:0,
-                    key:'containerID'
-                }).then(a=>{ // a je Object... not iterable
-
-                    console.log(a);
-                    let IDs = Object.values(a);
-                    IDs.push(newKey)
-                    console.log(IDs);
-
-                    Promise.all([
-
-                        this.$store.dispatch('setElement',{
-                            type:'container',
-                            id:newKey,
-                            val:firstCnt
-                        }),
-
-                        this.$store.dispatch('setElementByKey',{
-                            type:'dashboard',
-                            id:0,
-                            key:'containerID',
-                            val:IDs
-                        }),
-                    ]).then(values =>{
-                        this.loadData()
-                        resolve(IDs.length)
-                    }).catch(err=>{
-                        reject(err)
-                    })
-                })
-            })
-        })
+            this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
+            this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
+            this.mouseData.type = 'container'; // used in mouseMove to know the type
+            this.mouseData.containerId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); // drag elements id : drag+
+            this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
+            this.mouseData.mouseDownTarget.style.position = 'absolute'; // 'unlock' the container so it can be moved
+            this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
+            this.refreshTmpContainerPosDic(); // used for collision detection
+            this.tmpContainerData.placeholderPos.w = this.containers[this.mouseData.containerKey].pos.w; // set placeholder w and h to be the same as current dragged elem.
+            this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
         },
 
         loadData(){
-
-            // console.log(this.ID)
-            // console.log(this.$store.getters.getCnt)
-            // get dash
             this.$store.dispatch('getElement',{
                 type:'dashboard',
                 id:this.ID
             }).then(dash=> {
-
                 //grid setup
                 this.gridData = dash.gridData
                 this.gridData.dashboardTarget = document.getElementById(this.ID);
                 this.gridData.grid = this.gridData.dashboardTarget.getBoundingClientRect();
-
-                console.log(dash)
-
                 // get containers
                 this.$store.dispatch('getElements',{
                     type:'container',
                     id:dash.containerID
                 }).then(cnt=> {
 
-                    console.log(cnt)
-                    this.containers = cnt;
+                    for(let key in cnt){
+                        if(cnt[key] !== null){
+                            if( cnt[key].groupID == undefined){
+                                // console.log(key)
+                                this.$store.dispatch('setElementByKey',{
+                                    type:'container',
+                                    id:key,
+                                    val:[],
+                                    key:'groupID'
+                                })
+                                this.$store.dispatch('setElementByKey',{
+                                    type:'container',
+                                    id:key,
+                                    val:{},
+                                    key:'groupPos'
+                                })
+                                // cnt[key].groupID = [];
+                                // cnt[key].groupPos = {};
+                            }
+                            else{
+                                this.$store.dispatch('setElementByKey',{
+                                    type:'container',
+                                    id:key,
+                                    val:Object.assign({},cnt[key].groupPos),
+                                    key:'groupPos'
+                                })
+                            }
+                        }
+                    }
 
+                    this.containers = cnt;
                     let groupIDs = Object.values(cnt).map(a=>a.groupID);
                     groupIDs = groupIDs.flat();
                     groupIDs = new Set(groupIDs);
                     groupIDs = {...Array.from(groupIDs)};
-                    // console.log({...groupIDs})
-                    // console.log()
-
-                    // console.log(this.$store.getters.getCnt)
-
                     this.$store.dispatch('getElements',{
                         type:'group',
                         id:groupIDs
                     }).then(grp=> {
+                        // console.log(grp)
                             this.groups = grp;
-                            console.log(grp)
                         }
                     )
                 })
@@ -480,49 +470,13 @@ export default {
     watch:{
         // ako korisnik refresha stranicu mora se svaki put provjeriti dali je jos uvijek baza spremna te se tek onda grid popunjava s podacima
         isDbReady(newState,oldState) { // TODO ELSE loading
-            // console.log('DB state change, new :',newState)
             if(newState){
-                // this.setElement({
-                //     type:'group',
-                //     id:8,
-                //     val:a[0]
-                // })
                 this.loadData();
             }
         },
-        getGroup(newS,oldS){
-            // console.log(newS)
-        }
-
     },
     beforeMount() {
-
         this.ID=this.$route.query.id;
         if(this.isDbReady) this.loadData(); //ako je vec baza spremna ucitaj podatke
-
-
-        // this.gridData={ // podaci o glavnom gridu, dashbordu
-        //     gridID:'dash-01',
-        //         gridClass: 'dashboard',
-        //         dashboardTarget:'', //== document.getElemetById(GridData.gridID)
-        //         grid:{top:0,left:0,width:0,height:0,x:0,y:0}, // not used
-        //     gridColNum:6,
-        //         gridRowNum:6,
-        // }
-        // console.log(this.ID)
-        // console.log('is db Ready : ', this.$store.getters.isDbReady)
-
-
-        // this.gridClass='test';
-
-        // setTimeout(()=>{
-        //     this.gridClass='dashboard';
-        //     this.gridData.gridColNum=7;
-        //     console.log(this.gridData.gridClass);
-        //     this.$forceUpdate()
-        // },3000)
-
-
-
     },
 }

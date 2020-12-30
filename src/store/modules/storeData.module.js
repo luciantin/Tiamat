@@ -54,13 +54,13 @@ const actions = {
         let elementsArray = new Array();
         let elementsDic = new Object();
         await Object.keys(id).map((index,key)=>{
-            console.log(key,index,id[key],id[index])
+            // console.log(key,index,id[key],id[index])
             let newElem = context.dispatch('getElement',{type:type,id:id[index]});
             elementsDic[id[index]] = newElem;
             elementsArray.push(newElem)
         })
-        console.log(elementsDic)
-        console.log(elementsArray)
+        // console.log(elementsDic)
+        // console.log(elementsArray)
         // await
         await Promise.all(elementsArray);
         return new Promise((resolve, reject) =>{

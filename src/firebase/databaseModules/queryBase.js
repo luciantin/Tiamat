@@ -11,7 +11,7 @@ export class QueryBase {
         // TODO
     }
     qSet(path,key,val){
-        console.log(`${path}/${key}`,val)
+        // console.log(`${path}/${key}`,val)
         this.database.ref(`${path}/${key}`).set(val);
     }
 }
