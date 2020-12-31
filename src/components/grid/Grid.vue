@@ -1,9 +1,7 @@
 <template>
   <div
       :id="this.ID"
-
       v-bind:class="'dashboard'"
-
       @mousemove="this.mouseMove($event)"
       @mouseup="onMouseReleaseDrag()"
       :style="{
@@ -11,6 +9,7 @@
         gridTemplateColumns: makeGridByRepeat(this.gridData.gridColNum),
       }"
   >
+
     <Container
         v-for="(container,keyContainer) in containers"
         :id="this.wrapId([keyContainer])"
@@ -23,14 +22,15 @@
       }"
         :groupGridRowCount="container.innerGrid.rows"
         :groupGridColCount="container.innerGrid.cols"
+        :containerID="keyContainer"
+        :title="keyContainer"
+        :GridType="type"
     >
-      <template v-slot:ContainerHeader>
-        <div class="dashboardContainerHeader">
+
+      <template v-slot:ContainerDrag>
           <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer])" @mousedown="onContainerMouseDown($event)"  ></Drag>
-          <p class="dashboardContainerTitle">Container {{keyContainer}}</p>
-          <!--          // TODO dashboardTitle component-->
-          <ContainerMenu :container-i-d="keyContainer"  :type="type" class="dashboardHoverMenu" ></ContainerMenu>
-        </div>
+<!--          <p class="dashboardContainerTitle">Container {{keyContainer}}</p>-->
+<!--          < :container-i-d="keyContainer"  :type="type" class="dashboardHoverMenu" ></ContainerMenu>-->
       </template>
 
       <template v-slot:ContainerGroups>
@@ -39,29 +39,18 @@
             :id="wrapId([keyContainer,container.groupID[keyGroup]])"
             :group="group"
             :key="container.groupID[keyGroup]"
-            :style="
-              createGridArea({container,keyGroup})
-            "
+            :style="createGridArea({container,keyGroup})"
+            :title="container.groupID[keyGroup]"
+            :GroupID="container.groupID[keyGroup]"
+            :GridType="type"
         >
-<!--v-if="group.attributes.title"-->
-          <template v-slot:GroupHeader>
-            <div  class="dashboardGroupHeader">
+          <template v-slot:GroupDrag>
               <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupMouseDown($event)"  ></Drag>
-              <p class="dashboardGroupTitle">Group {{container.groupID[keyGroup]}}</p>
-              <GroupMenu :group-i-d="keyGroup" :type="type" class="dashboardHoverMenu"></GroupMenu>
-            </div>
-          </template>
-
-          <template v-slot:GroupContent>
-
-            <Package
-              :id="wrapId([1])"
-              :sectionID="group.items"
-            />
-
           </template>
 
         </Group>
+
+        <!--  Container Placeholder   -->
         <div
             :id="makePlaceholderId([keyContainer])"
             class="containerPlaceholder"
@@ -73,8 +62,10 @@
             }"
         > <p> Hi, I'm a placeholder for {{keyContainer}}</p></div>
       </template>
+
     </Container>
 
+    <!--  Container Placeholder   -->
     <div
         :id="makePlaceholderId([this.gridData.gridID])"
         class="dashboardPlaceholder"
@@ -87,8 +78,12 @@
     > <p> Hi, I'm a placeholder for dashboard</p></div>
   </div>
 
+
+
+  <!--  Button to add stuff -->
   <Button text="+" @mousedown="addGrid" class="actionButton"/>
-<!--   @buttonClick="addGrid" -->
+
+
 </template>
 
 

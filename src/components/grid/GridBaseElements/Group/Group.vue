@@ -1,32 +1,68 @@
 <template>
-  <div class="group">
+  <div class="group" @mouseleave="onMouseLeaveGroup">
+
     <div class="groupHeader">
-      <slot name="GroupHeader"></slot>
+      <div class="Left">
+        <slot name="GroupDrag"></slot>
+      </div>
+      <div class="Mid">
+        <p>Group : {{title}}</p>
+      </div>
+      <div class="Right">
+        <div class="GroupMenuButton" @click="onGroupMenuClick" ></div>
+      </div>
     </div>
-    <div class="groupItems">
-      <slot name="GroupContent"></slot>
-    </div>
+
+      <Package
+          v-if="!showSettings"
+          class="groupItems"
+          v-for="(id,index) in group.sectionID"
+          :groupID="GroupID"
+          :sectionID="id"
+          :key="index"
+      />
+
+      <CommonElementMenu
+          v-else
+          class="GroupSettings"
+          :elementType="'group'"
+          :elementID="GroupID"
+          :gridType="GridType"
+      />
+
   </div>
 </template>
 
 <script>
 
-//import DashboardTask from "@/components/dashboard.old/DashboardTask";
-//import DashboardDrag from "@/components/dashboard.old/DashboardDrag";
+import Package from "@/components/grid/GridBaseElements/Package/Package";
+import CommonElementMenu from "@/components/grid/GridBaseElements/Common/CommonElementMenu";
 
 export default {
   name: "Group",
+  components: {CommonElementMenu, Package},
   props:{
-    group:{
-      type: Object,
-      // required: true,
+    group:Object,
+    title:String,
+    GroupID:String,
+    GridType:String,
+  },
+  data(){
+    return{
+      showSettings:false,
     }
   },
-  // components:{ DashboardTask, DashboardDrag},
+  methods:{
+    onGroupMenuClick(){
+      this.showSettings = true;
+    },
+    onMouseLeaveGroup(){
+      this.showSettings = false;
+    }
+  },
   mounted() {
-    // console.log(this.group)
+    console.log(this.group,this.GroupID)
   }
-
 }
 </script>
 
@@ -37,12 +73,39 @@ export default {
   display: flex;
   flex-direction: column;
   padding: 10px;
-  //padding-right: 10%;
-  //margin: 10px;
-  //width: 100%;
-  //height: 100%;
-  //filter: alpha(0.6);
   overflow: hidden;
+
+  .groupHeader{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+
+    &:hover{
+      .Left{
+        visibility: visible;
+      }
+      .Right{
+        visibility: visible;
+      }
+    }
+
+    .Left{
+      visibility: hidden;
+      justify-self: left;
+      grid-area: 1 / 1 / 2 / 2;
+    }
+    .Mid{
+      justify-self: center;
+      grid-area: 1 / 2 / 2 / 3;
+    }
+    .Right{
+      visibility: hidden;
+      justify-self: right;
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
 
   .groupItems{
     overflow: hidden;
@@ -50,10 +113,14 @@ export default {
     height: 100%;
 
     &:hover{
-      //padding-right: 0;
       overflow-y: auto;
     }
+  }
 
+  .GroupMenuButton{
+    width: 1em;
+    height: 1em;
+    background-color: chartreuse;
   }
 
 }

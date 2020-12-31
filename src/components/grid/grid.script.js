@@ -193,7 +193,7 @@ export default {
                     w: this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].w, //w and h of the dragged group eleemnt
                     h: this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].h,
                 }
-                console.log(this.mouseData)
+                // console.log(this.mouseData)
                 let isCollision = this.areRectanglesCollidedWithRectangle(this.containers[firstHoveredContainerKey].groupPos,currentContainerPos,[this.mouseData.groupKey])
 
                 let groupPlaceholderId = this.makePlaceholderId([firstHoveredContainerKey]);
@@ -305,15 +305,6 @@ export default {
             delete cntAGrpPos[groupKey];
             cntBGrpPos[groupKey] = groupPos
 
-            // console.log(cntAKey,cntBKey, groupKey)
-            // console.log(cntAGrpID,cntBGrpID)
-            // console.log(cntAGrpPos,cntBGrpPos)
-
-            // this.containers[cntBKey].groupID.push(groupKey);
-            // this.containers[cntBKey].groupPos[groupKey] = {... groupPos};
-            // delete this.containers[cntAKey].groupPos[groupKey];
-            // delete this.containers[cntAKey].groupID[this.containers[cntAKey].groupID.indexOf(groupKey)];
-
             this.$store.dispatch('setElementByKey',{
                 type:'container',
                 id:cntAKey,
@@ -341,8 +332,6 @@ export default {
                 val:cntBGrpPos,
                 key:'groupPos',
             })
-
-            // console.log(this.containers[cntAKey],this.containers[cntBKey])
         },
         /////////////////////////////////////////////////////////////////////////////////////////////////
         getGroups(container) { // join all the groups of a container in an array
@@ -353,10 +342,7 @@ export default {
         },
 
         createGridArea(groupPos){
-            // console.log(groupPos)
-            // console.log(this.getGroups(groupPos.container))
             groupPos = groupPos.container.groupPos[groupPos.container.groupID[groupPos.keyGroup]];
-            // console.log(groupPos)
 
             let gridColumnStart= groupPos.x ;
             let gridColumnEnd= groupPos.x + groupPos.w ;
@@ -374,7 +360,7 @@ export default {
             let newId = await this.CreateNewContainer(this.ID) ;
             await this.loadData()
 
-            // moram pricekati da vue ucita promijene
+            // moram pricekati da vue ucita promjene
             await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
 
             this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
@@ -404,6 +390,7 @@ export default {
                     id:dash.containerID
                 }).then(cnt=> {
 
+                    // cnt dodu sa praznim groupID i groupPos ili dodu kao polja trebaju mi objekti/polje groupPos/groupID da ne dobijem undefined
                     for(let key in cnt){
                         if(cnt[key] !== null){
                             if( cnt[key].groupID == undefined){
@@ -420,8 +407,6 @@ export default {
                                     val:{},
                                     key:'groupPos'
                                 })
-                                // cnt[key].groupID = [];
-                                // cnt[key].groupPos = {};
                             }
                             else{
                                 this.$store.dispatch('setElementByKey',{
@@ -443,7 +428,6 @@ export default {
                         type:'group',
                         id:groupIDs
                     }).then(grp=> {
-                        // console.log(grp)
                             this.groups = grp;
                         }
                     )

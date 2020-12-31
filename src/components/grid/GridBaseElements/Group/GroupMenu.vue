@@ -1,17 +1,17 @@
 <template>
-  <div  class="groupMenu" @mouseenter="mouseEnterMenu" @mouseleave="mouseLeaveMenu">
-  </div>
-    <CommonElementMenu>
-      <template slot="TopRow">
-        <ElementMenuItem v-for="(item,key) of items['top']" :key="key" :icon="item.icon" :text="item.text" :id="item.id" />
+  <div  class="groupMenu" @mouseenter="mouseEnterMenu" @mouseleave="mouseLeaveMenu" >
+    <CommonElementMenu v-if="isHovered" class="CommonMenuElement">
+      <template v-slot:TopRow>
+
       </template>
-      <template slot="MidRow">
-        <ElementMenuItem v-for="(item,key) in items['mid']" :key="key" :icon="item.icon" :text="item.text" :id="item.id" />
+      <template v-slot:MidRow >
+
       </template>
-      <template slot="BotRow">
-        <ElementMenuItem v-for="(item,key) in items['bot']" :key="key" :icon="item.icon" :text="item.text" :id="item.id" />
+      <template v-slot:BotRow >
+
       </template>
     </CommonElementMenu>
+  </div>
 </template>
 
 <script>
@@ -26,26 +26,26 @@ export default {
   },
   data(){
     return{
-      isHovered:false,
+      isHovered:true,
       items:{},
     }
   },
   methods:{
     mouseEnterMenu(){
-      this.isHovered = true;
+      // this.isHovered = true;
       console.log(this.groupID)
     },
     mouseLeaveMenu(){
-      this.isHovered = false;
+      // this.isHovered = false;
     },
     loadContent(){
       let stf = {
         top:[
-          {id:'add',icon:'@/assets/img/GridMenu/Add.svg',text:'Add'},
+          {id:'add',icon:'Add.svg',text:'Add'},
         ],
         mid:[],
         bot:[
-          {id:'delete',icon:'@/assets/img/GridMenu/Delete.svg',text:'Delete'},
+          {id:'delete',icon:'Delete.svg',text:'Delete'},
         ]
       }
 
@@ -63,10 +63,23 @@ export default {
 }
 </script>
 
-<style scoped>
-.groupMenu{
-  width: 1em;
-  height: 1em;
-  background-color: chartreuse;
-}
+<style scoped lang="scss">
+//.groupMenu{
+//  width: 1em;
+//  height: 1em;
+//  background-color: chartreuse;
+
+  .CommonMenuElement{
+    //display: block;
+    //z-index: 10;
+    //position: absolute;
+    //background-color: black;
+    //top: 5%;
+    //top: -20px;
+    //width: 50px;
+    //height: 50px;
+  }
+//}
+
+
 </style>

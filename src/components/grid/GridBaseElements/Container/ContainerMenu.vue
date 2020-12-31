@@ -1,6 +1,5 @@
 <template>
   <div class="containerMenu"  @mouseenter="mouseEnterMenu" @mouseleave="mouseLeaveMenu">
-
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="ElementMenuItem" @click="$emit('ItemClick',id)" @mouseenter="mouseEnter" @mouseleave="mouseLeave">
-    <img :src="icon">
-    <p v-if="showToolTip">{{text}}</p>
+    <img :src="require(`@/assets/img/GridMenu/${icon}`)">
+    <p v-if="showToolTip" class="tooltip">{{text}}</p>
   </div>
 </template>
 
@@ -30,6 +30,9 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+  .tooltip{
+    position: absolute;
+  }
 
 </style>

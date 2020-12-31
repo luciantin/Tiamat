@@ -27,41 +27,41 @@
     color: black;
     display: none;
   }
+  //
+  //.dashboardContainerHeader{
+  //  display: flex;
+  //  flex-direction: row;
+  //  justify-content: space-between;
+  //  //justify-content: center;
+  //  &:hover{
+  //    .dashboardHoverMenu{
+  //      visibility: initial;
+  //    }
+  //  }
+  //  .dashboardHoverMenu{
+  //    visibility: hidden;
+  //  }
+  //  .dashboardContainerTitle{
+  //    color: cornsilk;
+  //  }
+  //}
 
-  .dashboardContainerHeader{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    //justify-content: center;
-    &:hover{
-      .dashboardHoverMenu{
-        visibility: initial;
-      }
-    }
-    .dashboardHoverMenu{
-      visibility: hidden;
-    }
-    .dashboardContainerTitle{
-      color: cornsilk;
-    }
-  }
-
-  .dashboardGroupHeader{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    //justify-content: center;
-    &:hover{
-      .dashboardHoverMenu{
-        visibility: initial;
-      }
-    }
-    .dashboardHoverMenu{
-      visibility: hidden;
-    }
-    .dashboardGroupTitle{
-      color: cornsilk;
-    }
-  }
+  //.dashboardGroupHeader{
+  //  display: flex;
+  //  flex-direction: row;
+  //  justify-content: space-between;
+  //  //justify-content: center;
+  //  &:hover{
+  //    .dashboardHoverMenu{
+  //      visibility: initial;
+  //    }
+  //  }
+  //  .dashboardHoverMenu{
+  //    visibility: hidden;
+  //  }
+  //  .dashboardGroupTitle{
+  //    color: cornsilk;
+  //  }
+  //}
 
 }

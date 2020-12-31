@@ -1,9 +1,20 @@
 <template>
-  <div class="container">
-    <div class="headerFlex">
-      <slot name="ContainerHeader"></slot>
+  <div class="container"  @mouseleave="onMouseLeaveContainer">
+
+    <div class="containerHeader">
+      <div class="Left">
+        <slot name="ContainerDrag"></slot>
+      </div>
+      <div class="Mid">
+        <h4>Container : {{title}}</h4>
+      </div>
+      <div class="Right">
+        <div class="ContainerMenuButton" @click="onContainerMenuClick" ></div>
+      </div>
     </div>
+
     <div
+        v-if="!showSettings"
         class="containerGroups"
         :style="{
           gridTemplateRows: makeGridByRepeat(this.groupGridRowCount),
@@ -12,39 +23,43 @@
     >
       <slot name="ContainerGroups"></slot>
     </div>
+
+    <CommonElementMenu v-else
+       :elementType="'group'"
+       :elementID="containerID"
+       :gridType="GridType"
+    />
+
   </div>
 </template>
 
 <script>
 
-// import DashboardGroup from "@/components/dashboard.old/DashboardGroup";
 
+import ContainerMenu from "@/components/grid/GridBaseElements/Container/ContainerMenu";
+import CommonElementMenu from "@/components/grid/GridBaseElements/Common/CommonElementMenu";
 export default {
   name: "Container",
-  // components:{DashboardGroup},
+  components: {CommonElementMenu, ContainerMenu},
   props:{
-    groupGridColCount: {
-      type: Number
-    },
-    groupGridRowCount: {
-      type: Number
+    groupGridColCount: Number,
+    groupGridRowCount: Number,
+    title:String,
+    containerID:Number,
+    GridType:String
+  },
+  data(){
+    return{
+      showSettings:false,
     }
-    // data: {
-    //   type: Object,
-    //   // required: true
-    // },
   },
   methods:{
-    // getTasks(group){
-    //   let taskList = [];
-    //   let res = {}, keyB;
-    //   // console.log(group)
-    //   taskList.push(group.tasks)
-    //   taskList = taskList.flat();
-    //   for( keyB in this.data.tasks) if(taskList.includes(keyB)) res[keyB] = this.data.tasks[keyB];
-    //   // console.table(res)
-    //   return res;
-    // },
+    onContainerMenuClick(){
+      this.showSettings = true;
+    },
+    onMouseLeaveContainer(){
+      this.showSettings = false;
+    },
     makeGridByRepeat(num){
       let str = '';
       for(let i = 0; i< num; i++) str += '1fr ';
@@ -52,7 +67,7 @@ export default {
     },
   },
   mounted() {
-    // console.log(this.data)
+    console.log(this.title,this.containerID)
   }
 }
 </script>
@@ -63,25 +78,16 @@ export default {
   padding: 10px;
   display: flex;
   flex-direction: column;
-  background-color: #2c3e50;
-  //overflow: scroll;
+  background-color: #53A0E8;
   overflow: hidden;
-  //margin-right: calc(100vw - 100%);
   &:hover{
     //overflow-y: scroll;
   }
-  //
-  //.dashboardContainerHeaderFlex{
-  //
-  //}
 
   .containerGroups{
     display: grid;
     min-height: 40px;
     min-width: 40px;
-    //padding: 10px;
-    //grid-template-columns: auto;
-    //grid-template-rows: auto;
     width: 100%;
     height: 100%;
     grid-gap: 10px;
@@ -91,6 +97,44 @@ export default {
     &:hover{
       overflow-y: auto;
 
+    }
+  }
+
+  .ContainerMenuButton{
+    width: 1em;
+    height: 1em;
+    background-color: chartreuse;
+  }
+
+  .containerHeader{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: 1fr;
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+
+    &:hover{
+      .Left{
+        visibility: visible;
+      }
+      .Right{
+        visibility: visible;
+      }
+    }
+
+    .Left{
+      visibility: hidden;
+      justify-self: left;
+      grid-area: 1 / 1 / 2 / 2;
+    }
+    .Mid{
+      justify-self: center;
+      grid-area: 1 / 2 / 2 / 3;
+    }
+    .Right{
+      visibility: hidden;
+      justify-self: right;
+      grid-area: 1 / 3 / 2 / 4;
     }
   }
 

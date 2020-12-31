@@ -1,6 +1,6 @@
 <template>
   <div class="Item">
-    <p>{{ID}}</p>
+    <p>{{groupID}}</p>
     <p>{{sectionID}}</p>
   </div>
 </template>
@@ -9,18 +9,9 @@
 export default {
   name: "Package",
   props:{
-    sectionID:{
-      type: Object,
-      // required: true,
-    },
-    ID:{
-      type: String,
-      // required: true,
-    },
+    sectionID:Object,
+    groupID:String,
   },
-  mounted() {
-    // console.log("TASK",this.task)
-  }
 }
 </script>
 
@@ -28,6 +19,7 @@ export default {
 .Item{
   background-color: #8095ad;
   margin-top: 3px;
+  /*height: 30px;*/
 }
 
 </style>
