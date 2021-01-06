@@ -7,7 +7,7 @@ import Drag from "@/components/grid/GridBaseElements/Common/Drag";
 
 import Button from "@/components/common/Button";
 
-import {makePlaceholderId,makeDragId,wrapId,unwrapId } from "@/components/grid/gridID.factory";
+import {makePlaceholderId,makeDragId,wrapId,unwrapId,makeResizeId } from "@/components/grid/gridID.factory";
 import {isRectangleACollidedWithRectangleB,areRectanglesCollidedWithRectangle} from "@/components/grid/gridCollision.module";
 import {CreateNewStuffspace,CreateNewContainer} from "@/components/grid/ElementHelpers/elementCreate";
 
@@ -36,8 +36,10 @@ export default {
             gridClass:'asd',
 
             mouseData:{
+                hasClickedOnResize:false,
                 hasClicked:false, // was there a click?
                 dragId:'',  // id of drag element
+                resizeId:'',
                 type:'', // group || container
                 containerId:'', // <--┐
                 groupId:'',  // same but different
@@ -60,6 +62,7 @@ export default {
             makeDragId:makeDragId,
             wrapId:wrapId,
             unwrapId:unwrapId,
+            makeResizeId:makeResizeId,
 
             isRectangleACollidedWithRectangleB:isRectangleACollidedWithRectangleB,
             areRectanglesCollidedWithRectangle:areRectanglesCollidedWithRectangle,
@@ -82,6 +85,30 @@ export default {
             let str = '';
             for(let i = 0; i< num; i++) str += '1fr ';
             return str;
+        },
+        onContainerResizeMouseDown(event){
+            this.mouseData.hasClickedOnResize = true;
+            this.mouseData.resizeId = event.target.id;
+            this.mouseData.type = 'container';
+
+            this.mouseData.containerId = this.mouseData.resizeId.substring(5,this.mouseData.resizeId.length); // drag elements id : drag+
+            this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
+
+            this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
+            this.refreshTmpContainerPosDic(); // used for collision detection
+        },
+
+        onGroupResizeMouseDown(event){
+            this.mouseData.hasClickedOnResize = true; //
+            this.mouseData.resizeId = event.target.id;
+            this.mouseData.type = 'group';
+
+            this.mouseData.groupId = this.mouseData.resizeId.substring(5,this.mouseData.resizeId.length); //groupId is : <containerKey>+<groupKey>+
+            let tmpKeyAr = this.unwrapId(this.mouseData.groupId);
+            this.mouseData.containerKey = tmpKeyAr[0];
+            this.mouseData.groupKey = tmpKeyAr[1];
+
+            this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.groupId);
         },
 
         onGroupMouseDown(event){
@@ -119,8 +146,108 @@ export default {
             this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
         },
 
-        mouseMove(event){
-            if(!this.mouseData.hasClicked) return;
+        mouseMove(event){ // mouse move over grid handler
+            if(this.mouseData.hasClicked) this.handleMouseMoveForDrag(event);
+            if(this.mouseData.hasClickedOnResize) this.handleMouseMoveForResize(event);
+            return;
+        },
+
+        handleMouseMoveForResize(event){
+            let posX = (event.clientX - this.gridData.grid.left);
+            let posY = (event.clientY - this.gridData.grid.top);
+
+            this.mouseData.mouseDownTarget.style.left = (posX + 10) + 'px'; // make container follow the cursor
+            this.mouseData.mouseDownTarget.style.top = (posY + 10) + 'px';  // adds 10px bcz if not then cursor is always above the dragged element
+
+            if(this.mouseData.type == 'container'){
+                // console.log('container resize...');
+                let gridSector = {
+                    x: Math.floor((posX/this.gridData.grid.width) * this.gridData.gridColNum) + 1,
+                    y: Math.floor((posY/this.gridData.grid.height) * this.gridData.gridRowNum) + 1
+                }
+
+                let tmpCntW =  Math.abs(this.containers[this.mouseData.containerKey].pos.x - gridSector.x) + 1; // +1 cuz w/h starts
+                let tmpCntH = Math.abs(this.containers[this.mouseData.containerKey].pos.y - gridSector.y) + 1; // from 1 not 0
+
+                let tmpCntChangeOfX = this.containers[this.mouseData.containerKey].pos.x - gridSector.x  ;
+                let tmpCntChangeOfY = this.containers[this.mouseData.containerKey].pos.y - gridSector.y ;
+
+                let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
+                    x: Number(this.containers[this.mouseData.containerKey].pos.x),
+                    y: Number(this.containers[this.mouseData.containerKey].pos.y),
+                    w: tmpCntW,
+                    h: tmpCntH,
+                }
+
+                let isCollision = this.areRectanglesCollidedWithRectangle(this.tmpContainerData.tmpContainerPos,currentContainerPos,[this.mouseData.containerKey])
+
+                if(!isCollision.isCollided && ( (tmpCntChangeOfX <= 0) && (tmpCntChangeOfY <= 0) )){
+                    this.$store.dispatch('setElementByKey',{
+                        type: 'container',
+                        id: this.mouseData.containerKey,
+                        key: 'pos',
+                        val: currentContainerPos,
+                    })
+                }
+
+            }
+
+            if(this.mouseData.type == 'group'){
+                // console.log('group resize...');
+                // console.log(this.containers[this.mouseData.containerKey],this.mouseData.containerKey,this.containers[this.mouseData.containerKey].groupPos)
+                // console.log(this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey])
+                let hoveredOverElement = event.target;
+                // console.log(hoveredOverElement)                                         // DONJI class name treba biti isti kao glavna klasa kontejnera
+                let firstHoveredContainer = this.firstParentWithTargetClass(hoveredOverElement,'container',this.gridData.gridClass) // CLASS OF Container element
+
+                if(firstHoveredContainer === null)  return;
+
+                let firstHoveredContainerKey = this.unwrapId(firstHoveredContainer.id)[0];
+
+                if(this.mouseData.containerKey !== firstHoveredContainerKey) return ;
+
+                let containerSize = firstHoveredContainer.getBoundingClientRect(); // to ccalculate relative mouse pos and sectors inside the container
+                this.mouseData.prevHoveredOverContainerKey = firstHoveredContainerKey;
+
+                let cntPosX = (event.clientX - containerSize.left);
+                let cntPosY = (event.clientY - containerSize.top);
+
+                let gridSector = { // smoothing to get better grid snapping while mouseOver, grid sector of cursor
+                    x: Math.floor((cntPosX/containerSize.width) * this.containers[this.mouseData.containerKey].innerGrid.cols) + 1,
+                    y: Math.floor((cntPosY/containerSize.height) * this.containers[this.mouseData.containerKey].innerGrid.rows) + 1
+                }
+
+                let tmpCntW =  Math.abs(this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].x - gridSector.x) + 1; // +1 cuz w/h starts
+                let tmpCntH = Math.abs(this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].y - gridSector.y) + 1; // from 1 not 0
+
+                let tmpCntChangeOfX = this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].x - gridSector.x  ;
+                let tmpCntChangeOfY = this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].y - gridSector.y ;
+
+                let currentGroupPos = { // w and h are the same but the x and y are mouse cursor gridSector values
+                    x: Number(this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].x),
+                    y: Number(this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].y),
+                    w: tmpCntW,
+                    h: tmpCntH,
+                }
+
+                let isCollision = this.areRectanglesCollidedWithRectangle(this.containers[this.mouseData.containerKey].groupPos,currentGroupPos,[this.mouseData.groupKey])
+
+                if(!isCollision.isCollided && ( (tmpCntChangeOfX <= 0) && (tmpCntChangeOfY <= 0)  )){
+                    this.$store.dispatch('setSubElementByKey',{
+                        type: 'container',
+                        id: this.mouseData.containerKey,
+                        key: 'groupPos',
+                        subKey:this.mouseData.groupKey,
+                        val: currentGroupPos,
+                    })
+                }
+
+                // console.log(gridSector,currentGroupPos)
+                // console.log(isCollision)
+            }
+        },
+
+        handleMouseMoveForDrag(event){
 
             let posX = (event.clientX - this.gridData.grid.left);
             let posY = (event.clientY - this.gridData.grid.top);
@@ -131,7 +258,7 @@ export default {
             if(this.mouseData.type == 'container'){  // if the user is dragging a container element,
                 let gridSector = { // smoothing to get better grid snapping while mouseOver, grid sector of cursor
                     // % of grid mouse is in          *          num of Rows/Cols       +1 bcz grid starts from 1
-                    x: Math.floor((posX/this.gridData.grid.width) * this.gridData.gridColNum) + 1, // FIXME nes sam zeznuo, prob pobrkao col/row negdje jer radi ok a nebi trebalo
+                    x: Math.floor((posX/this.gridData.grid.width) * this.gridData.gridColNum) + 1,
                     y: Math.floor((posY/this.gridData.grid.height) * this.gridData.gridRowNum) + 1
                 }
                 let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
@@ -170,20 +297,13 @@ export default {
                 let containerSize = firstHoveredContainer.getBoundingClientRect(); // to ccalculate relative mouse pos and sectors inside the container
                 this.mouseData.prevHoveredOverContainerKey = firstHoveredContainerKey;
 
-                // console.log(firstHoveredContainerKey) OK
-                // mouse pos relative to inside the container
                 let cntPosX = (event.clientX - containerSize.left);
                 let cntPosY = (event.clientY - containerSize.top);
 
                 let gridSector = { // smoothing to get better grid snapping while mouseOver, grid sector of cursor
-                    // % of grid mouse is in          *          num of Rows/Cols       +1 bcz grid starts from 1
                     x: Math.floor((cntPosX/containerSize.width) * this.containers[firstHoveredContainerKey].innerGrid.cols) + 1,
                     y: Math.floor((cntPosY/containerSize.height) * this.containers[firstHoveredContainerKey].innerGrid.rows) + 1
                 }
-
-                // let isInsideInnerGrid =
-                //     ( (gridSector.x) <= this.containers[firstHoveredContainerKey].innerGrid.rows) &&
-                //     ( (gridSector.y) <= this.containers[firstHoveredContainerKey].innerGrid.cols);
 
                 let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
                     x: gridSector.x,
@@ -191,7 +311,7 @@ export default {
                     w: this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].w, //w and h of the dragged group eleemnt
                     h: this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].h,
                 }
-                // console.log(this.mouseData)
+
                 let isCollision = this.areRectanglesCollidedWithRectangle(this.containers[firstHoveredContainerKey].groupPos,currentContainerPos,[this.mouseData.groupKey])
 
                 let groupPlaceholderId = this.makePlaceholderId([firstHoveredContainerKey]);
@@ -200,9 +320,6 @@ export default {
                     this.mouseData.prevHoveredOverGroupPlaceholderElement.style.display = 'none';
                     this.mouseData.prevHoveredOverGroupPlaceholderElement = groupPlaceholderElement;
                 }
-
-                // this.containers[firstHoveredContainerKey].groupPlaceholderPos.x = gridSector.x;
-                // this.containers[firstHoveredContainerKey].groupPlaceholderPos.y = gridSector.y;
 
                 this.$store.commit('setElementByKey',{
                     type:'container',
@@ -217,7 +334,6 @@ export default {
                 })
 
 
-                //  TODO ERROR
                 let isCopyOfGroupAlreadyInContainer = this.containers[firstHoveredContainerKey].groupID.includes(this.mouseData.groupKey);
                 let isCopyComingFromDifferentContainer = this.mouseData.containerKey != firstHoveredContainerKey;
 
@@ -229,13 +345,29 @@ export default {
                     groupPlaceholderElement.style.backgroundColor = "green";
                     this.mouseData.canBeDropped = true;
                 }
-                groupPlaceholderElement.style.display = 'initial'; //FIXME
+                groupPlaceholderElement.style.display = 'initial'; //FIXME ??? ...... zaboravio sam sta, valjda je ok onda....
 
             }
         },
 
-        onMouseReleaseDrag(){
-            if(!this.mouseData.hasClicked) return;
+        onMouseRelease(){ // on mouse release over grid handler
+            if(this.mouseData.hasClicked) this.handleMouseReleasedForDrag();
+            if(this.mouseData.hasClickedOnResize) this.handleMouseReleasedForResize();
+            return;
+        },
+
+        handleMouseReleasedForResize(){
+            // flag reset
+            this.mouseData.hasClickedOnResize = false;
+
+            // console.log(this.mouseData)
+
+            // flag reset
+            this.mouseData.mouseDownTarget.style.position = 'static';
+            this.mouseData.canBeDropped = false;
+        },
+
+        handleMouseReleasedForDrag(){
             this.mouseData.hasClicked = false;
 
             if(this.mouseData.type == 'container'){

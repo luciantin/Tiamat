@@ -101,7 +101,11 @@ const actions = {
         context.commit('setElementByKey',{type,id,val,key})
         dbHandler.qElement.setKey(type,id,key,val);
     },
-
+    setSubElementByKey(context,{type,id,val,key,subKey}){
+        context.commit('setSubElementByKey',{type,id,val,key,subKey})
+        let tmpKey = key+'/'+subKey;
+        dbHandler.qElement.setKey(type,id,tmpKey,val);
+    },
 
 };
 const mutations = {
@@ -120,7 +124,10 @@ const mutations = {
     setElementByKey(state,{type,id,val,key}){
         state[type][id][key] = val;
     },
-
+    setSubElementByKey(state,{type,id,val,key,subKey}){
+        // console.log(state[type][id][key][subKey],val)
+        state[type][id][key][subKey] = val;
+    },
     setDbReady(state){
         state.isDbReady = true;
     },

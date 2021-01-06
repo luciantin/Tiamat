@@ -6,7 +6,7 @@
         <slot name="ContainerDrag"></slot>
       </div>
       <div class="Mid">
-        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
+        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}} {{this.containerID}}</h4>
         <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
       </div>
       <div class="Right">
@@ -33,6 +33,10 @@
        :gridType="GridType"
         @MenuItemClick="onMenuItemClick"
     />
+
+    <div class="ContainerFooter">
+      <slot name="ContainerFooter" />
+    </div>
 
   </div>
 </template>
@@ -169,6 +173,11 @@ export default {
     }
   }
 
+  .ContainerFooter{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
+  }
 
 }
 

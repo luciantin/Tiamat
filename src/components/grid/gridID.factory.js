@@ -16,6 +16,9 @@
 function makeDragId(lst){
     return 'drag'+'+'+ this.wrapId(lst);
 };
+function makeResizeId(lst){
+    return 'rsiz'+'+'+ this.wrapId(lst);
+};
 function makePlaceholderId(lst){
     return 'placeholder' + '+' + this.wrapId(lst);
 };
@@ -38,5 +41,6 @@ export {
     makeDragId,
     makePlaceholderId,
     wrapId,
-    unwrapId
+    unwrapId,
+    makeResizeId
 }

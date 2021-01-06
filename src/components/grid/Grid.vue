@@ -3,7 +3,7 @@
       :id="this.ID"
       v-bind:class="'dashboard'"
       @mousemove="this.mouseMove($event)"
-      @mouseup="onMouseReleaseDrag()"
+      @mouseup="onMouseRelease()"
       :style="{
         gridTemplateRows: makeGridByRepeat(this.gridData.gridRowNum),
         gridTemplateColumns: makeGridByRepeat(this.gridData.gridColNum),
@@ -29,8 +29,11 @@
 
       <template v-slot:ContainerDrag>
           <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer])" @mousedown="onContainerMouseDown($event)"  ></Drag>
-<!--          <p class="dashboardContainerTitle">Container {{keyContainer}}</p>-->
-<!--          < :container-i-d="keyContainer"  :type="type" class="dashboardHoverMenu" ></ContainerMenu>-->
+      </template>
+
+
+      <template v-slot:ContainerFooter>
+          <Drag class="dashboardHoverMenu" :id="this.makeResizeId([keyContainer])" @mousedown="onContainerResizeMouseDown($event)"  ></Drag>
       </template>
 
       <template v-slot:ContainerGroups>
@@ -46,6 +49,10 @@
         >
           <template v-slot:GroupDrag>
               <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupMouseDown($event)"  ></Drag>
+          </template>
+
+          <template v-slot:GroupFooter>
+            <Drag class="dashboardHoverMenu" :id="this.makeResizeId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupResizeMouseDown($event)"  ></Drag>
           </template>
 
         </Group>

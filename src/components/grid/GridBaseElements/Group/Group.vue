@@ -32,6 +32,10 @@
           @MenuItemClick="onMenuItemClick"
       />
 
+    <div class="GroupFooter">
+      <slot name="GroupFooter" />
+    </div>
+
   </div>
 </template>
 
@@ -152,6 +156,12 @@ export default {
     width: 1.1em;
     height: 1.1em;
     //background-color: chartreuse;
+  }
+
+  .GroupFooter{
+    display: flex;
+    flex-direction: row;
+    justify-content: right;
   }
 
 }
