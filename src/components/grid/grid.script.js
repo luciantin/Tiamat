@@ -1,8 +1,6 @@
 
 import Container from "@/components/grid/GridBaseElements/Container/Container";
-import ContainerMenu from "@/components/grid/GridBaseElements/Container/ContainerMenu";
 import Group from "@/components/grid/GridBaseElements/Group/Group";
-import GroupMenu from "@/components/grid/GridBaseElements/Group/GroupMenu"; // on right click open menu
 import Package from "@/components/grid/GridBaseElements/Package/Package";
 import PackageMenu from "@/components/grid/GridBaseElements/Package/PackageMenu";
 import Drag from "@/components/grid/GridBaseElements/Common/Drag";
@@ -21,7 +19,7 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 export default {
     name: "Grid",
     components:{
-        Container, Group, GroupMenu,Package,Drag,ContainerMenu,PackageMenu,Button},
+        Container, Group,Package,Drag,PackageMenu,Button},
     props: {
         type:{
             type:String

@@ -6,10 +6,12 @@
         <slot name="ContainerDrag"></slot>
       </div>
       <div class="Mid">
-        <h4>Container : {{title}}</h4>
+        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
+        <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
       </div>
       <div class="Right">
-        <div class="ContainerMenuButton" @click="onContainerMenuClick" ></div>
+        <img src="@/assets/img/GridMenu/Settings.svg" class="ContainerMenuButton" @click="onContainerMenuClick" />
+
       </div>
     </div>
 
@@ -24,10 +26,12 @@
       <slot name="ContainerGroups"></slot>
     </div>
 
-    <CommonElementMenu v-else
+    <CommonElementMenu
+        v-else
        :elementType="'group'"
        :elementID="containerID"
        :gridType="GridType"
+        @MenuItemClick="onMenuItemClick"
     />
 
   </div>
@@ -36,21 +40,22 @@
 <script>
 
 
-import ContainerMenu from "@/components/grid/GridBaseElements/Container/ContainerMenu";
-import CommonElementMenu from "@/components/grid/GridBaseElements/Common/CommonElementMenu";
+import CommonElementMenu from "@/components/grid/GridBaseElements/Common/ElementMenu/CommonElementMenu";
 export default {
   name: "Container",
-  components: {CommonElementMenu, ContainerMenu},
+  components: {CommonElementMenu},
   props:{
     groupGridColCount: Number,
     groupGridRowCount: Number,
-    title:String,
+    meta:Object,
     containerID:Number,
     GridType:String
   },
   data(){
     return{
       showSettings:false,
+      showTitleInput:false,
+      localMeta:{},
     }
   },
   methods:{
@@ -65,9 +70,36 @@ export default {
       for(let i = 0; i< num; i++) str += '1fr ';
       return str;
     },
+    onTitleClick(){
+      this.showTitleInput = true;
+    },
+    onFocusOutOfTitleInput(e){
+      this.localMeta.title = e.srcElement.value;
+      this.$store.dispatch('setElementByKey',{
+        type:'container',
+        id:this.containerID,
+        key:'meta',
+        val:this.localMeta
+      })
+      this.showTitleInput = false;
+    },
+    createLocalMeta(){
+      let tmp = Object.assign({},this.meta);
+      delete tmp.tags;
+      this.localMeta = {
+        tags:Array.from(this.meta.tags),
+        ...tmp
+      }
+    },
+    onMenuItemClick(item) {
+      console.log(item.id)
+    }
   },
   mounted() {
-    console.log(this.title,this.containerID)
+    this.createLocalMeta();
+  },
+  updated() {
+    if(this.showTitleInput) this.$refs.input.focus()
   }
 }
 </script>
@@ -101,9 +133,8 @@ export default {
   }
 
   .ContainerMenuButton{
-    width: 1em;
-    height: 1em;
-    background-color: chartreuse;
+    width: 1.1em;
+    height: 1.1em;
   }
 
   .containerHeader{

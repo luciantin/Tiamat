@@ -23,7 +23,7 @@
         :groupGridRowCount="container.innerGrid.rows"
         :groupGridColCount="container.innerGrid.cols"
         :containerID="keyContainer"
-        :title="keyContainer"
+        :meta="container.meta"
         :GridType="type"
     >
 
@@ -40,7 +40,7 @@
             :group="group"
             :key="container.groupID[keyGroup]"
             :style="createGridArea({container,keyGroup})"
-            :title="container.groupID[keyGroup]"
+            :meta="group.meta"
             :GroupID="container.groupID[keyGroup]"
             :GridType="type"
         >

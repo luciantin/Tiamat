@@ -6,10 +6,11 @@
         <slot name="GroupDrag"></slot>
       </div>
       <div class="Mid">
-        <p>Group : {{title}}</p>
+        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
+        <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
       </div>
       <div class="Right">
-        <div class="GroupMenuButton" @click="onGroupMenuClick" ></div>
+        <img src="@/assets/img/GridMenu/Settings.svg" class="GroupMenuButton" @click="onGroupMenuClick" />
       </div>
     </div>
 
@@ -28,6 +29,7 @@
           :elementType="'group'"
           :elementID="GroupID"
           :gridType="GridType"
+          @MenuItemClick="onMenuItemClick"
       />
 
   </div>
@@ -36,20 +38,22 @@
 <script>
 
 import Package from "@/components/grid/GridBaseElements/Package/Package";
-import CommonElementMenu from "@/components/grid/GridBaseElements/Common/CommonElementMenu";
+import CommonElementMenu from "@/components/grid/GridBaseElements/Common/ElementMenu/CommonElementMenu";
 
 export default {
   name: "Group",
   components: {CommonElementMenu, Package},
   props:{
     group:Object,
-    title:String,
+    meta:String,
     GroupID:String,
     GridType:String,
   },
   data(){
     return{
       showSettings:false,
+      showTitleInput:false,
+      localMeta:{},
     }
   },
   methods:{
@@ -58,10 +62,37 @@ export default {
     },
     onMouseLeaveGroup(){
       this.showSettings = false;
+    },
+    onTitleClick(){
+      this.showTitleInput = true;
+    },
+    onFocusOutOfTitleInput(e){
+      this.localMeta.title = e.srcElement.value;
+      this.$store.dispatch('setElementByKey',{
+        type:'group',
+        id:this.GroupID,
+        key:'meta',
+        val:this.localMeta
+      })
+      this.showTitleInput = false;
+    },
+    createLocalMeta(){
+      let tmp = Object.assign({},this.meta);
+      delete tmp.tags;
+      this.localMeta = {
+        tags:Array.from(this.meta.tags),
+        ...tmp
+      }
+    },
+    onMenuItemClick(item) {
+      console.log(item.id)
     }
   },
   mounted() {
-    console.log(this.group,this.GroupID)
+    this.createLocalMeta();
+  },
+  updated() {
+    if(this.showTitleInput) this.$refs.input.focus()
   }
 }
 </script>
@@ -118,9 +149,9 @@ export default {
   }
 
   .GroupMenuButton{
-    width: 1em;
-    height: 1em;
-    background-color: chartreuse;
+    width: 1.1em;
+    height: 1.1em;
+    //background-color: chartreuse;
   }
 
 }

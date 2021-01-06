@@ -1,13 +1,13 @@
 <template>
   <div class="CommonMenuElement" >
     <div class="TopRow">
-      <ElementMenuItem v-for="(item,index) of items['top']" :key="index" :icon="item.icon" :text="item.text" :id="item.id" />
+      <ElementMenuItem @click="onMenuItemClick(item)" v-for="(item,index) of items['top']" :key="index" :icon="item.icon" :text="item.text" :id="item.id" />
     </div>
     <div class="MidRow">
-      <ElementMenuItem v-for="(item,index) in items['mid']" :key="index" :icon="item.icon" :text="item.text" :id="item.id" />
+      <ElementMenuItem @click="onMenuItemClick(item)" v-for="(item,index) in items['mid']" :key="index" :icon="item.icon" :text="item.text" :id="item.id" />
     </div>
     <div class="BotRow">
-      <ElementMenuItem v-for="(item,index) in items['bot']" :key="index" :icon="item.icon" :text="item.text" :id="item.id" />
+      <ElementMenuItem @click="onMenuItemClick(item)" v-for="(item,index) in items['bot']" :key="index" :icon="item.icon" :text="item.text" :id="item.id" />
     </div>
 
   </div>
@@ -16,7 +16,9 @@
 </template>
 
 <script>
-import ElementMenuItem from "@/components/grid/GridBaseElements/Common/ElementMenuItem";
+import ElementMenuItem from "@/components/grid/GridBaseElements/Common/ElementMenu/ElementMenuItem";
+import {MenuItems} from "@/components/grid/GridBaseElements/Common/ElementMenu/MenuItems";
+
 export default {
 name: "CommonElementMenu",
   components: {ElementMenuItem},
@@ -32,27 +34,16 @@ name: "CommonElementMenu",
   },
   methods:{
     loadContent(){
-      let stf = {
-        top:[
-          {id:'add',icon:'Add.svg',text:'Add'},
-        ],
-        mid:[],
-        bot:[
-          {id:'delete',icon:'Delete.svg',text:'Delete'},
-        ]
-      }
-
-      if(this.type === 'dashboard'){
-        this.items = stf;
-      }
-      else {
-        this.items = stf;
-      }
+      this.items = MenuItems[this.gridType][this.elementType]
+    },
+    onMenuItemClick(item){
+      this.$emit('MenuItemClick',item)
     }
   },
   mounted() {
     this.loadContent();
-  }
+  },
+  emits:['MenuItemClick']
 }
 </script>
 
