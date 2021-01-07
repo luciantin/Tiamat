@@ -33,7 +33,7 @@
 
 
       <template v-slot:ContainerFooter>
-          <Drag class="dashboardHoverMenu" :id="this.makeResizeId([keyContainer])" @mousedown="onContainerResizeMouseDown($event)"  ></Drag>
+          <Resize class="dashboardResize" :id="this.makeResizeId([keyContainer])" @mousedown="onContainerResizeMouseDown($event)"  ></Resize>
       </template>
 
       <template v-slot:ContainerGroups>
@@ -52,7 +52,7 @@
           </template>
 
           <template v-slot:GroupFooter>
-            <Drag class="dashboardHoverMenu" :id="this.makeResizeId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupResizeMouseDown($event)"  ></Drag>
+            <Resize class="dashboardResize" :id="this.makeResizeId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupResizeMouseDown($event)"  ></Resize>
           </template>
 
         </Group>

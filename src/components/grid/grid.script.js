@@ -4,7 +4,7 @@ import Group from "@/components/grid/GridBaseElements/Group/Group";
 import Package from "@/components/grid/GridBaseElements/Package/Package";
 import PackageMenu from "@/components/grid/GridBaseElements/Package/PackageMenu";
 import Drag from "@/components/grid/GridBaseElements/Common/Drag";
-
+import Resize from "@/components/grid/GridBaseElements/Common/Resize";
 import Button from "@/components/common/Button";
 
 import {makePlaceholderId,makeDragId,wrapId,unwrapId,makeResizeId } from "@/components/grid/gridID.factory";
@@ -19,7 +19,7 @@ import {mapActions, mapGetters, mapMutations} from "vuex";
 export default {
     name: "Grid",
     components:{
-        Container, Group,Package,Drag,PackageMenu,Button},
+        Container, Group,Package,Drag,PackageMenu,Button,Resize},
     props: {
         type:{
             type:String

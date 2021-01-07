@@ -4,15 +4,15 @@
 
 <script>
 export default {
-  name: "Drag"
+  name: "Resize"
 }
 </script>
 
 <style lang="scss" scoped>
 .drag{
-  width: 1.2em;
-  height: 1em;
+  width: 0.5em;
+  height: 0.5em;
   background-color: chartreuse;
-  cursor: grab;
+  cursor: se-resize;
 }
 </style>

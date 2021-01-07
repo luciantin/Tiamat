@@ -1,0 +1,1 @@
+// za spajanje elemenata u polja

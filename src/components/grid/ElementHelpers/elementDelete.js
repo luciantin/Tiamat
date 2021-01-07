@@ -1,0 +1,1 @@
+// f za brisanje elem.
