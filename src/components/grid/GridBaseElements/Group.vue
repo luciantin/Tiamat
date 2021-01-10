@@ -1,41 +1,41 @@
 <template>
-  <div class="container"  @mouseleave="onMouseLeaveContainer">
+  <div class="group" @mouseleave="onMouseLeaveGroup">
 
-    <div class="containerHeader">
+    <div class="groupHeader">
       <div class="Left">
-        <slot name="ContainerDrag"></slot>
+        <slot name="GroupDrag"></slot>
       </div>
       <div class="Mid">
-        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}} {{this.containerID}}</h4>
+        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
         <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
       </div>
       <div class="Right">
-        <img src="@/assets/img/GridMenu/Settings.svg" class="ContainerMenuButton" @click="onContainerMenuClick" />
-
+        <div class="GroupMenuButton">
+          <img src="@/assets/img/GridMenu/MenuElem.svg"  @click="onGroupMenuClick" />
+        </div>
       </div>
     </div>
 
-    <div
-        v-if="!showSettings"
-        class="containerGroups"
-        :style="{
-          gridTemplateRows: makeGridByRepeat(this.groupGridRowCount),
-          gridTemplateColumns: makeGridByRepeat(this.groupGridColCount),
-        }"
-    >
-      <slot name="ContainerGroups"></slot>
-    </div>
+      <Package
+          v-if="!showSettings"
+          class="groupItems"
+          v-for="(id,index) in group.sectionID"
+          :groupID="GroupID"
+          :sectionID="id"
+          :key="index"
+      />
 
-    <CommonElementMenu
-        v-else
-       :elementType="'group'"
-       :elementID="containerID"
-       :gridType="GridType"
-        @MenuItemClick="onMenuItemClick"
-    />
+      <CommonElementMenu
+          v-else
+          class="GroupSettings"
+          :elementType="'group'"
+          :elementID="GroupID"
+          :gridType="GridType"
+          @MenuItemClick="onMenuItemClick"
+      />
 
-    <div class="ContainerFooter">
-      <slot name="ContainerFooter" />
+    <div class="GroupFooter">
+      <slot name="GroupFooter" />
     </div>
 
   </div>
@@ -43,17 +43,17 @@
 
 <script>
 
-
+import Package from "@/components/grid/GridBaseElements/Package";
 import CommonElementMenu from "@/components/grid/GridBaseElements/Common/ElementMenu/CommonElementMenu";
+
 export default {
-  name: "Container",
-  components: {CommonElementMenu},
+  name: "Group",
+  components: {CommonElementMenu, Package},
   props:{
-    groupGridColCount: Number,
-    groupGridRowCount: Number,
-    meta:Object,
-    containerID:Number,
-    GridType:String
+    group:Object,
+    meta:String,
+    GroupID:String,
+    GridType:String,
   },
   data(){
     return{
@@ -63,16 +63,11 @@ export default {
     }
   },
   methods:{
-    onContainerMenuClick(){
+    onGroupMenuClick(){
       this.showSettings = true;
     },
-    onMouseLeaveContainer(){
+    onMouseLeaveGroup(){
       this.showSettings = false;
-    },
-    makeGridByRepeat(num){
-      let str = '';
-      for(let i = 0; i< num; i++) str += '1fr ';
-      return str;
     },
     onTitleClick(){
       this.showTitleInput = true;
@@ -80,8 +75,8 @@ export default {
     onFocusOutOfTitleInput(e){
       this.localMeta.title = e.srcElement.value;
       this.$store.dispatch('setElementByKey',{
-        type:'container',
-        id:this.containerID,
+        type:'group',
+        id:this.GroupID,
         key:'meta',
         val:this.localMeta
       })
@@ -110,43 +105,29 @@ export default {
 
 <style lang="scss" scoped>
 
-.container {
-  padding: 10px;
+.group{
+  //background-color: darkcyan;
   display: flex;
   flex-direction: column;
-  background-color: #53A0E8;
+  //padding: 10px;
   overflow: hidden;
-  &:hover{
-    //overflow-y: scroll;
-  }
 
-  .containerGroups{
-    display: grid;
-    min-height: 40px;
-    min-width: 40px;
-    width: 100%;
-    height: 100%;
-    grid-gap: 10px;
-    padding: 5px 5px 10px 5px;
-    overflow: hidden;
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 10px;
 
-    &:hover{
-      overflow-y: auto;
 
-    }
-  }
-
-  .ContainerMenuButton{
-    width: 1.1em;
-    height: 1.1em;
-  }
-
-  .containerHeader{
+  .groupHeader{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: 1fr;
     grid-column-gap: 0px;
     grid-row-gap: 0px;
+
+    background-color: #D4C324;
+    min-height: 2em;
+    align-items: center;
+    padding: 0px 8px;
 
     &:hover{
       .Left{
@@ -173,7 +154,23 @@ export default {
     }
   }
 
-  .ContainerFooter{
+  .groupItems{
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+
+    &:hover{
+      overflow-y: auto;
+    }
+  }
+
+  .GroupMenuButton{
+    width: 1.1em;
+    height: 1.1em;
+    //background-color: chartreuse;
+  }
+
+  .GroupFooter{
     display: flex;
     flex-direction: row;
     justify-content: right;

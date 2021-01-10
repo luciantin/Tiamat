@@ -7,12 +7,12 @@ export class UserFactory{
             'username':username,
             'dashboardID':dashboardID,
             counters:{
-                nextDsbID : 0,
-                nextStfID : 0,
-                nextCntID : 0,
-                nextGrpID : 0,
-                nextSecID : 0,
-                nextItemID: 0,
+                nextDsbID : 5,
+                nextStfID : 5,
+                nextCntID : 5,
+                nextGrpID : 5,
+                nextSecID : 5,
+                nextItemID: 5,
             }
         }
     }

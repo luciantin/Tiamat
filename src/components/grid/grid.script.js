@@ -1,8 +1,7 @@
 
-import Container from "@/components/grid/GridBaseElements/Container/Container";
-import Group from "@/components/grid/GridBaseElements/Group/Group";
-import Package from "@/components/grid/GridBaseElements/Package/Package";
-import PackageMenu from "@/components/grid/GridBaseElements/Package/PackageMenu";
+import Container from "@/components/grid/GridBaseElements/Container";
+import Group from "@/components/grid/GridBaseElements/Group";
+import Package from "@/components/grid/GridBaseElements/Package";
 import Drag from "@/components/grid/GridBaseElements/Common/Drag";
 import Resize from "@/components/grid/GridBaseElements/Common/Resize";
 import Button from "@/components/common/Button";
@@ -12,14 +11,14 @@ import {isRectangleACollidedWithRectangleB,areRectanglesCollidedWithRectangle} f
 import {CreateNewStuffspace,CreateNewContainer} from "@/components/grid/ElementHelpers/elementCreate";
 
 
-import {mapActions, mapGetters, mapMutations} from "vuex";
+import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 
 
 
 export default {
     name: "Grid",
     components:{
-        Container, Group,Package,Drag,PackageMenu,Button,Resize},
+        Container, Group,Package,Drag,Button,Resize},
     props: {
         type:{
             type:String
@@ -31,6 +30,7 @@ export default {
             containers:{},
             groups:{},
             content: {},
+            gridElement:null, // used to set style of mouse cursor
 
             ID:0,
             gridClass:'asd',
@@ -87,6 +87,8 @@ export default {
             return str;
         },
         onContainerResizeMouseDown(event){
+            this.gridElement.style.cursor = 'se-resize';
+
             this.mouseData.hasClickedOnResize = true;
             this.mouseData.resizeId = event.target.id;
             this.mouseData.type = 'container';
@@ -99,6 +101,8 @@ export default {
         },
 
         onGroupResizeMouseDown(event){
+            this.gridElement.style.cursor = 'se-resize';
+
             this.mouseData.hasClickedOnResize = true; //
             this.mouseData.resizeId = event.target.id;
             this.mouseData.type = 'group';
@@ -112,17 +116,24 @@ export default {
         },
 
         onGroupMouseDown(event){
+            this.gridElement.style.cursor = 'grabbing';
+
             this.mouseData.hasClicked = true; //
             this.mouseData.dragId = event.target.id;
             this.mouseData.type = 'group';
 
+            console.log(this.mouseData.dragId)
             this.mouseData.groupId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); //groupId is : <containerKey>+<groupKey>+
+            console.log(this.mouseData.groupId)
+
             let tmpKeyAr = this.unwrapId(this.mouseData.groupId);
             this.mouseData.containerKey = tmpKeyAr[0];
             this.mouseData.groupKey = tmpKeyAr[1];
 
             let groupPlaceholderElement = document.getElementById(this.makePlaceholderId([this.mouseData.containerKey]));
             this.mouseData.prevHoveredOverGroupPlaceholderElement = groupPlaceholderElement; // just need a single prevPlaceholder so it doesnt throw error
+
+            console.log(this.mouseData.groupKey,this.mouseData.containerKey)
 
             this.containers[this.mouseData.containerKey].groupPlaceholderPos.w = this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].w;
             this.containers[this.mouseData.containerKey].groupPlaceholderPos.h = this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].h;
@@ -133,6 +144,8 @@ export default {
         },
 
         onContainerMouseDown(event){
+            this.gridElement.style.cursor = 'grabbing';
+
             this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
             this.mouseData.dragId = event.target.id; // save id of clicked drag element so we can get the id of the container
             this.mouseData.type = 'container'; // used in mouseMove to know the type
@@ -304,7 +317,7 @@ export default {
                     x: Math.floor((cntPosX/containerSize.width) * this.containers[firstHoveredContainerKey].innerGrid.cols) + 1,
                     y: Math.floor((cntPosY/containerSize.height) * this.containers[firstHoveredContainerKey].innerGrid.rows) + 1
                 }
-
+                console.log(this.mouseData.groupKey)
                 let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
                     x: gridSector.x,
                     y: gridSector.y,
@@ -351,6 +364,7 @@ export default {
         },
 
         onMouseRelease(){ // on mouse release over grid handler
+            this.gridElement.style.cursor = 'default';
             if(this.mouseData.hasClicked) this.handleMouseReleasedForDrag();
             if(this.mouseData.hasClickedOnResize) this.handleMouseReleasedForResize();
             return;
@@ -467,12 +481,19 @@ export default {
         getGroups(container) { // join all the groups of a container in an array
             let groupList = container.groupID;
             let res = {}, key;
-            for( key in groupList) if(this.groups[key]) res[key] = this.groups[key];
+            for( key in groupList) {
+                // console.log(groupList[key])
+                if(this.groups[groupList[key]]) res[groupList[key]] = this.groups[groupList[key]];
+                // console.log(this.groups[key])
+            }
+            // console.log(res)
+            // console.log(this.groups)
             return res;
         },
 
         createGridArea(groupPos){
-            groupPos = groupPos.container.groupPos[groupPos.container.groupID[groupPos.keyGroup]];
+            // console.log(groupPos)
+            groupPos = groupPos.container.groupPos[groupPos.keyGroup];
 
             let gridColumnStart= groupPos.x ;
             let gridColumnEnd= groupPos.x + groupPos.w ;
@@ -570,15 +591,17 @@ export default {
         ])
     },
     computed:{
-
-        ...mapGetters([
+        ...mapState([
+            'container',
+            'group',
+        ]),
+        ...mapGetters([ // not used
             'isDbReady',
             'getDash',
             'getCnt',
             'getGroup',
             'getSec',
             'getItem',
-
         ])
     },
     watch:{
@@ -588,9 +611,21 @@ export default {
                 this.loadData();
             }
         },
+        container(newState,oldState){
+            this.loadData()
+        },
+        group(newState,oldState){
+            console.log(newState,oldState)
+            this.loadData()
+        }
     },
     beforeMount() {
         this.ID=this.$route.query.id;
         if(this.isDbReady) this.loadData(); //ako je vec baza spremna ucitaj podatke
+        // console.log(container)
     },
+    mounted() {
+        this.gridElement = document.getElementById(this.ID);
+        console.log(this.gridElement)
+    }
 }

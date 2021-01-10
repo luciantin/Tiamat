@@ -17,7 +17,7 @@ export default {
 
 <style scoped>
 .Item{
-  background-color: #8095ad;
+  background-color: #fff;
   margin-top: 3px;
   /*height: 30px;*/
 }

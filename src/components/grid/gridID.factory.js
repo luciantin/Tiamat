@@ -14,6 +14,8 @@
     za pronaci parent id samo se treba id.split('+') itd...
  */
 function makeDragId(lst){
+    // console.trace()
+    // console.log(lst)
     return 'drag'+'+'+ this.wrapId(lst);
 };
 function makeResizeId(lst){

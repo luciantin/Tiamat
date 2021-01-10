@@ -39,20 +39,20 @@
       <template v-slot:ContainerGroups>
         <Group
             v-for="(group,keyGroup) in this.getGroups(container)"
-            :id="wrapId([keyContainer,container.groupID[keyGroup]])"
+            :id="wrapId([keyContainer,keyGroup])"
             :group="group"
-            :key="container.groupID[keyGroup]"
+            :key="keyGroup"
             :style="createGridArea({container,keyGroup})"
             :meta="group.meta"
-            :GroupID="container.groupID[keyGroup]"
+            :GroupID="keyGroup"
             :GridType="type"
         >
           <template v-slot:GroupDrag>
-              <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupMouseDown($event)"  ></Drag>
+              <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>
           </template>
 
           <template v-slot:GroupFooter>
-            <Resize class="dashboardResize" :id="this.makeResizeId([keyContainer,container.groupID[keyGroup]])" @mousedown="onGroupResizeMouseDown($event)"  ></Resize>
+            <Resize class="dashboardResize" :id="this.makeResizeId([keyContainer,keyGroup])" @mousedown="onGroupResizeMouseDown($event)"  ></Resize>
           </template>
 
         </Group>
