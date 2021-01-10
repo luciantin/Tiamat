@@ -23,8 +23,10 @@
         :groupGridRowCount="container.innerGrid.rows"
         :groupGridColCount="container.innerGrid.cols"
         :containerID="keyContainer"
+        :gridID="String(ID)"
         :meta="container.meta"
         :GridType="type"
+        @loadData="onStateChange"
     >
 
       <template v-slot:ContainerDrag>
@@ -46,6 +48,8 @@
             :meta="group.meta"
             :GroupID="keyGroup"
             :GridType="type"
+            :containerID="keyContainer"
+            @loadData="onStateChange"
         >
           <template v-slot:GroupDrag>
               <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>

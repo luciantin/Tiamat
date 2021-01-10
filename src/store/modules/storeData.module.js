@@ -119,13 +119,15 @@ const mutations = {
     },
 
     setElement(state,{type,id,val}){
+        // console.log(type,id,val)
+        // console.log(state)
         state[type][id] = val;
     },
     setElementByKey(state,{type,id,val,key}){
         state[type][id][key] = val;
     },
     setSubElementByKey(state,{type,id,val,key,subKey}){
-        // console.log(state[type][id][key][subKey],val)
+        console.log(state,type,id,key,subKey,val)
         state[type][id][key][subKey] = val;
     },
     setDbReady(state){

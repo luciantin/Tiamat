@@ -32,6 +32,8 @@ export default {
             content: {},
             gridElement:null, // used to set style of mouse cursor
 
+            isStateChange:false, // toggle to refresh containers/groups
+
             ID:0,
             gridClass:'asd',
 
@@ -122,9 +124,9 @@ export default {
             this.mouseData.dragId = event.target.id;
             this.mouseData.type = 'group';
 
-            console.log(this.mouseData.dragId)
+            // console.log(this.mouseData.dragId)
             this.mouseData.groupId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); //groupId is : <containerKey>+<groupKey>+
-            console.log(this.mouseData.groupId)
+            // console.log(this.mouseData.groupId)
 
             let tmpKeyAr = this.unwrapId(this.mouseData.groupId);
             this.mouseData.containerKey = tmpKeyAr[0];
@@ -133,7 +135,7 @@ export default {
             let groupPlaceholderElement = document.getElementById(this.makePlaceholderId([this.mouseData.containerKey]));
             this.mouseData.prevHoveredOverGroupPlaceholderElement = groupPlaceholderElement; // just need a single prevPlaceholder so it doesnt throw error
 
-            console.log(this.mouseData.groupKey,this.mouseData.containerKey)
+            // console.log(this.mouseData.groupKey,this.mouseData.containerKey)
 
             this.containers[this.mouseData.containerKey].groupPlaceholderPos.w = this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].w;
             this.containers[this.mouseData.containerKey].groupPlaceholderPos.h = this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey].h;
@@ -317,7 +319,7 @@ export default {
                     x: Math.floor((cntPosX/containerSize.width) * this.containers[firstHoveredContainerKey].innerGrid.cols) + 1,
                     y: Math.floor((cntPosY/containerSize.height) * this.containers[firstHoveredContainerKey].innerGrid.rows) + 1
                 }
-                console.log(this.mouseData.groupKey)
+                // console.log(this.mouseData.groupKey)
                 let currentContainerPos = { // w and h are the same but the x and y are mouse cursor gridSector values
                     x: gridSector.x,
                     y: gridSector.y,
@@ -526,6 +528,11 @@ export default {
             this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
         },
 
+        onStateChange(resp){ // if a child changes its state, it should return a promise on which the state changes
+            console.log(resp)
+            resp.then(()=>{this.loadData();})
+        },
+
         loadData(){
             this.$store.dispatch('getElement',{
                 type:'dashboard',
@@ -580,28 +587,18 @@ export default {
                         id:groupIDs
                     }).then(grp=> {
                             this.groups = grp;
+                            console.log('Updating...')
+                            this.$forceUpdate();
                         }
                     )
                 })
             })
         },
 
-        ...mapActions([
-            'setElement'
-        ])
     },
     computed:{
-        ...mapState([
-            'container',
-            'group',
-        ]),
-        ...mapGetters([ // not used
+        ...mapGetters([
             'isDbReady',
-            'getDash',
-            'getCnt',
-            'getGroup',
-            'getSec',
-            'getItem',
         ])
     },
     watch:{
@@ -611,13 +608,12 @@ export default {
                 this.loadData();
             }
         },
-        container(newState,oldState){
-            this.loadData()
-        },
-        group(newState,oldState){
-            console.log(newState,oldState)
-            this.loadData()
-        }
+        // container(newState,oldState){
+        //     this.loadData()
+        // },
+        // 'getGroup':function (){
+        //     console.log('BRAVOOOO')
+        // }
     },
     beforeMount() {
         this.ID=this.$route.query.id;
@@ -626,6 +622,6 @@ export default {
     },
     mounted() {
         this.gridElement = document.getElementById(this.ID);
-        console.log(this.gridElement)
+        // console.log(this.gridElement)
     }
 }

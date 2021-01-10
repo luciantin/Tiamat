@@ -47,6 +47,7 @@
 
 import CommonElementMenu from "@/components/grid/GridBaseElements/Common/ElementMenu/CommonElementMenu";
 import {CreateNewGroup} from "@/components/grid/ElementHelpers/elementCreate";
+import {DeleteContainer, DeleteGroupFromContainer} from "@/components/grid/ElementHelpers/elementDelete";
 
 export default {
   name: "Container",
@@ -56,8 +57,10 @@ export default {
     groupGridRowCount: Number,
     meta:Object,
     containerID:Number,
-    GridType:String
+    GridType:String,
+    gridID:String,
   },
+  emits:['loadData'],
   data(){
     return{
       showSettings:false,
@@ -99,10 +102,14 @@ export default {
       }
     },
     onMenuItemClick(item) {
-      console.log(item.id)
+      let res = null;
       if(item.id === 'Add'){
-        CreateNewGroup(this.containerID).then(a=>console.log(a));
+        res = CreateNewGroup(this.containerID);
       }
+      if(item.id === 'Delete'){
+        res = DeleteContainer(this.gridID,this.containerID,this.GridType);
+      }
+      this.$emit('loadData',res)
     }
   },
   mounted() {

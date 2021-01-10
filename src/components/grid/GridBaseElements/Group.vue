@@ -45,16 +45,19 @@
 
 import Package from "@/components/grid/GridBaseElements/Package";
 import CommonElementMenu from "@/components/grid/GridBaseElements/Common/ElementMenu/CommonElementMenu";
+import {DeleteGroupFromContainer} from "@/components/grid/ElementHelpers/elementDelete";
 
 export default {
   name: "Group",
   components: {CommonElementMenu, Package},
   props:{
+    containerID:String,
     group:Object,
     meta:String,
     GroupID:String,
     GridType:String,
   },
+  emits:['loadData'],
   data(){
     return{
       showSettings:false,
@@ -92,6 +95,9 @@ export default {
     },
     onMenuItemClick(item) {
       console.log(item.id)
+      let res = null;
+      if(item.id === 'Delete') res =  DeleteGroupFromContainer(this.GroupID,this.containerID)
+      this.$emit('loadData',res)
     }
   },
   mounted() {
