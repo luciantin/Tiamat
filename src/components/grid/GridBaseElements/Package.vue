@@ -2,6 +2,7 @@
   <div class="Item">
     <p>{{groupID}}</p>
     <p>{{sectionID}}</p>
+    <p>t</p>
   </div>
 </template>
 
@@ -16,8 +17,12 @@ export default {
 </script>
 
 <style scoped>
+
+
+
 .Item{
-  background-color: #fff;
+
+  background-color: #000;
   margin-top: 3px;
   /*height: 30px;*/
 }

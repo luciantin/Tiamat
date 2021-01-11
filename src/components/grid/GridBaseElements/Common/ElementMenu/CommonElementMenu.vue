@@ -48,9 +48,10 @@ name: "CommonElementMenu",
 </script>
 
 <style scoped lang="scss">
-  .CommonElementMenu{
+  .CommonMenuElement{
     display: flex;
     flex-direction: column;
+    align-items: center;
 
     .TopRow{
       display: flex;

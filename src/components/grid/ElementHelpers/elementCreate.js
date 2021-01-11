@@ -26,7 +26,7 @@ const CreateNewContainer = function (gridID){
 
     let firstCnt = elFac.createContainer({
         groupID:[],
-        pos:{w:1,h:2,x:1,y:1},
+        pos:{w:1,h:1,x:1,y:1},
         innerGrid:{rows:2,cols:2},
         groupPos:{},
         meta:meta
@@ -84,7 +84,7 @@ const CreateNewGroup = function (CntID){
     return new Promise((resolve, reject) => {
 
         store.dispatch('getNewID',{type:'group'}).then(newKey => { // get new group id
-            console.log(newKey)
+            // console.log(newKey)
             store.dispatch('setElement',{ // add new group to DB
                 type:'group',
                 id:newKey,
@@ -125,10 +125,69 @@ const CreateNewGroup = function (CntID){
 }
 
 const CreateNewSection = function (GrpID){
-    let newSectionID;
+    let elFac = new ElementsFactory();
 
+    let meta = elFac.createMeta({
+        title:'New',
+        description:'New',
+        tags: ['New']
+    })
 
-    return newSectionID;
+    let newSection = elFac.createSection({
+        type:'text',
+        itemsID:[],
+        meta:meta
+    })
+
+    return new Promise((resolve, reject) => {
+
+        store.dispatch('getNewID',{type:'section'}).then(newKey => { // get new section id
+            console.log(newKey)
+
+            store.dispatch('setElement',{ // add new group to DB
+                type:'section',
+                id:newKey,
+                val:newSection
+            }).then(a=>{ // update group with new group ID and pos
+                // console.log(a)
+                store.dispatch('getElementByKey',{ // get the latest container data to update it
+                    type:'group',
+                    id:GrpID,
+                    key:'sectionID'
+                }).then(sectionID=>{ // update container with new data
+                    console.log(sectionID)
+
+                    let tmpSectionID = [];
+
+                    if(sectionID === undefined) tmpSectionID.push(newKey);
+                    else{
+                        tmpSectionID = Array.from(sectionID);
+                        tmpSectionID.push(newKey)
+                    }
+
+                    // let tmpCnt = Object.assign({},grp)
+                    // let tmpGroupID = Array.from(grp.groupID);
+                    // let tmpGroupPos = Object.assign({},grp.groupPos);
+                    // tmpGroupID.push(newKey);
+                    // tmpGroupPos[newKey] = {x:0,y:0,w:1,h:1};
+                    //
+                    // tmpCnt.groupID = tmpGroupID;
+                    // tmpCnt.groupPos = tmpGroupPos;
+                    //
+                    store.dispatch('setElementByKey',{ // push new data
+                        type:'group',
+                        id:GrpID,
+                        val:tmpSectionID,
+                        key:'sectionID'
+                    }).then(a=>{
+                        console.log(a)
+                        resolve(newKey); // resolve with newKey
+                    })
+                })
+            })
+        })
+
+    })
 }
 
 

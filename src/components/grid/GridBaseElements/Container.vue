@@ -29,6 +29,7 @@
 
     <CommonElementMenu
         v-else
+        class="CommonElementMenu"
        :elementType="'group'"
        :elementID="containerID"
        :gridType="GridType"
@@ -110,6 +111,7 @@ export default {
         res = DeleteContainer(this.gridID,this.containerID,this.GridType);
       }
       this.$emit('loadData',res)
+      this.showSettings = false;
     }
   },
   mounted() {
@@ -146,11 +148,15 @@ export default {
     grid-gap: 10px;
     padding: 5px 5px 10px 5px;
     overflow: hidden;
-
+    flex-grow: 1;
     &:hover{
       overflow-y: auto;
 
     }
+  }
+
+  .CommonElementMenu{
+    flex-grow: 1;
   }
 
   .ContainerMenuButton{
@@ -199,6 +205,8 @@ export default {
   }
 
   .ContainerFooter{
+    position: relative;
+    bottom: 0;
     display: flex;
     flex-direction: row;
     justify-content: right;

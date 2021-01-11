@@ -16,14 +16,20 @@
       </div>
     </div>
 
+
+    <div v-if="!showSettings"  class="groupItems" >
       <Package
-          v-if="!showSettings"
-          class="groupItems"
           v-for="(id,index) in group.sectionID"
           :groupID="GroupID"
           :sectionID="id"
           :key="index"
       />
+
+      <div class="AddNewButton" @click="onAddNewSection">Add</div>
+
+    </div>
+
+
 
       <CommonElementMenu
           v-else
@@ -46,6 +52,7 @@
 import Package from "@/components/grid/GridBaseElements/Package";
 import CommonElementMenu from "@/components/grid/GridBaseElements/Common/ElementMenu/CommonElementMenu";
 import {DeleteGroupFromContainer} from "@/components/grid/ElementHelpers/elementDelete";
+import {CreateNewSection} from "@/components/grid/ElementHelpers/elementCreate";
 
 export default {
   name: "Group",
@@ -85,6 +92,9 @@ export default {
       })
       this.showTitleInput = false;
     },
+    onAddNewSection(){
+      CreateNewSection(this.GroupID);
+    },
     createLocalMeta(){
       let tmp = Object.assign({},this.meta);
       delete tmp.tags;
@@ -98,6 +108,7 @@ export default {
       let res = null;
       if(item.id === 'Delete') res =  DeleteGroupFromContainer(this.GroupID,this.containerID)
       this.$emit('loadData',res)
+      this.showSettings = false;
     }
   },
   mounted() {
@@ -164,9 +175,20 @@ export default {
     overflow: hidden;
     width: 100%;
     height: 100%;
-
+    flex-grow: 1;
     &:hover{
       overflow-y: auto;
+    }
+    scrollbar-width: thin;
+
+    .AddNewButton{
+      background-color: #D4C324;
+      margin: 5px;
+      cursor: pointer;
+
+      &:hover{
+        background-color: chartreuse;
+      }
     }
   }
 
@@ -174,6 +196,10 @@ export default {
     width: 1.1em;
     height: 1.1em;
     //background-color: chartreuse;
+  }
+
+  .GroupSettings{
+    flex-grow: 1;
   }
 
   .GroupFooter{
