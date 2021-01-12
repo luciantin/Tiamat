@@ -1,13 +1,16 @@
 <template>
   <div class="container"  @mouseleave="onMouseLeaveContainer">
 
-    <div class="containerHeader">
+    <div class="containerHeader" >
       <div class="Left">
         <slot name="ContainerDrag"></slot>
       </div>
-      <div class="Mid">
+      <div class="Mid" v-if="showTitle">
         <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}} {{this.containerID}}</h4>
         <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
+<!--        <div class="ShowTitle">-->
+<!--          <img src="@/assets/img/GridMenu/Show.svg"  @click="onHideTitleClick" />-->
+<!--        </div>-->
       </div>
       <div class="Right">
         <div class="ContainerMenuButton">
@@ -66,6 +69,7 @@ export default {
     return{
       showSettings:false,
       showTitleInput:false,
+      showTitle:true,
       localMeta:{},
     }
   },
@@ -73,6 +77,12 @@ export default {
     onContainerMenuClick(){
       this.showSettings = true;
     },
+    // onHideTitleClick(){
+    //   this.showTitle = false;
+    // },
+    // onContainerHeaderClick(){
+    //   this.showTitle = true;
+    // },
     onMouseLeaveContainer(){
       this.showSettings = false;
     },
@@ -194,6 +204,8 @@ export default {
       grid-area: 1 / 1 / 2 / 2;
     }
     .Mid{
+      display: flex;
+      flex-direction: row;
       justify-self: center;
       grid-area: 1 / 2 / 2 / 3;
     }

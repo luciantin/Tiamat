@@ -49,7 +49,10 @@
             :GroupID="keyGroup"
             :GridType="type"
             :containerID="keyContainer"
+            :sectionPlaceholderPos="makeSectionPlaceholderForGroup(keyContainer,keyGroup)"
+            :showSectionItems="shouldGroupShowSectionItems(keyContainer,keyGroup)"
             @loadData="onStateChange"
+            @onSectionDragDown="onSectionDragDown"
         >
           <template v-slot:GroupDrag>
               <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>

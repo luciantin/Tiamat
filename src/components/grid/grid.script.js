@@ -1,7 +1,7 @@
 
 import Container from "@/components/grid/GridBaseElements/Container";
 import Group from "@/components/grid/GridBaseElements/Group";
-import Package from "@/components/grid/GridBaseElements/Package";
+import Package from "@/components/grid/GridBaseElements/Section";
 import Drag from "@/components/grid/GridBaseElements/Common/Drag";
 import Resize from "@/components/grid/GridBaseElements/Common/Resize";
 import Button from "@/components/common/Button";
@@ -9,6 +9,7 @@ import Button from "@/components/common/Button";
 import {makePlaceholderId,makeDragId,wrapId,unwrapId,makeResizeId } from "@/components/grid/gridID.factory";
 import {isRectangleACollidedWithRectangleB,areRectanglesCollidedWithRectangle} from "@/components/grid/gridCollision.module";
 import {CreateNewStuffspace,CreateNewContainer} from "@/components/grid/ElementHelpers/elementCreate";
+import {RemoveSection,AddSection} from "@/components/grid/ElementHelpers/elementBinding";
 
 
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
@@ -39,6 +40,8 @@ export default {
 
             mouseData:{
                 hasClickedOnResize:false,
+                hasClickedOnSection:false,
+                sectionData:null,
                 hasClicked:false, // was there a click?
                 dragId:'',  // id of drag element
                 resizeId:'',
@@ -47,11 +50,18 @@ export default {
                 groupId:'',  // same but different
                 containerKey:'',  // ID is for HTML, key is for JS
                 groupKey:'',  // ^^
+                sectionId:'',
+                sectionKey:'',
                 mouseUpTarget: '', // == document.getElemetById(mouseData.containerId || -||-.groupId)
                 mouseDownTarget: '', // not used
                 canBeDropped: false, // should mouseUp move container/group
                 prevHoveredOverGroupPlaceholderElement: '',
                 prevHoveredOverContainerKey: '',
+
+                mouseUpSectionKey:-1,
+                mouseUpSectionGroupKey:-1,
+                mouseUpSectionContainerKey:-1,
+                mouseUpSectionPlaceholderIndex:-1, //todo
             },
             tmpContainerData:{
                 tmpContainerPos : {},
@@ -72,6 +82,8 @@ export default {
             CreateNewStuffspace:CreateNewStuffspace,
             CreateNewContainer:CreateNewContainer,
 
+            RemoveSection:RemoveSection,
+            AddSection:AddSection,
         }
     },
     methods:{
@@ -83,11 +95,24 @@ export default {
             }
         },
 
+
         makeGridByRepeat(num){ // used instead of repeat(6,1fr)
             let str = '';
             for(let i = 0; i< num; i++) str += '1fr ';
             return str;
         },
+
+        onSectionDragDown(e){
+            this.mouseData.hasClickedOnSection = true;
+            this.mouseData.sectionData = e;
+            this.mouseData.sectionDragId = this.mouseData.sectionData.event.target.id;
+
+            this.mouseData.sectionId = this.mouseData.sectionDragId.substring(5,this.mouseData.sectionDragId.length);
+            this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.sectionId);
+
+            this.mouseData.mouseDownTarget.style.position = 'absolute';
+        },
+
         onContainerResizeMouseDown(event){
             this.gridElement.style.cursor = 'se-resize';
 
@@ -164,7 +189,57 @@ export default {
         mouseMove(event){ // mouse move over grid handler
             if(this.mouseData.hasClicked) this.handleMouseMoveForDrag(event);
             if(this.mouseData.hasClickedOnResize) this.handleMouseMoveForResize(event);
+            if(this.mouseData.hasClickedOnSection) this.handleMouseMoveForSection(event);
             return;
+        },
+
+        handleMouseMoveForSection(event){
+            // console.log(event)
+            // console.log('SECTION ASDMOVE ')
+
+            let posX = (event.clientX - this.gridData.grid.left);
+            let posY = (event.clientY - this.gridData.grid.top);
+
+            this.mouseData.mouseDownTarget.style.left = (posX + 10) + 'px'; // make container follow the cursor
+            this.mouseData.mouseDownTarget.style.top = (posY + 10) + 'px';  // adds 10px bcz if not then cursor is always above the dragged element
+
+            let hoveredOverElement = event.target;
+
+            let firstHoveredSection = this.firstParentWithTargetClass(hoveredOverElement,'section',this.gridData.gridClass)
+            let firstHoveredGroup   = this.firstParentWithTargetClass(hoveredOverElement,'group',this.gridData.gridClass)
+
+
+            if(firstHoveredGroup === null) {
+                this.mouseData.mouseUpSectionPlaceholderIndex = -1;
+                this.mouseData.mouseUpSectionKey = -1;
+                this.mouseData.mouseUpSectionGroupKey = -1;
+                this.mouseData.mouseUpSectionContainerKey = -1;
+                this.mouseData.mouseUpSectionPlaceholderIndex = -1;
+                return;
+            }
+            if(firstHoveredSection === null) {
+                this.mouseData.mouseUpSectionKey = -1;
+                this.mouseData.mouseUpSectionGroupKey = -1;
+                this.mouseData.mouseUpSectionContainerKey = -1;
+                this.mouseData.mouseUpSectionPlaceholderIndex = -1;
+            }
+            else{
+                let halfOfSectionHeight = firstHoveredSection.clientHeight/2;
+                let isMoreThanHlaf = false;
+                if( posY < halfOfSectionHeight + firstHoveredSection.offsetTop) isMoreThanHlaf = true;
+
+                this.mouseData.mouseUpSectionKey = this.unwrapId(firstHoveredSection.id)[2];
+                this.mouseData.mouseUpSectionPlaceholderIndex = firstHoveredSection.attributes.index.value - Number(isMoreThanHlaf);
+            }
+
+            let unwrapID = this.unwrapId(firstHoveredGroup.id);
+            this.mouseData.mouseUpSectionContainerKey = unwrapID[0];
+            this.mouseData.mouseUpSectionGroupKey = unwrapID[1];
+
+            // console.log(firstHoveredGroup.id)
+            // console.log(this.mouseData.mouseUpSectionGroupKey,this.mouseData.mouseUpSectionKey,this.mouseData.mouseUpSectionPlaceholderIndex)
+
+
         },
 
         handleMouseMoveForResize(event){
@@ -369,7 +444,22 @@ export default {
             this.gridElement.style.cursor = 'default';
             if(this.mouseData.hasClicked) this.handleMouseReleasedForDrag();
             if(this.mouseData.hasClickedOnResize) this.handleMouseReleasedForResize();
+            if(this.mouseData.hasClickedOnSection) this.handleMouseReleasedForSection();
             return;
+        },
+
+        handleMouseReleasedForSection(){
+            this.mouseData.hasClickedOnSection = false;
+            this.mouseData.mouseDownTarget.style.position = 'static';
+
+            if(this.mouseData.mouseUpSectionPlaceholderIndex === -1) return ;
+            // groupID: this.groupID,
+            //     sectionID: this.sectionID
+
+            this.RemoveSection(this.mouseData.sectionData.sectionID,this.mouseData.sectionData.groupID)
+            this.AddSection(this.mouseData.sectionData.sectionID,this.mouseData.mouseUpSectionGroupKey,this.mouseData.mouseUpSectionPlaceholderIndex);
+
+            this.mouseData.mouseUpSectionPlaceholderIndex = -1;
         },
 
         handleMouseReleasedForResize(){
@@ -426,6 +516,15 @@ export default {
             this.mouseData.mouseDownTarget.style.position = 'static';
             this.mouseData.canBeDropped = false;
         },
+        makeSectionPlaceholderForGroup(cnt,grp){
+            if(Number(cnt) === Number(this.mouseData.mouseUpSectionContainerKey) && Number(grp) === Number(this.mouseData.mouseUpSectionGroupKey)) return Number(this.mouseData.mouseUpSectionPlaceholderIndex);
+            else return -1;
+        },
+
+        shouldGroupShowSectionItems(cnt,grp){
+            if(Number(cnt) === Number(this.mouseData.mouseUpSectionContainerKey) && Number(grp) === Number(this.mouseData.mouseUpSectionGroupKey)) return false;
+            else return true;
+        },
 
         // goes up the tree until it finds the first el with targetClass(returns that el) or failConditionClass(returns null)
         firstParentWithTargetClass(el,targetClass,failConditionClass){ // FIXME ponekad baci Uncaught TypeError: el.classList is undefined,,, neznam iznad cega je kada to baci
@@ -434,7 +533,17 @@ export default {
             else return this.firstParentWithTargetClass(el.parentElement,targetClass,failConditionClass);
         },
         moveGroupInsideSameContainer(groupKey,groupPos,cntKey){
-            this.containers[cntKey].groupPos[groupKey] = {... groupPos}; //FIXME delete the prev dict or just overwrite
+            this.containers[cntKey].groupPos[groupKey] = {... groupPos}; //FIXME Doenst update DB nor Vuex
+
+            console.log(groupPos)
+
+            this.$store.dispatch('setSubElementByKey',{
+                type:'container',
+                id:cntKey,
+                key:'groupPos',
+                subKey:groupKey,
+                val:groupPos,
+            })
         },
         moveGroupFromACntToBCnt(groupKey,groupPos,cntAKey,cntBKey){
             let cntAGrpID,cntBGrpID,cntAGrpPos,cntBGrpPos;

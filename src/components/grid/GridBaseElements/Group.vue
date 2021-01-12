@@ -1,5 +1,5 @@
 <template>
-  <div class="group" @mouseleave="onMouseLeaveGroup">
+  <div class="group" @mouseleave="onMouseLeaveGroup" @mouseenter="onMouseEnterGroup" @mouseover="onMouseOverGroup">
 
     <div class="groupHeader">
       <div class="Left">
@@ -18,14 +18,19 @@
 
 
     <div v-if="!showSettings"  class="groupItems" >
-      <Package
-          v-for="(id,index) in group.sectionID"
+      <Section
+          v-for="(id,index) in sections"
           :groupID="GroupID"
           :sectionID="id"
+          :containerID="containerID"
+          :index="index"
           :key="index"
+          :showSectionItems="showSectionItems"
+          @loadData="onSectionLoadData"
+          @onSectionDragDown="onSectionDragDown"
+          @onSectionDragUp="onSectionDragUp"
       />
-
-      <div class="AddNewButton" @click="onAddNewSection">Add</div>
+      <div v-if="showAddButton" class="AddNewButton" @click="onAddNewSection">Add</div>
 
     </div>
 
@@ -49,35 +54,57 @@
 
 <script>
 
-import Package from "@/components/grid/GridBaseElements/Package";
+import Section from "@/components/grid/GridBaseElements/Section";
 import CommonElementMenu from "@/components/grid/GridBaseElements/Common/ElementMenu/CommonElementMenu";
 import {DeleteGroupFromContainer} from "@/components/grid/ElementHelpers/elementDelete";
 import {CreateNewSection} from "@/components/grid/ElementHelpers/elementCreate";
+import {makePlaceholderId} from "@/components/grid/gridID.factory";
 
 export default {
   name: "Group",
-  components: {CommonElementMenu, Package},
+  components: {CommonElementMenu, Section},
   props:{
     containerID:String,
     group:Object,
     meta:String,
     GroupID:String,
     GridType:String,
+    sectionPlaceholderPos:Number,
+    showSectionItems:Boolean,
   },
-  emits:['loadData'],
+  emits:['loadData','onSectionDragUp','onSectionDragDown'],
   data(){
     return{
       showSettings:false,
       showTitleInput:false,
+      showAddButton:false,
+      isSectionBeingDragged:false,
       localMeta:{},
+      makePlaceholderId:makePlaceholderId,
     }
   },
   methods:{
+    onSectionDragDown(e){
+      this.isSectionBeingDragged=true;
+      this.$emit('onSectionDragDown',e);
+    },
+    onSectionDragUp(e){
+      this.isSectionBeingDragged=false;
+      this.$emit('onSectionDragUp',e);
+    },
+    onSectionLoadData(p){
+      this.$emit('loadData',p)
+    },
     onGroupMenuClick(){
       this.showSettings = true;
     },
     onMouseLeaveGroup(){
       this.showSettings = false;
+      this.showAddButton = false;
+      this.isSectionBeingDragged = false;
+    },
+    onMouseEnterGroup(){
+      this.showAddButton = true;
     },
     onTitleClick(){
       this.showTitleInput = true;
@@ -103,12 +130,27 @@ export default {
         ...tmp
       }
     },
+    onMouseOverGroup(){
+      // if(this.isSectionBeingDragged) console.log('TESTTESTESTESTETS')
+    },
     onMenuItemClick(item) {
       console.log(item.id)
       let res = null;
       if(item.id === 'Delete') res =  DeleteGroupFromContainer(this.GroupID,this.containerID)
       this.$emit('loadData',res)
       this.showSettings = false;
+    }
+  },
+  computed:{
+    sections: function (){
+      let res;
+      if(this.sectionPlaceholderPos < 0) res = this.group.sectionID;
+      else{
+      res = Array.from(this.group.sectionID);
+      res.splice(this.sectionPlaceholderPos,0,-1)
+      }
+      // else return
+      return res;
     }
   },
   mounted() {

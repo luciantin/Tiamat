@@ -8,7 +8,7 @@ import {store} from "@/store/store";
 
 
 const DeleteGroupFromContainer = function (groupID,containerID){
-    console.log(groupID,containerID)
+    // console.log(groupID,containerID)
     let deleteGrpArrID = new Promise((resolve, reject) =>{
         store.dispatch(
             'getElementByKey', {
@@ -46,7 +46,7 @@ const DeleteGroupFromContainer = function (groupID,containerID){
 
 const DeleteContainer = function (gridID,cntID,GridType){
 
-    console.log(gridID,cntID);
+    // console.log(gridID,cntID);
 
     let delFromGrid = new Promise((resolve => {
         return store.dispatch('getElementByKey',{
@@ -55,9 +55,9 @@ const DeleteContainer = function (gridID,cntID,GridType){
             key:'containerID'
         }).then((resp)=>{
             let tmpCntID = Array.from(resp);
-            console.log(tmpCntID)
-            console.log(cntID)
-            console.log(tmpCntID.splice(tmpCntID.indexOf(Number(cntID)),1))
+            // console.log(tmpCntID)
+            // console.log(cntID)
+            // console.log(tmpCntID.splice(tmpCntID.indexOf(Number(cntID)),1))
 
             store.dispatch('setElementByKey',{
                 type:GridType,
@@ -73,8 +73,36 @@ const DeleteContainer = function (gridID,cntID,GridType){
     return delFromGrid;
 }
 
+const DeleteSection = function (groupID,sectionID){
+
+    let delFromGroup = new Promise((resolve => {
+        return store.dispatch('getElementByKey',{
+            type:'group',
+            id:groupID,
+            key:'sectionID'
+        }).then((resp)=>{
+            let tmpSecID = Array.from(resp);
+            // console.log(tmpSecID)
+            // console.log(groupID,sectionID)
+            // console.log(tmpSecID.splice(tmpSecID.indexOf(Number(sectionID)),1))
+            tmpSecID.splice(tmpSecID.indexOf(Number(sectionID)),1)
+            store.dispatch('setElementByKey',{
+                type:'group',
+                id:groupID,
+                key:'sectionID',
+                val:tmpSecID
+            }).then(()=>{
+                resolve()
+            })
+        })
+    }))
+    return delFromGroup;
+
+}
+
 
 export {
     DeleteGroupFromContainer,
-    DeleteContainer
+    DeleteContainer,
+    DeleteSection
 }

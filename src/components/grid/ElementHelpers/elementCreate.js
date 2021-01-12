@@ -21,7 +21,7 @@ const CreateNewContainer = function (gridID){
     let meta = elFac.createMeta({
         title:'New',
         description:'New',
-        tags: ['New']
+        tags: ['Container']
     })
 
     let firstCnt = elFac.createContainer({
@@ -73,7 +73,7 @@ const CreateNewGroup = function (CntID){
     let meta = elFac.createMeta({
         title:'New',
         description:'New',
-        tags: ['New']
+        tags: ['Group']
     })
 
     let newGroup = elFac.createGroup({
@@ -130,7 +130,7 @@ const CreateNewSection = function (GrpID){
     let meta = elFac.createMeta({
         title:'New',
         description:'New',
-        tags: ['New']
+        tags: ['Section']
     })
 
     let newSection = elFac.createSection({
@@ -191,10 +191,69 @@ const CreateNewSection = function (GrpID){
 }
 
 
+const CreateNewItem = function (SecID){
+    let elFac = new ElementsFactory();
+
+    let meta = elFac.createMeta({
+        title:'New',
+        description:'New',
+        tags: ['Item']
+    })
+
+    let newItem = elFac.createItem({
+        type:'text',
+        content:'test Halo? test',
+        meta:meta
+    })
+
+    return new Promise((resolve, reject) => {
+
+        store.dispatch('getNewID',{type:'item'}).then(newKey => { // get new section id
+            console.log(newKey)
+
+            store.dispatch('setElement',{ // add new group to DB
+                type:'item',
+                id:newKey,
+                val:newItem
+            }).then(a=>{ // update group with new group ID and pos
+                // console.log(a)
+                store.dispatch('getElementByKey',{ // get the latest container data to update it
+                    type:'section',
+                    id:SecID,
+                    key:'itemID'
+                }).then(itemID=>{ // update container with new data
+                    // console.log(sectionID)
+
+                    let tmpItemID = [];
+
+                    if(itemID === undefined) tmpItemID.push(newKey);
+                    else{
+                        tmpItemID = Array.from(itemID);
+                        tmpItemID.push(newKey)
+                    }
+
+                    store.dispatch('setElementByKey',{ // push new data
+                        type:'section',
+                        id:SecID,
+                        val:tmpItemID,
+                        key:'itemID'
+                    }).then(a=>{
+                        // console.log(a)
+                        resolve(newKey); // resolve with newKey
+                    })
+                })
+            })
+        })
+
+    })
+};
+
+
 export {
     CreateNewContainer,
     CreateNewDashboard,
     CreateNewGroup,
     CreateNewSection,
-    CreateNewStuffspace
+    CreateNewStuffspace,
+    CreateNewItem
 }

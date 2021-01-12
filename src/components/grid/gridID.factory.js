@@ -16,13 +16,13 @@
 function makeDragId(lst){
     // console.trace()
     // console.log(lst)
-    return 'drag'+'+'+ this.wrapId(lst);
+    return 'drag'+'+'+ wrapId(lst);
 };
 function makeResizeId(lst){
-    return 'rsiz'+'+'+ this.wrapId(lst);
+    return 'rsiz'+'+'+ wrapId(lst);
 };
 function makePlaceholderId(lst){
-    return 'placeholder' + '+' + this.wrapId(lst);
+    return 'placeholder' + '+' + wrapId(lst);
 };
 function wrapId(lst){ // make id from a list
     let res = '', e;
