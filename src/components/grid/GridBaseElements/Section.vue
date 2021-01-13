@@ -13,7 +13,15 @@
         <p>{{groupID}} || {{sectionID}}</p>
       </div>
       <div class="Content">
-        <ItemFactory v-if="showSectionItems" v-for="(item,index) in localSectionItemID" :itemID="item" />
+        <ItemFactory
+            v-if="showSectionItems"
+            v-for="(item,index) in localSectionItemID"
+            :itemID="item"
+            :sectionID="sectionID"
+            :groupID="groupID"
+            :gridType="gridType"
+            :containerID="containerID"
+        />
       </div>
       <div class="Footer">
 
@@ -50,8 +58,9 @@ export default {
     sectionID:String,
     groupID:String,
     containerID:String,
+    gridType:String,
     index:Number,
-    showSectionItems:Boolean
+    showSectionItems:Boolean,
   },
   emits:['loadData','onSectionDragDown','onSectionDragUp'],
   data(){
@@ -77,7 +86,6 @@ export default {
           type:'section',
           id:this.sectionID,
         }).then(sec=>{
-          console.log(sec)
           if(sec.itemID === undefined) this.localSectionItemID = [];
           else this.localSectionItemID = Array.from(sec.itemID);
         })

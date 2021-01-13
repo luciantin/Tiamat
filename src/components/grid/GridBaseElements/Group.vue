@@ -26,6 +26,7 @@
           :index="index"
           :key="index"
           :showSectionItems="showSectionItems"
+          :gridType="GridType"
           @loadData="onSectionLoadData"
           @onSectionDragDown="onSectionDragDown"
           @onSectionDragUp="onSectionDragUp"

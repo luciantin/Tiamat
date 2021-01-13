@@ -90,12 +90,10 @@ const CreateNewGroup = function (CntID){
                 id:newKey,
                 val:newGroup
             }).then(a=>{ // update container with new group ID and pos
-            console.log(a)
                 store.dispatch('getElement',{ // get the latest container data to update it
                     type:'container',
                     id:CntID
                 }).then(cnt=>{ // update container with new data
-                    console.log(cnt)
                     let tmpCnt = Object.assign({},cnt)
                     let tmpGroupID = Array.from(cnt.groupID);
                     let tmpGroupPos = Object.assign({},cnt.groupPos);
@@ -110,7 +108,6 @@ const CreateNewGroup = function (CntID){
                         id:CntID,
                         val:tmpCnt
                     }).then(a=>{
-                        console.log(a)
                         resolve(newKey); // resolve with newKey
                     })
                 })
@@ -142,7 +139,6 @@ const CreateNewSection = function (GrpID){
     return new Promise((resolve, reject) => {
 
         store.dispatch('getNewID',{type:'section'}).then(newKey => { // get new section id
-            console.log(newKey)
 
             store.dispatch('setElement',{ // add new group to DB
                 type:'section',
@@ -155,7 +151,6 @@ const CreateNewSection = function (GrpID){
                     id:GrpID,
                     key:'sectionID'
                 }).then(sectionID=>{ // update container with new data
-                    console.log(sectionID)
 
                     let tmpSectionID = [];
 
@@ -180,7 +175,6 @@ const CreateNewSection = function (GrpID){
                         val:tmpSectionID,
                         key:'sectionID'
                     }).then(a=>{
-                        console.log(a)
                         resolve(newKey); // resolve with newKey
                     })
                 })
@@ -209,7 +203,6 @@ const CreateNewItem = function (SecID){
     return new Promise((resolve, reject) => {
 
         store.dispatch('getNewID',{type:'item'}).then(newKey => { // get new section id
-            console.log(newKey)
 
             store.dispatch('setElement',{ // add new group to DB
                 type:'item',

@@ -535,7 +535,7 @@ export default {
         moveGroupInsideSameContainer(groupKey,groupPos,cntKey){
             this.containers[cntKey].groupPos[groupKey] = {... groupPos}; //FIXME Doenst update DB nor Vuex
 
-            console.log(groupPos)
+            // console.log(groupPos)
 
             this.$store.dispatch('setSubElementByKey',{
                 type:'container',
@@ -638,7 +638,7 @@ export default {
         },
 
         onStateChange(resp){ // if a child changes its state, it should return a promise on which the state changes
-            console.log(resp)
+            // console.log(resp)
             resp.then(()=>{this.loadData();})
         },
 
