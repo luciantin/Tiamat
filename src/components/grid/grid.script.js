@@ -38,6 +38,9 @@ export default {
             ID:0,
             gridClass:'asd',
 
+            showModal:false,
+            modalID:'GridModal',
+
             mouseData:{
                 hasClickedOnResize:false,
                 hasClickedOnSection:false,
@@ -87,6 +90,9 @@ export default {
         }
     },
     methods:{
+        onShowModal(resp){
+            this.showModal = resp.showModal;
+        },
         // refreshTmpContainerPosDic() creates an array of container pos, easier to do areRectanglesCollidedWithRectangle() with just a list/dict
         refreshTmpContainerPosDic(){
             this.tmpContainerData.tmpContainerPos = {};
@@ -283,6 +289,7 @@ export default {
             }
 
             if(this.mouseData.type == 'group'){
+                // console.log('asdasdasd')
                 // console.log('group resize...');
                 // console.log(this.containers[this.mouseData.containerKey],this.mouseData.containerKey,this.containers[this.mouseData.containerKey].groupPos)
                 // console.log(this.containers[this.mouseData.containerKey].groupPos[this.mouseData.groupKey])
@@ -377,12 +384,19 @@ export default {
             }
             else if(this.mouseData.type == 'group'){  // if the user is dragging a group element,
                 let hoveredOverElement = event.target;
+                // console.log('asdasdasd')
+
                 // console.log(hoveredOverElement)                                         // DONJI class name treba biti isti kao glavna klasa kontejnera
                 let firstHoveredContainer = this.firstParentWithTargetClass(hoveredOverElement,'container',this.gridData.gridClass) // CLASS OF Container element
+                // console.log('asdasdasd')
+
                 if(firstHoveredContainer === null){
+                    // console.log('asdasdasd')
+
                     this.mouseData.prevHoveredOverGroupPlaceholderElement.style.display = 'none';
                     return;
                 }
+
                 let firstHoveredContainerKey = this.unwrapId(firstHoveredContainer.id)[0];
                 let containerSize = firstHoveredContainer.getBoundingClientRect(); // to ccalculate relative mouse pos and sectors inside the container
                 this.mouseData.prevHoveredOverContainerKey = firstHoveredContainerKey;
@@ -462,7 +476,8 @@ export default {
             this.mouseData.mouseUpSectionPlaceholderIndex = -1;
         },
 
-        handleMouseReleasedForResize(){
+        handleMouseReleasedForResize(){ // OK
+
             // flag reset
             this.mouseData.hasClickedOnResize = false;
 

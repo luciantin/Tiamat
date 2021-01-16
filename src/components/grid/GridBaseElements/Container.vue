@@ -63,8 +63,9 @@ export default {
     containerID:Number,
     GridType:String,
     gridID:String,
+    modalID:String,
   },
-  emits:['loadData'],
+  emits:['loadData','showModal'],
   data(){
     return{
       showSettings:false,
@@ -118,6 +119,7 @@ export default {
         res = CreateNewGroup(this.containerID);
       }
       if(item.id === 'Delete'){
+        console.log('Delete')
         res = DeleteContainer(this.gridID,this.containerID,this.GridType);
       }
       this.$emit('loadData',res)

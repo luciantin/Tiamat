@@ -1,4 +1,29 @@
 <template>
+<!--<div id="GridMain">-->
+
+  <div :id="modalID" v-if="showModal">
+    <h1>ttestsetsetseet</h1>
+  </div>
+
+  <div id="GridMenu">
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+    <p>Menu Item</p>
+  </div>
+
+  <!--  Button to add stuff -->
+  <Button text="+" @mousedown="addGrid" class="actionButton"/>
+<!--  -->
+<!--  -->
+<!--  -->
+
+
   <div
       :id="this.ID"
       v-bind:class="'dashboard'"
@@ -26,7 +51,9 @@
         :gridID="String(ID)"
         :meta="container.meta"
         :GridType="type"
+        :modalID="modalID"
         @loadData="onStateChange"
+        @showModal="onShowModal"
     >
 
       <template v-slot:ContainerDrag>
@@ -51,8 +78,10 @@
             :containerID="keyContainer"
             :sectionPlaceholderPos="makeSectionPlaceholderForGroup(keyContainer,keyGroup)"
             :showSectionItems="shouldGroupShowSectionItems(keyContainer,keyGroup)"
+            :modalID="modalID"
             @loadData="onStateChange"
             @onSectionDragDown="onSectionDragDown"
+            @showModal="onShowModal"
         >
           <template v-slot:GroupDrag>
               <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>
@@ -92,11 +121,7 @@
     > <p> Hi, I'm a placeholder for dashboard</p></div>
   </div>
 
-
-
-  <!--  Button to add stuff -->
-  <Button text="+" @mousedown="addGrid" class="actionButton"/>
-
+<!--</div>-->
 
 </template>
 

@@ -57,8 +57,8 @@ const DeleteContainer = function (gridID,cntID,GridType){
             let tmpCntID = Array.from(resp);
             // console.log(tmpCntID)
             // console.log(cntID)
-            // console.log(tmpCntID.splice(tmpCntID.indexOf(Number(cntID)),1))
-
+            // console.log()
+            tmpCntID.splice(tmpCntID.indexOf(Number(cntID)),1)
             store.dispatch('setElementByKey',{
                 type:GridType,
                 id:gridID,

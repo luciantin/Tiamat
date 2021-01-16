@@ -30,8 +30,11 @@
     </div>
 
     <div class="right">
-      <div  class="actionIcon" @click="onAddNewItem">
+      <div  class="actionIcon" @click="onEditSection">
         <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
+      </div>
+      <div  class="actionIcon" @click="onAddNewItem">
+        <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
       </div>
       <div  class="actionIcon" @click="onDeleteSection">
         <img class="img" src="@/assets/img/GridMenu/Delete.svg"/>
@@ -43,6 +46,15 @@
     <div class="sectionPlaceholder" :id="makePlaceholderId([containerID,groupID])">Placeholder</div>
   </div>
 
+  <Teleport v-if="showEdit" :to="`#${modalID}`" >
+    <div v-click-outside="onClickOutsideOfModal" >
+      <h2>Twegwegwesd wrge wgrgw rg er</h2>
+      <KrakenEditor
+        :itemID="localSectionItemID"
+      />
+    </div>
+  </Teleport>
+
 </template>
 
 <script>
@@ -50,10 +62,11 @@ import {DeleteSection} from "@/components/grid/ElementHelpers/elementDelete";
 import ItemFactory from "@/components/grid/Factory/ItemFactory";
 import {CreateNewItem} from "@/components/grid/ElementHelpers/elementCreate";
 import {makeDragId,wrapId,makePlaceholderId} from "@/components/grid/gridID.factory";
+import KrakenEditor from "@/components/grid/GridBaseElements/Common/KrakenEditor";
 
 export default {
   name: "Section",
-  components: {ItemFactory},
+  components: {KrakenEditor, ItemFactory},
   props:{
     sectionID:String,
     groupID:String,
@@ -61,8 +74,9 @@ export default {
     gridType:String,
     index:Number,
     showSectionItems:Boolean,
+    modalID:String,
   },
-  emits:['loadData','onSectionDragDown','onSectionDragUp'],
+  emits:['loadData','onSectionDragDown','onSectionDragUp','showModal'],
   data(){
     return{
       localSectionItemID : null,
@@ -70,12 +84,29 @@ export default {
       localSectionType : null,
       makeDragId:makeDragId,
       wrapId:wrapId,
-      makePlaceholderId:makePlaceholderId
+      makePlaceholderId:makePlaceholderId,
+      showEdit:false,
+      showModal:false,
+      modalClickDebounce:false,
     }
   },
   methods:{
+    onClickOutsideOfModal(){
+      if(this.modalClickDebounce) return;
+      this.onShowModal({showModal:false})
+      this.showEdit = false
+    },
+    onShowModal(resp) {
+      this.$emit('showModal',resp)
+    },
     onDeleteSection(){
       DeleteSection(this.groupID,this.sectionID);
+    },
+    onEditSection(){
+      this.modalClickDebounce = true;
+      setTimeout(()=>{this.modalClickDebounce=false;},100)
+      this.onShowModal({showModal:true})
+      this.showEdit = true;
     },
     onAddNewItem(){
       // console.log(this.sectionID)
@@ -114,6 +145,10 @@ export default {
         else this.localSectionItemID = Array.from(sec.itemID);
       })
     }
+
+    // setTimeout(()=>{
+    //   this.onShowModal({showModal:true})
+    // },5)
   },
 
 }
@@ -123,7 +158,7 @@ export default {
 
 .section{
   //background-color: #000;
-  margin-top: 3px;
+  //margin-top: 3px;
   margin-right: 3px;
   margin-left: 3px;
   display: flex;

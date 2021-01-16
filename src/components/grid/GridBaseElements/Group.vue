@@ -27,9 +27,11 @@
           :key="index"
           :showSectionItems="showSectionItems"
           :gridType="GridType"
+          :modalID="modalID"
           @loadData="onSectionLoadData"
           @onSectionDragDown="onSectionDragDown"
           @onSectionDragUp="onSectionDragUp"
+          @showModal="onShowModal"
       />
       <div v-if="showAddButton" class="AddNewButton" @click="onAddNewSection">Add</div>
 
@@ -72,8 +74,9 @@ export default {
     GridType:String,
     sectionPlaceholderPos:Number,
     showSectionItems:Boolean,
+    modalID:String,
   },
-  emits:['loadData','onSectionDragUp','onSectionDragDown'],
+  emits:['loadData','onSectionDragUp','onSectionDragDown','showModal'],
   data(){
     return{
       showSettings:false,
@@ -85,6 +88,9 @@ export default {
     }
   },
   methods:{
+    onShowModal(resp) {
+      this.$emit('showModal',resp)
+    },
     onSectionDragDown(e){
       this.isSectionBeingDragged=true;
       this.$emit('onSectionDragDown',e);
