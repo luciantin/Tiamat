@@ -1,10 +1,14 @@
 <template>
-
+  <p>table</p>
 </template>
 
 <script>
 export default {
-name: "GridTableItem"
+  name: "Table",
+  props:{
+    content:String,
+  }
+
 }
 </script>
 

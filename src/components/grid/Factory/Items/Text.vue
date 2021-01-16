@@ -1,10 +1,13 @@
 <template>
-
+  <p>text {{content}}</p>
 </template>
 
 <script>
 export default {
-name: "GridTextItem"
+name: "Text",
+  props:{
+    content:String,
+  }
 }
 </script>
 

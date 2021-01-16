@@ -30,14 +30,30 @@
     </div>
 
     <div class="right">
-      <div  class="actionIcon" @click="onEditSection">
-        <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
+      <div v-if="!showAddMenu">
+        <div  class="actionIcon" @click="onEditSection">
+          <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
+        </div>
+        <div  class="actionIcon" @click="onAddNewItem">
+          <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
+        </div>
+        <div  class="actionIcon" @click="onDeleteSection">
+          <img class="img" src="@/assets/img/GridMenu/Delete.svg"/>
+        </div>
       </div>
-      <div  class="actionIcon" @click="onAddNewItem">
-        <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
-      </div>
-      <div  class="actionIcon" @click="onDeleteSection">
-        <img class="img" src="@/assets/img/GridMenu/Delete.svg"/>
+      <div v-else @mouseleave="onMouseLeaveAddMenu">
+        <Tooltip v-for="(item,index) in sectionAddMenuItems" :key="index">
+          <template v-slot:content>
+            <div  class="actionIcon" @click="onSectionAddMenuClick(item,index)">
+              <img class="img" :src="item.src"/>
+            </div>
+          </template>
+          <template v-slot:tooltip>
+            <p>{{item.tip}}</p>
+          </template>
+        </Tooltip>
+
+
       </div>
     </div>
   </div>
@@ -51,6 +67,8 @@
       <h2>Twegwegwesd wrge wgrgw rg er</h2>
       <KrakenEditor
         :itemID="localSectionItemID"
+        :sectionID="sectionID"
+        @loadData="onKrakenEditorLoadData"
       />
     </div>
   </Teleport>
@@ -63,10 +81,12 @@ import ItemFactory from "@/components/grid/Factory/ItemFactory";
 import {CreateNewItem} from "@/components/grid/ElementHelpers/elementCreate";
 import {makeDragId,wrapId,makePlaceholderId} from "@/components/grid/gridID.factory";
 import KrakenEditor from "@/components/grid/GridBaseElements/Common/KrakenEditor";
+import IconTooltip from "@/components/common/IconTooltip";
+import Tooltip from "@/components/common/Tooltip";
 
 export default {
   name: "Section",
-  components: {KrakenEditor, ItemFactory},
+  components: {Tooltip, IconTooltip, KrakenEditor, ItemFactory},
   props:{
     sectionID:String,
     groupID:String,
@@ -88,9 +108,26 @@ export default {
       showEdit:false,
       showModal:false,
       modalClickDebounce:false,
+      showAddMenu:false,
+      sectionAddMenuItems:[
+        {type:'text',tip:'Add Text',src:require('@/assets/img/GridMenu/Add.svg')},
+        {type:'list',tip:'Add List',src:require('@/assets/img/GridMenu/List.svg')},
+        {type:'image',tip:'Add Image',src:require('@/assets/img/GridMenu/Image.svg')},
+        {type:'link',tip:'Add Link',src:require('@/assets/img/GridMenu/Info.svg')},
+        {type:'table',tip:'Add Table',src:require('@/assets/img/GridMenu/Table.svg')},
+        {type:'file',tip:'Add File',src:require('@/assets/img/GridMenu/File.svg')},
+        {type:'timer',tip:'Add Timer',src:require('@/assets/img/GridMenu/Calendar.svg')},
+      ]
     }
   },
   methods:{
+    onSectionAddMenuClick(item,index){
+      console.log(item,index)
+      this.addNewItem(item.type)
+    },
+    onKrakenEditorLoadData(p){
+      this.$emit('loadData',p)
+    },
     onClickOutsideOfModal(){
       if(this.modalClickDebounce) return;
       this.onShowModal({showModal:false})
@@ -109,8 +146,11 @@ export default {
       this.showEdit = true;
     },
     onAddNewItem(){
+     this.showAddMenu = true;
+    },
+    addNewItem(type){
       // console.log(this.sectionID)
-      let prms = CreateNewItem(this.sectionID);
+      let prms = CreateNewItem(this.sectionID,type);
       this.$emit('loadData',prms);
       prms.then(a=>{
         this.$store.dispatch('getElement',{
@@ -133,6 +173,9 @@ export default {
     onDragUp(){
       this.$emit('onSectionDragUp')
     },
+    onMouseLeaveAddMenu(){
+      this.showAddMenu = false;
+    }
   },
   beforeMount() {
     if(this.sectionID >= 0 && this.sectionID !== null){
@@ -201,6 +244,8 @@ export default {
 
   .actionIcon{
     cursor: pointer;
+    width:16px ;
+    height: 16px;
   }
 
 }

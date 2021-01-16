@@ -1,6 +1,6 @@
 <template>
   <div v-if="itemData !== null">
-    {{itemData.content}}
+    {{itemData.type}}
   </div>
 </template>
 

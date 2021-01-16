@@ -185,7 +185,7 @@ const CreateNewSection = function (GrpID){
 }
 
 
-const CreateNewItem = function (SecID){
+const CreateNewItem = function (SecID,type){
     let elFac = new ElementsFactory();
 
     let meta = elFac.createMeta({
@@ -195,8 +195,8 @@ const CreateNewItem = function (SecID){
     })
 
     let newItem = elFac.createItem({
-        type:'text',
-        content:'test Halo? test',
+        type: type,
+        content:'test',
         meta:meta
     })
 
