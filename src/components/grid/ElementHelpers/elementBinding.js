@@ -2,6 +2,9 @@
 import {store} from "@/store/store";
 
 
+
+
+
 const RemoveSection = function (secID,groupID){
     // console.log('Section removed')
     // console.log(secID,groupID)

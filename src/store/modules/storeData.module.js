@@ -98,6 +98,8 @@ const actions = {
         }
     },
     setElementByKey(context,{type,id,val,key}){
+        // console.log(type,id,val,key,context)
+
         context.commit('setElementByKey',{type,id,val,key})
         dbHandler.qElement.setKey(type,id,key,val);
     },

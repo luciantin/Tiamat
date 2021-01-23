@@ -1,8 +1,8 @@
 
-export function createSection({type,itemsID,meta}){
+export function createSection({type,itemID,meta}){
     return{
         'type':type,
-        'itemsID':itemsID,
+        'itemID':itemID,
         'meta':meta,
     }
 }

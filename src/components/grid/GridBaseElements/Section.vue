@@ -1,59 +1,59 @@
 <template>
-  <div v-if="sectionID >= 0" class="section" :id="wrapId([containerID,groupID,sectionID])" :index="index">
-    <div class="left">
-
-    </div>
-
-    <div class="mid">
-
-      <div class="Header">
-        <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">
-          <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>
-        </div>
-        <p>{{groupID}} || {{sectionID}}</p>
-      </div>
-      <div class="Content">
-        <ItemFactory
-            v-if="showSectionItems"
-            v-for="(item,index) in localSectionItemID"
-            :itemID="item"
-            :sectionID="sectionID"
-            :groupID="groupID"
-            :gridType="gridType"
-            :containerID="containerID"
-        />
-      </div>
-      <div class="Footer">
+  <div  v-if="sectionID >= 0" class="section" :id="wrapId([containerID,groupID,sectionID])" :index="index">
+    <div class="sectionContent">
+      <div class="left">
 
       </div>
+      <div class="mid">
+        <div class="Header">
+          <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">
+            <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>
 
-    </div>
-
-    <div class="right">
-      <div v-if="!showAddMenu">
-        <div  class="actionIcon" @click="onEditSection">
-          <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
+          </div>
+          <p> {{groupID}} || {{sectionID}} {{localSectionItemID}}</p>
         </div>
-        <div  class="actionIcon" @click="onAddNewItem">
-          <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
+        <div class="Content">
+          <ItemFactory
+              v-if="showSectionItems"
+              v-for="(item,index) in localSectionItemID"
+              :itemID="item"
+              :sectionID="sectionID"
+              :groupID="groupID"
+              :gridType="gridType"
+              :containerID="containerID"
+          />
         </div>
-        <div  class="actionIcon" @click="onDeleteSection">
-          <img class="img" src="@/assets/img/GridMenu/Delete.svg"/>
+        <div class="Footer">
         </div>
       </div>
-      <div v-else @mouseleave="onMouseLeaveAddMenu">
-        <Tooltip v-for="(item,index) in sectionAddMenuItems" :key="index">
-          <template v-slot:content>
-            <div  class="actionIcon" @click="onSectionAddMenuClick(item,index)">
-              <img class="img" :src="item.src"/>
-            </div>
-          </template>
-          <template v-slot:tooltip>
-            <p>{{item.tip}}</p>
-          </template>
-        </Tooltip>
 
 
+      <div class="right">
+        <div v-if="!showAddMenu">
+          <div  class="actionIcon" @click="onEditSection">
+            <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
+          </div>
+          <div  class="actionIcon" @click="onAddNewItem">
+            <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
+          </div>
+          <div  class="actionIcon" @click="onDeleteSection">
+            <img class="img" src="@/assets/img/GridMenu/Delete.svg"/>
+          </div>
+        </div>
+        <div v-else @mouseleave="onMouseLeaveAddMenu">
+          <Tooltip v-for="(item,index) in sectionAddMenuItems" :key="index">
+            <template v-slot:content>
+              <div  class="actionIcon" @click="onSectionAddMenuClick(item,index)">
+                <img class="img" :src="item.src"/>
+              </div>
+            </template>
+            <template v-slot:tooltip>
+              <p>{{item.tip}}</p>
+            </template>
+          </Tooltip>
+
+
+        </div>
       </div>
     </div>
   </div>
@@ -113,6 +113,7 @@ export default {
         {type:'text',tip:'Add Text',src:require('@/assets/img/GridMenu/Add.svg')},
         {type:'list',tip:'Add List',src:require('@/assets/img/GridMenu/List.svg')},
         {type:'image',tip:'Add Image',src:require('@/assets/img/GridMenu/Image.svg')},
+        {type:'checkbox',tip:'Add Image',src:require('@/assets/img/GridMenu/TickSquare.svg')},
         {type:'link',tip:'Add Link',src:require('@/assets/img/GridMenu/Info.svg')},
         {type:'table',tip:'Add Table',src:require('@/assets/img/GridMenu/Table.svg')},
         {type:'file',tip:'Add File',src:require('@/assets/img/GridMenu/File.svg')},
@@ -200,6 +201,10 @@ export default {
 <style scoped lang="scss">
 
 .section{
+  padding: 5px;
+}
+
+.sectionContent{
   //background-color: #000;
   //margin-top: 3px;
   margin-right: 3px;
@@ -240,6 +245,12 @@ export default {
     //filter: invert(0%) sepia(83%) saturate(7500%) hue-rotate(215deg) brightness(112%) contrast(115%);
     width:16px ;
     pointer-events: none;
+    fill: black;
+  }
+  svg{
+    width: 16px;
+    height: 16px;
+    //viewBox:"0 0 512 512";
   }
 
   .actionIcon{

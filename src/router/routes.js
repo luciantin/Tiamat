@@ -57,7 +57,7 @@ export const routes = [
   },
   {
     path: '/stuffspace',
-    name: 'Stuffspace',
+    name: 'StuffSpace',
     component: () => import('../views/StuffSpace.vue'),
     meta:{
       auth:true,

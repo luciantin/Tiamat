@@ -32,15 +32,21 @@ firebase.auth().onAuthStateChanged((user)=>{
     if(user){
         store.dispatch('initDB',{uid:user.uid})
         store.commit('authUser',)
+
+        if(router.currentRoute.value.path === '/login') { // ako je na login stranici onda ga prebaci na prvi dash
+            store.dispatch('getUser').then(a=>{
+                router.push({path:'/dashboard',query:{id:a.dashboardID[0]}}); // open dashboard component with first dash id
+            })
+        }
         // handle smthing
         // console.log(store)
     }
     else{
         store.commit('unauthUser',)
         // router.push({path:'/'})
-        console.log(router.currentRoute)
-        if(router.currentRoute.value.path === '/dashboard' || router.currentRoute.value.path === '/taskspace') router.push({path:'/'})
-        console.log()
+        // console.log(router.currentRoute)
+        if(router.currentRoute.value.path === '/dashboard' || router.currentRoute.value.path === '/stuffspace') router.push({path:'/'})
+        // console.log()
         // if(router.currentRoute.path)
     }
 })

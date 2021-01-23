@@ -6,7 +6,7 @@
         <slot name="ContainerDrag"></slot>
       </div>
       <div class="Mid" v-if="showTitle">
-        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}} {{this.containerID}}</h4>
+        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
         <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
 <!--        <div class="ShowTitle">-->
 <!--          <img src="@/assets/img/GridMenu/Show.svg"  @click="onHideTitleClick" />-->

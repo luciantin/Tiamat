@@ -53,6 +53,7 @@ import Button from "@/components/common/Button";
 import InputField from "@/components/common/InputField";
 import {UserFactory} from "@/factory/userFactory/userFactory";
 import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
+import {CreateNewDashboard} from "@/components/grid/ElementHelpers/elementCreate";
 
 export default {
   components: {InputField, Button},
@@ -70,78 +71,77 @@ export default {
       this.$store.dispatch('signup',{
         email:this.email,
         password:this.password
-      }).then(()=>{ // signup succ., init db data for new user
-        let userData = new UserFactory().createUser(this.username,[0]);
+      }).then(()=>{ // signup succ., init db data for new user\
         let elFac = new ElementsFactory();
 
-        let stfID = [0];
-        let cntID = [0];
+
         let meta = elFac.createMeta({
-          title:'Dash',
-          description:'new Dash',
-          tags: ['Dash']
+          title:'New',
+          description:'New',
+          tags: ['New']
         })
-        let GridData = elFac.createGridData({
+
+        let gridData = elFac.createGridData({
           gridID : 'newDash',
           gridClass: 'dashboard',
           gridColNum:5,
           gridRowNum:5
         })
 
-        let firstDash = elFac.createDashboard({stuffspaceID:stfID,containerID:cntID,meta:meta,gridData:GridData});
-        let firstCnt = elFac.createContainer({
-          groupID:[0,1,2],
-          pos:{w:1,h:1,x:1,y:1},
-          innerGrid:{rows:2,cols:2},
-          groupPos:{
-            '0':{w:1,h:1,x:1,y:1},
-            '1':{w:1,h:1,x:2,y:1},
-            '2':{w:1,h:1,x:2,y:2},
-          },
-          meta:meta
-        })
-        let grpOne = elFac.createGroup({
-          sectionID:[0],
-          meta:meta
-        })
-        let grpTwo = elFac.createGroup({
-          sectionID:[1],
-          meta:meta
-        })
-        let grpThree = elFac.createGroup({
-          sectionID:[2],
+        let dashboard = elFac.createDashboard({stuffspaceID:[],containerID:[],meta:meta,gridData:gridData});
+
+        let container = elFac.createContainer({
+          groupID:[],
+          pos:{w:1,h:3,x:1,y:1},
+          innerGrid:{rows:1,cols:1},
+          groupPos:{},
           meta:meta
         })
 
-        // this.$store.dispatch('initDB');
-        this.$store.dispatch('setUser',userData);
-        this.$store.dispatch('setElement',{
-          type:'dashboard',
-          id:0,
-          val:firstDash
-        })
-        this.$store.dispatch('setElement',{
-          type:'container',
-          id:0,
-          val:firstCnt
-        })
-        this.$store.dispatch('setElement',{
-          type:'group',
-          id:0,
-          val:grpOne
-        })
-        this.$store.dispatch('setElement',{
-          type:'group',
-          id:1,
-          val:grpTwo
-        })
-        this.$store.dispatch('setElement',{
-          type:'group',
-          id:2,
-          val:grpThree
+        let group = elFac.createGroup({
+          sectionID:[],
+          meta:meta
         })
 
-        this.$router.push({path:'/dashboard',query:{id:0}});
+        let section = elFac.createSection({
+          type:'stuffspace',
+          itemID:[],
+          meta:meta
+        });
+
+        let stuffspaceItem = elFac.createItem({
+          type:'stuffspace',
+          content:'0', // TODO
+          meta:meta
+        })
+
+        let newDashData={
+          dashboard: dashboard,
+          container: container,
+          group: group,
+          section: section,
+          item: stuffspaceItem,
+        }
+
+        CreateNewDashboard(newDashData).then(newDashID=>{
+          let userData = new UserFactory().createUser(this.username,[newDashID]);
+          this.$store.dispatch('setUser',userData);
+          this.$router.push({path:'/dashboard',query:{id:newDashID}});
+        })
+
+
+
+
+        // let grpTwo = elFac.createGroup({
+        //   sectionID:[1],
+        //   meta:meta
+        // })
+        // let grpThree = elFac.createGroup({
+        //   sectionID:[2],
+        //   meta:meta
+        // })
+
+
 
       }).catch((error)=>{
 

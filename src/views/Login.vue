@@ -93,7 +93,6 @@ export default {
     sendUserToFirstDash(){
       this.loading = true;
       this.$store.dispatch('getUser').then(a=>{
-        // console.log(a);
         this.$router.push({path:'/dashboard',query:{id:a.dashboardID[0]}}); // open dashboard component with first dash id
       })
     },
@@ -101,7 +100,7 @@ export default {
       return val.length >= 4;
     }
   },
-  mounted() {
+  beforeMount() {
     // console.log(this.$store.getters.isAuth)
     if(this.$store.getters.isAuth) this.sendUserToFirstDash();
   }

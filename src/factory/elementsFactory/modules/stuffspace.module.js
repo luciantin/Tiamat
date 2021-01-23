@@ -1,7 +1,7 @@
 
-export function createStuffspace({containersID,gridData,meta}){
+export function createStuffspace({containerID,gridData,meta}){
     return{
-        'containersID':containersID,
+        'containerID':containerID,
         'gridData':gridData,
         'meta':meta
     }

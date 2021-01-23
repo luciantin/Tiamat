@@ -101,7 +101,6 @@ export default {
             }
         },
 
-
         makeGridByRepeat(num){ // used instead of repeat(6,1fr)
             let str = '';
             for(let i = 0; i< num; i++) str += '1fr ';
@@ -531,6 +530,7 @@ export default {
             this.mouseData.mouseDownTarget.style.position = 'static';
             this.mouseData.canBeDropped = false;
         },
+
         makeSectionPlaceholderForGroup(cnt,grp){
             if(Number(cnt) === Number(this.mouseData.mouseUpSectionContainerKey) && Number(grp) === Number(this.mouseData.mouseUpSectionGroupKey)) return Number(this.mouseData.mouseUpSectionPlaceholderIndex);
             else return -1;
@@ -547,6 +547,7 @@ export default {
             else if(el.classList.contains(failConditionClass)) return null;
             else return this.firstParentWithTargetClass(el.parentElement,targetClass,failConditionClass);
         },
+
         moveGroupInsideSameContainer(groupKey,groupPos,cntKey){
             this.containers[cntKey].groupPos[groupKey] = {... groupPos}; //FIXME Doenst update DB nor Vuex
 
@@ -560,6 +561,7 @@ export default {
                 val:groupPos,
             })
         },
+
         moveGroupFromACntToBCnt(groupKey,groupPos,cntAKey,cntBKey){
             let cntAGrpID,cntBGrpID,cntAGrpPos,cntBGrpPos;
 
@@ -634,32 +636,52 @@ export default {
         },
 
         async addGrid(){
-            let newId = await this.CreateNewContainer(this.ID) ;
-            await this.loadData()
+            if(this.type === 'dashboard'){
+                let newId = await this.CreateNewContainer(this.ID,undefined,this.type) ;
+                await this.loadData()
 
-            // moram pricekati da vue ucita promjene
-            await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
+                // moram pricekati da vue ucita promjene
+                await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
 
-            this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
-            this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
-            this.mouseData.type = 'container'; // used in mouseMove to know the type
-            this.mouseData.containerId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); // drag elements id : drag+
-            this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
-            this.mouseData.mouseDownTarget.style.position = 'absolute'; // 'unlock' the container so it can be moved
-            this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
-            this.refreshTmpContainerPosDic(); // used for collision detection
-            this.tmpContainerData.placeholderPos.w = this.containers[this.mouseData.containerKey].pos.w; // set placeholder w and h to be the same as current dragged elem.
-            this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
+                this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
+                this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
+                this.mouseData.type = 'container'; // used in mouseMove to know the type
+                this.mouseData.containerId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); // drag elements id : drag+
+                this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
+                this.mouseData.mouseDownTarget.style.position = 'absolute'; // 'unlock' the container so it can be moved
+                this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
+                this.refreshTmpContainerPosDic(); // used for collision detection
+                this.tmpContainerData.placeholderPos.w = this.containers[this.mouseData.containerKey].pos.w; // set placeholder w and h to be the same as current dragged elem.
+                this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
+            }
+            else if(this.type === 'stuffspace'){
+                let newId = await this.CreateNewContainer(this.ID,undefined,this.type) ;
+                await this.loadData()
+
+                // moram pricekati da vue ucita promjene
+                await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
+
+                this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
+                this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
+                this.mouseData.type = 'container'; // used in mouseMove to know the type
+                this.mouseData.containerId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); // drag elements id : drag+
+                this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
+                this.mouseData.mouseDownTarget.style.position = 'absolute'; // 'unlock' the container so it can be moved
+                this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
+                this.refreshTmpContainerPosDic(); // used for collision detection
+                this.tmpContainerData.placeholderPos.w = this.containers[this.mouseData.containerKey].pos.w; // set placeholder w and h to be the same as current dragged elem.
+                this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
+            }
         },
 
+        // when a child changes its state, load data
         onStateChange(resp){ // if a child changes its state, it should return a promise on which the state changes
-            // console.log(resp)
             resp.then(()=>{this.loadData();})
         },
 
-        loadData(){
+        loadData(){ // load data for grid type
             this.$store.dispatch('getElement',{
-                type:'dashboard',
+                type:this.type,
                 id:this.ID
             }).then(dash=> {
                 //grid setup
@@ -727,7 +749,7 @@ export default {
     },
     watch:{
         // ako korisnik refresha stranicu mora se svaki put provjeriti dali je jos uvijek baza spremna te se tek onda grid popunjava s podacima
-        isDbReady(newState,oldState) { // TODO ELSE loading
+        isDbReady(newState,oldState) { // TODO ELSE loading ...
             if(newState){
                 this.loadData();
             }

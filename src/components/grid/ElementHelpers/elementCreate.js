@@ -1,85 +1,122 @@
 import {store} from "@/store/store";
 import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
 
-const CreateNewDashboard = function(){
-    let newDashboardID;
+// get new dash ID
+// create new container
+// create new group
+// create new section
+// create new Item > Stuffspace
+async function CreateNewDashboard(data){
+
+    let newDashboardID = await store.dispatch('getNewID',{type:'dashboard'})
+
+    data.item.content = await CreateNewStuffspace(data.dashboard, data.container)
+
+    // console.log(data)
+    await store.dispatch('setElement',{
+        type:'dashboard',
+        id:newDashboardID,
+        val:data.dashboard
+    })
+
+    let containerID = await CreateNewContainer(newDashboardID,data.container)
+    let groupID = await CreateNewGroup(containerID, data.group)
+    let sectionID = await CreateNewSection(groupID, data.section)
+    let itemID = await CreateNewItem(sectionID, data.item)
+
 
 
     return newDashboardID;
 }
 
-const CreateNewStuffspace = function (gridID){
-    let newStuffspaceID;
 
+// get new stuffsp ID
+// create new container
+async function CreateNewStuffspace(StfData, CntData){
+    let newStuffSpaceID = await store.dispatch('getNewID',{type:'stuffspace'})
 
-    return newStuffspaceID;
+    await store.dispatch('setElement',{
+        type:'stuffspace',
+        id:newStuffSpaceID,
+        val:StfData
+    })
+
+    await CreateNewContainer(newStuffSpaceID, CntData, 'stuffspace')
+
+    return newStuffSpaceID;
 }
 
-const CreateNewContainer = function (gridID){
+async function CreateNewContainer(gridID,CntData,type){
     let elFac = new ElementsFactory();
+    let firstCnt = CntData;
 
-    let meta = elFac.createMeta({
-        title:'New',
-        description:'New',
-        tags: ['Container']
-    })
+    let GridType = 'dashboard'
 
-    let firstCnt = elFac.createContainer({
-        groupID:[],
-        pos:{w:1,h:1,x:1,y:1},
-        innerGrid:{rows:2,cols:2},
-        groupPos:{},
-        meta:meta
-    })
+    if(type !== undefined) GridType = type;
 
-    return new Promise((resolve, reject) => {
-        store.dispatch('getNewID',{type:'container'}).then(newKey => {
 
-            store.dispatch('getElementByKey',{
-                type:'dashboard',
-                id:gridID,
-                key:'containerID'
-            }).then(a=>{
-                let IDs = Object.values(a);
-                IDs.push(newKey)
-                Promise.all([
-                    store.dispatch('setElement',{
-                        type:'container',
-                        id:newKey,
-                        val:firstCnt
-                    }),
-                    store.dispatch('setElementByKey',{
-                        type:'dashboard',
-                        id:0,
-                        key:'containerID',
-                        val:IDs
-                    }),
-                ]).then(values =>{
-                    resolve(newKey)
-                }).catch(err=>{
-                    reject(err)
-                })
+    if(firstCnt === undefined) {
+        firstCnt = elFac.createContainer({
+            groupID: [],
+            pos: {w: 1, h: 1, x: 1, y: 1},
+            innerGrid: {rows: 2, cols: 2},
+            groupPos: {},
+            meta: elFac.createMeta({
+                title: 'New',
+                description: 'New',
+                tags: ['Container']
             })
         })
-    })
+    }
+
+    let newContainerKey = await store.dispatch('getNewID',{type:'container'});
+    let containerIDs = await store.dispatch(
+        'getElementByKey',{
+            type:GridType,
+            id:gridID,
+            key:'containerID'
+        })
+    // console.log(containerIDs)
+
+    let IDs = []
+    if( containerIDs !== undefined) IDs = Object.values(containerIDs);
+
+    IDs.push(newContainerKey)
+
+    await Promise.all([
+        store.dispatch('setElement',{
+            type:'container',
+            id:newContainerKey,
+            val:firstCnt
+        }),
+        store.dispatch('setElementByKey',{
+            type:GridType,
+            id:gridID,
+            key:'containerID',
+            val:IDs
+        }),
+    ])
+
+
+    return newContainerKey;
 }
 
 
-const CreateNewGroup = function (CntID){
+const CreateNewGroup = function (CntID, GrpData){
     let newGroupID;
-
+    let newGroup = GrpData;
     let elFac = new ElementsFactory();
 
-    let meta = elFac.createMeta({
-        title:'New',
-        description:'New',
-        tags: ['Group']
-    })
-
-    let newGroup = elFac.createGroup({
-        sectionID:[],
-        meta:meta
-    })
+    if(GrpData === undefined) {
+        newGroup = elFac.createGroup({
+            sectionID: [],
+            meta: elFac.createMeta({
+                title: 'New',
+                description: 'New',
+                tags: ['Group']
+            })
+        })
+    }
 
     return new Promise((resolve, reject) => {
 
@@ -116,25 +153,24 @@ const CreateNewGroup = function (CntID){
 
     })
 
-
-
-    return newGroupID;
 }
 
-const CreateNewSection = function (GrpID){
+const CreateNewSection = function (GrpID, SecData){
     let elFac = new ElementsFactory();
+    let newSection = SecData;
 
-    let meta = elFac.createMeta({
-        title:'New',
-        description:'New',
-        tags: ['Section']
-    })
 
-    let newSection = elFac.createSection({
-        type:'text',
-        itemsID:[],
-        meta:meta
-    })
+    if(SecData === undefined) {
+        newSection = elFac.createSection({
+            type: 'text',
+            itemID: [],
+            meta: elFac.createMeta({
+                title: 'New',
+                description: 'New',
+                tags: ['Section']
+            })
+        })
+    }
 
     return new Promise((resolve, reject) => {
 
@@ -160,22 +196,14 @@ const CreateNewSection = function (GrpID){
                         tmpSectionID.push(newKey)
                     }
 
-                    // let tmpCnt = Object.assign({},grp)
-                    // let tmpGroupID = Array.from(grp.groupID);
-                    // let tmpGroupPos = Object.assign({},grp.groupPos);
-                    // tmpGroupID.push(newKey);
-                    // tmpGroupPos[newKey] = {x:0,y:0,w:1,h:1};
-                    //
-                    // tmpCnt.groupID = tmpGroupID;
-                    // tmpCnt.groupPos = tmpGroupPos;
-                    //
+
                     store.dispatch('setElementByKey',{ // push new data
                         type:'group',
                         id:GrpID,
                         val:tmpSectionID,
                         key:'sectionID'
                     }).then(a=>{
-                        resolve(newKey); // resolve with newKey
+                        resolve(newKey); // resolve with new elements Key
                     })
                 })
             })
@@ -185,20 +213,22 @@ const CreateNewSection = function (GrpID){
 }
 
 
-const CreateNewItem = function (SecID,type){
+const CreateNewItem = function (SecID,ItemData){
     let elFac = new ElementsFactory();
+    let newItem = ItemData;
 
-    let meta = elFac.createMeta({
-        title:'New',
-        description:'New',
-        tags: ['Item']
-    })
+    if(ItemData === undefined) {
+        newItem = elFac.createItem({
+            type: 'text',
+            content: 'new',
+            meta: elFac.createMeta({
+                title: 'New',
+                description: 'New',
+                tags: ['Item']
+            })
+        })
+    }
 
-    let newItem = elFac.createItem({
-        type: type,
-        content:'test',
-        meta:meta
-    })
 
     return new Promise((resolve, reject) => {
 
