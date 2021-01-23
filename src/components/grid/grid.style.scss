@@ -16,9 +16,14 @@
 }
 
 .actionButton{
+  user-select: none;
   position: fixed;
   bottom: 100px;
   left: 100px;
+}
+.actionDragButton{
+  user-select: none;
+  pointer-events: none;
 }
 
 #GridMain{
@@ -27,6 +32,9 @@
 }
 
 #GridMenu{
+  user-select: none;
+  //pointer-events: none;
+  //pointer-events: ;
   position: fixed;
   top: 20px;
   left: 0px;

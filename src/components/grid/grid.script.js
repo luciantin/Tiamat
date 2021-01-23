@@ -6,6 +6,8 @@ import Drag from "@/components/grid/GridBaseElements/Common/Drag";
 import Resize from "@/components/grid/GridBaseElements/Common/Resize";
 import Button from "@/components/common/Button";
 
+// import GridMenuItem from "@/components/grid/GridMenu/GridMenuItem";
+
 import {makePlaceholderId,makeDragId,wrapId,unwrapId,makeResizeId } from "@/components/grid/gridID.factory";
 import {isRectangleACollidedWithRectangleB,areRectanglesCollidedWithRectangle} from "@/components/grid/gridCollision.module";
 import {CreateNewStuffspace,CreateNewContainer} from "@/components/grid/ElementHelpers/elementCreate";
@@ -364,6 +366,8 @@ export default {
                     h: this.containers[this.mouseData.containerKey].pos.h,
                 }
 
+                console.log(currentContainerPos)
+
                 let isCollision = this.areRectanglesCollidedWithRectangle(this.tmpContainerData.tmpContainerPos,currentContainerPos,[this.mouseData.containerKey])
                 let placeholderId = this.makePlaceholderId([this.gridData.gridID]);
                 let placeholder = document.getElementById(placeholderId);
@@ -637,12 +641,13 @@ export default {
 
         async addGrid(){
             if(this.type === 'dashboard'){
+                console.log('0')
                 let newId = await this.CreateNewContainer(this.ID,undefined,this.type) ;
+                console.log('1')
                 await this.loadData()
-
+                console.log('2')
                 // moram pricekati da vue ucita promjene
                 await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
-
                 this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
                 this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
                 this.mouseData.type = 'container'; // used in mouseMove to know the type
@@ -679,8 +684,12 @@ export default {
             resp.then(()=>{this.loadData();})
         },
 
+        // testFun(){
+        //   console.log('On click')
+        // },
+
         loadData(){ // load data for grid type
-            this.$store.dispatch('getElement',{
+            return this.$store.dispatch('getElement',{
                 type:this.type,
                 id:this.ID
             }).then(dash=> {

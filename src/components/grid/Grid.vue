@@ -5,20 +5,10 @@
     <h1>ttestsetsetseet</h1>
   </div>
 
-  <div id="GridMenu">
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-    <p>Menu Item</p>
-  </div>
+
 
   <!--  Button to add stuff -->
-  <Button text="+" @mousedown="addGrid" class="actionButton"/>
+<!--  <Button text="+" class="actionButton"/>-->
 <!--  -->
 <!--  -->
 <!--  -->
@@ -34,6 +24,15 @@
         gridTemplateColumns: makeGridByRepeat(this.gridData.gridColNum),
       }"
   >
+
+    <div id="GridMenu" @mousedown="testFun">
+      <img :src="require('@/assets/img/GridMenu/SideMenu.svg')" />
+      <img :src="require('@/assets/img/GridMenu/SideSettings.svg')" />
+      <div   @mousedown="addGrid" >
+        <img class="actionDragButton" :src="require('@/assets/img/GridMenu/SideAdd.svg')"/>
+      </div>
+      <!--    <GridMenuItem  class="actionButton" />-->
+    </div>
 
     <Container
         v-for="(container,keyContainer) in containers"

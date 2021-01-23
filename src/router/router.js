@@ -16,7 +16,7 @@ router.beforeEach((to,from,next)=>{
     // console.log('there')
     // console.log(firebase.auth().currentUser)
 
-    console.log(to.path, from.path)
+    // console.log(to.path, from.path)
 
     if(to.path === '/login' && from.path === '/dashboard') next('/')
 
