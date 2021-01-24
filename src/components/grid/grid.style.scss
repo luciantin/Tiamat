@@ -41,6 +41,16 @@
   width: 50px;
 }
 
+#SideMenuContent{
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 100;
+  //background: #555555;
+  background: rgba(0, 0, 0, 0.4);
+  height: 100%;
+}
+
 
 .dashboard {
   display: grid;

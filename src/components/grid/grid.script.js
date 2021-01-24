@@ -10,10 +10,15 @@ import Button from "@/components/common/Button";
 
 import {makePlaceholderId,makeDragId,wrapId,unwrapId,makeResizeId } from "@/components/grid/gridID.factory";
 import {isRectangleACollidedWithRectangleB,areRectanglesCollidedWithRectangle} from "@/components/grid/gridCollision.module";
-import {CreateNewStuffspace,CreateNewContainer} from "@/components/grid/ElementHelpers/elementCreate";
+import {
+    CreateNewStuffspace,
+    CreateNewContainer,
+    CreateNewStuffspaceContainerForDashboard
+} from "@/components/grid/ElementHelpers/elementCreate";
 import {RemoveSection,AddSection} from "@/components/grid/ElementHelpers/elementBinding";
-
-
+import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
+import UserSettings from "@/components/grid/SideMenu/UserSettings";
+import BrowseDashboards from "@/components/grid/SideMenu/BrowseDashboards";
 import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 
 
@@ -21,7 +26,7 @@ import {mapActions, mapGetters, mapMutations, mapState} from "vuex";
 export default {
     name: "Grid",
     components:{
-        Container, Group,Package,Drag,Button,Resize},
+        Container, Group,Package,Drag,Button,Resize,UserSettings,BrowseDashboards},
     props: {
         type:{
             type:String
@@ -29,6 +34,23 @@ export default {
     },
     data(){
         return{
+
+            TOGGLE_ME_SILLY : false, // ! to refresh component
+
+            SideMenuContentID: 'SideMenuContent',
+            SideMenuContentRegisteredComponentName:'',
+            showSideMenuContent:false,
+            showSideMenuContentDebounce:false,
+
+
+            sideMenuItems:[
+                {type:'BrowseDashboards',tip:'Add List',src:require('@/assets/img/GridMenu/SideMenu.svg')},
+                {type:'UserSettings',tip:'Add Text',src:require('@/assets/img/GridMenu/SideSettings.svg')},
+                // {type:'LogOut',tip:'Add Image',src:require('@/assets/img/GridMenu/Image.svg')},
+                // {type:'LogOut',tip:'Add Image',src:require('@/assets/img/GridMenu/Image.svg')},
+            ],
+
+
             gridData: {},
             containers:{},
             groups:{},
@@ -366,7 +388,7 @@ export default {
                     h: this.containers[this.mouseData.containerKey].pos.h,
                 }
 
-                console.log(currentContainerPos)
+                // console.log(currentContainerPos)
 
                 let isCollision = this.areRectanglesCollidedWithRectangle(this.tmpContainerData.tmpContainerPos,currentContainerPos,[this.mouseData.containerKey])
                 let placeholderId = this.makePlaceholderId([this.gridData.gridID]);
@@ -641,15 +663,70 @@ export default {
 
         async addGrid(){
             if(this.type === 'dashboard'){
-                console.log('0')
-                let newId = await this.CreateNewContainer(this.ID,undefined,this.type) ;
-                console.log('1')
+                let elFac = new ElementsFactory()
+
+                let meta = elFac.createMeta({
+                    title:'New',
+                    description:'New',
+                    tags: ['New']
+                })
+                let gridData = elFac.createGridData({
+                    gridID : 'newDash',
+                    gridClass: 'dashboard',
+                    gridColNum:5,
+                    gridRowNum:5
+                })
+
+                let newStuffSpaceData = elFac.createStuffspace({
+                    containerID:[],
+                    gridData: gridData,
+                    meta: meta,
+                })
+
+                let container = elFac.createContainer({
+                    groupID:[],
+                    pos:{w:1,h:1,x:1,y:1},
+                    innerGrid:{rows:1,cols:1},
+                    groupPos:{},
+                    meta:meta
+                })
+
+                let group = elFac.createGroup({
+                    sectionID:[],
+                    meta:meta
+                })
+
+                let section = elFac.createSection({
+                    type:'stuffspace',
+                    itemID:[],
+                    meta:meta
+                });
+
+                let stuffspaceItem = elFac.createItem({
+                    type:'stuffspace',
+                    content:'0', // OK, ID changes when a new stfsp is created
+                    meta:meta
+                })
+
+                let newDashData={
+                    container: container,
+                    group: group,
+                    section: section,
+                    item: stuffspaceItem,
+                }
+
+                let {newStuffSpaceID, newStuffSpaceContainerID} = await CreateNewStuffspace(newStuffSpaceData)
+                // console.log(newStuffSpaceID,newStuffSpaceContainerID)
+                let newDashboardContainerForStuffSpaceID = await CreateNewStuffspaceContainerForDashboard(this.ID,newStuffSpaceID,newDashData)
+                // let newId = await this.CreateNewContainer(this.ID,undefined,this.type) ;
+                // let newId =
                 await this.loadData()
-                console.log('2')
+
                 // moram pricekati da vue ucita promjene
-                await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
+                await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},5);  })
+                // console.log(newDashboardContainerForStuffSpaceID)
                 this.mouseData.hasClicked = true; // "unlocks" the mouseMove function
-                this.mouseData.dragId = this.makeDragId([newId]); // save id of clicked drag element so we can get the id of the container
+                this.mouseData.dragId = this.makeDragId([newDashboardContainerForStuffSpaceID]); // save id of clicked drag element so we can get the id of the container
                 this.mouseData.type = 'container'; // used in mouseMove to know the type
                 this.mouseData.containerId = this.mouseData.dragId.substring(5,this.mouseData.dragId.length); // drag elements id : drag+
                 this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
@@ -660,8 +737,11 @@ export default {
                 this.tmpContainerData.placeholderPos.h = this.containers[this.mouseData.containerKey].pos.h;
             }
             else if(this.type === 'stuffspace'){
+                // console.log('0')
                 let newId = await this.CreateNewContainer(this.ID,undefined,this.type) ;
+                // console.log('1')
                 await this.loadData()
+                // console.log('2')
 
                 // moram pricekati da vue ucita promjene
                 await new Promise((resolve, reject) => { setTimeout(()=>{resolve(1)},10);  })
@@ -689,19 +769,24 @@ export default {
         // },
 
         loadData(){ // load data for grid type
+            // console.log('1')
             return this.$store.dispatch('getElement',{
                 type:this.type,
                 id:this.ID
             }).then(dash=> {
+                // console.log('2')
                 //grid setup
                 this.gridData = dash.gridData
                 this.gridData.dashboardTarget = document.getElementById(this.ID);
+                // console.log(dash,document.getElementById(this.ID))
                 this.gridData.grid = this.gridData.dashboardTarget.getBoundingClientRect();
+
                 // get containers
                 this.$store.dispatch('getElements',{
                     type:'container',
                     id:dash.containerID
                 }).then(cnt=> {
+                    // console.log('3')
 
                     // cnt dodu sa praznim groupID i groupPos ili dodu kao polja trebaju mi objekti/polje groupPos/groupID da ne dobijem undefined
                     for(let key in cnt){
@@ -741,7 +826,9 @@ export default {
                         type:'group',
                         id:groupIDs
                     }).then(grp=> {
-                            this.groups = grp;
+                        // console.log('4')
+
+                        this.groups = grp;
                             console.log('Updating...')
                             this.$forceUpdate();
                         }
@@ -750,6 +837,22 @@ export default {
             })
         },
 
+        onClickOutsideOfSideMenuContent(){
+            if(this.showSideMenuContentDebounce) return;
+            // console.log('hello');
+            this.showSideMenuContent = false
+        },
+
+        onClickShowSideMenuContent(name){
+            this.showSideMenuContentDebounce = true;
+            setTimeout(()=>{this.showSideMenuContentDebounce=false;},100)
+            // this.onShowModal({showModal:true})
+            this.SideMenuContentRegisteredComponentName = name;
+            this.showSideMenuContent = true;
+        },
+        onWatchChangeOfRouterQueryID(oldID,newID){
+            console.log(oldID,newID)
+        },
     },
     computed:{
         ...mapGetters([
@@ -763,6 +866,27 @@ export default {
                 this.loadData();
             }
         },
+        ID(newState,oldState){
+            // console.log(newState,oldState)
+            // this.$forceUpdate();
+            // console.log(this.ID)
+            // console.log(this.TOGGLE_ME_SILLY)
+            // this.TOGGLE_ME_SILLY = !this.TOGGLE_ME_SILLY;
+            // console.log(this.TOGGLE_ME_SILLY)
+            // console.log(oldID,newID)
+            // setTimeout(()=>{
+            //     console.log(this.ID)
+            //     console.log(document.getElementsByClassName('dashboard'))
+            // },1000)
+        },
+        '$route.query.id'(newID,oldID){
+            if(oldID === undefined) return ;
+            if(this.ID !== newID){
+                this.ID = Number(newID);
+                this.loadData();
+                this.gridElement = document.getElementById(this.ID);
+            }
+        },
         // container(newState,oldState){
         //     this.loadData()
         // },
@@ -770,12 +894,28 @@ export default {
         //     console.log('BRAVOOOO')
         // }
     },
+    // beforeUpdate() {
+    //   console.log('Before Update', this.ID)
+    // },
+    // beforeUpdate() {
+    //     // if(Number(this.$route.query.id) !== this.ID ){
+    //     //     this.ID=this.$route.query.id;
+    //     //     if(this.isDbReady) this.loadData(); //ako je vec baza spremna ucitaj podatke
+    //     //     this.gridElement = document.getElementById(this.ID);
+    //     // }
+    //         console.log(this.$route.query.id,this.ID)
+    //     if(Number(this.$route.query.id) !== this.ID ){
+    //     }
+    // },
     beforeMount() {
+        // console.log('Before')
         this.ID=this.$route.query.id;
         if(this.isDbReady) this.loadData(); //ako je vec baza spremna ucitaj podatke
         // console.log(container)
     },
     mounted() {
+        // console.log('Mounted')
+        // watch('$route.query.id', this.onWatchChangeOfRouterQueryID)
         this.gridElement = document.getElementById(this.ID);
         // console.log(this.gridElement)
     }

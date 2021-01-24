@@ -10,7 +10,8 @@ async function CreateNewDashboard(data){
 
     let newDashboardID = await store.dispatch('getNewID',{type:'dashboard'})
 
-    data.item.content = await CreateNewStuffspace(data.dashboard, data.container)
+    let {newStuffSpaceID, newStuffSpaceContainerID} = await CreateNewStuffspace(data.dashboard, data.container)
+
 
     // console.log(data)
     await store.dispatch('setElement',{
@@ -19,14 +20,20 @@ async function CreateNewDashboard(data){
         val:data.dashboard
     })
 
-    let containerID = await CreateNewContainer(newDashboardID,data.container)
-    let groupID = await CreateNewGroup(containerID, data.group)
-    let sectionID = await CreateNewSection(groupID, data.section)
-    let itemID = await CreateNewItem(sectionID, data.item)
 
+    let newDashboardContainerForStuffSpaceID = CreateNewStuffspaceContainerForDashboard(newDashboardID,newStuffSpaceID,data)
 
 
     return newDashboardID;
+}
+
+async function CreateNewStuffspaceContainerForDashboard(DashboardID,StuffSpaceID,data){
+    data.item.content = StuffSpaceID;
+    let containerID = await CreateNewContainer(DashboardID,data.container)
+    let groupID = await CreateNewGroup(containerID, data.group)
+    let sectionID = await CreateNewSection(groupID, data.section)
+    let itemID = await CreateNewItem(sectionID, data.item)
+    return containerID;
 }
 
 
@@ -41,9 +48,9 @@ async function CreateNewStuffspace(StfData, CntData){
         val:StfData
     })
 
-    await CreateNewContainer(newStuffSpaceID, CntData, 'stuffspace')
+    let newStuffSpaceContainerID = await CreateNewContainer(newStuffSpaceID, CntData, 'stuffspace')
 
-    return newStuffSpaceID;
+    return {newStuffSpaceID, newStuffSpaceContainerID};
 }
 
 async function CreateNewContainer(gridID,CntData,type){
@@ -278,5 +285,6 @@ export {
     CreateNewGroup,
     CreateNewSection,
     CreateNewStuffspace,
-    CreateNewItem
+    CreateNewItem,
+    CreateNewStuffspaceContainerForDashboard
 }

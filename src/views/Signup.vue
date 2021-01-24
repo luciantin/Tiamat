@@ -111,7 +111,7 @@ export default {
 
         let stuffspaceItem = elFac.createItem({
           type:'stuffspace',
-          content:'0', // TODO
+          content:'0', // OK, ID changes when a new stfsp is created
           meta:meta
         })
 

@@ -10,7 +10,9 @@
             <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>
 
           </div>
-          <p> {{groupID}} || {{sectionID}} {{localSectionItemID}}</p>
+          <h4 @click="onTitleClick" v-if="!showTitleInput">{{localSectionMeta['title']}}</h4>
+          <input  ref="input"  :value="localSectionMeta['title']" v-else @focusout="onFocusOutOfTitleInput">
+<!--          <p>asdaWWsd</p>-->
         </div>
         <div class="Content">
           <ItemFactory
@@ -99,8 +101,9 @@ export default {
   emits:['loadData','onSectionDragDown','onSectionDragUp','showModal'],
   data(){
     return{
+      showTitleInput:false,
       localSectionItemID : null,
-      localSectionMeta : null,
+      localSectionMeta : {},
       localSectionType : null,
       makeDragId:makeDragId,
       wrapId:wrapId,
@@ -122,8 +125,21 @@ export default {
     }
   },
   methods:{
+    onTitleClick(){
+      this.showTitleInput = true;
+    },
+    onFocusOutOfTitleInput(e){
+      this.localSectionMeta.title = e.srcElement.value;
+      this.$store.dispatch('setElementByKey',{
+        type:'section',
+        id:this.sectionID,
+        key:'meta',
+        val:this.localSectionMeta
+      })
+      this.showTitleInput = false;
+    },
     onSectionAddMenuClick(item,index){
-      console.log(item,index)
+      // console.log(item,index)
       this.addNewItem(item.type)
     },
     onKrakenEditorLoadData(p){
@@ -176,7 +192,16 @@ export default {
     },
     onMouseLeaveAddMenu(){
       this.showAddMenu = false;
-    }
+    },
+    createLocalMeta(meta){
+      let tmp = Object.assign({},meta);
+      delete tmp.tags;
+      this.localSectionMeta = {
+        tags:Array.from(meta.tags),
+        ...tmp
+      }
+      // console.log(this.localSectionMeta)
+    },
   },
   beforeMount() {
     if(this.sectionID >= 0 && this.sectionID !== null){
@@ -186,14 +211,23 @@ export default {
       }).then(sec=>{
         // console.log(sec)
         if(sec.itemID === undefined) this.localSectionItemID = [];
-        else this.localSectionItemID = Array.from(sec.itemID);
+        else {
+          this.localSectionItemID = Array.from(sec.itemID);
+        }
       })
     }
-
-    // setTimeout(()=>{
-    //   this.onShowModal({showModal:true})
-    // },5)
   },
+  mounted() {
+    if(this.sectionID >= 0 && this.sectionID !== null){
+      this.$store.dispatch('getElement',{
+        type:'section',
+        id:this.sectionID,
+      }).then(sec=>{
+        this.createLocalMeta(sec.meta)
+      })
+    }
+    // console.log(this.localSectionMeta)
+  }
 
 }
 </script>

@@ -19,6 +19,7 @@ router.beforeEach((to,from,next)=>{
     // console.log(to.path, from.path)
 
     if(to.path === '/login' && from.path === '/dashboard') next('/')
+    if(to.path === '/signup' && from.path === '/dashboard') next('/')
 
     // if(to.path === '/login' && from.path === '/dashboard') console.log('twergwergwrgrrgws')
     // if((to.name === '/dashboard' || to.name === '/stuffspace') && $store.getters.isAuth) router.push({path:'/'})

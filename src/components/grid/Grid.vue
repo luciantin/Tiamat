@@ -5,7 +5,16 @@
     <h1>ttestsetsetseet</h1>
   </div>
 
-
+  <div :id="SideMenuContentID" v-if="showSideMenuContent" v-click-outside="onClickOutsideOfSideMenuContent" >
+    <h1>drfgbdfgedftge</h1>
+    <h1>drfgbdfgedftge</h1>
+    <h1>drfgbdfgedftge</h1>
+    <h1>drfgbdfgedftge</h1>
+    <h1>drfgbdfgedftge</h1>
+    <h1>drfgbdfgedftge</h1>
+    <h1>drfgbdfgedftge</h1>
+    <component v-bind:is="SideMenuContentRegisteredComponentName" />
+  </div>
 
   <!--  Button to add stuff -->
 <!--  <Button text="+" class="actionButton"/>-->
@@ -13,9 +22,9 @@
 <!--  -->
 <!--  -->
 
-
+<!--  za taj Number(this.ID) bi trebao ici u neke toplice na mjesec dana, ili psihijatriju -->
   <div
-      :id="this.ID"
+      :id="Number(this.ID)"
       v-bind:class="'dashboard'"
       @mousemove="this.mouseMove($event)"
       @mouseup="onMouseRelease()"
@@ -25,12 +34,24 @@
       }"
   >
 
-    <div id="GridMenu" @mousedown="testFun">
-      <img :src="require('@/assets/img/GridMenu/SideMenu.svg')" />
-      <img :src="require('@/assets/img/GridMenu/SideSettings.svg')" />
-      <div   @mousedown="addGrid" >
-        <img class="actionDragButton" :src="require('@/assets/img/GridMenu/SideAdd.svg')"/>
+    <div id="GridMenu">
+      <div class="Top">
+        <img :src="require('@/assets/img/GridMenu/SideMenu.svg')" @click="onClickShowSideMenuContent('BrowseDashboards')" />
+
       </div>
+      <div class="Mid">
+
+      </div>
+      <div class="Bot">
+        <div   @mousedown="addGrid" >
+          <img class="actionDragButton" :src="require('@/assets/img/GridMenu/SideAdd.svg')"/>
+        </div>
+        <img :src="require('@/assets/img/GridMenu/SideSettings.svg')" @click="onClickShowSideMenuContent('UserSettings')" />
+        <img :src="require('@/assets/img/GridMenu/SideMenuLogout2.svg')" @click="Logout" />
+      </div>
+
+
+
       <!--    <GridMenuItem  class="actionButton" />-->
     </div>
 
