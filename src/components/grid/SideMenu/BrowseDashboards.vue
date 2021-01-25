@@ -1,11 +1,17 @@
 <template>
-  <h1>Browse Dashboards</h1>
-  <div class="browse">
-    <div class="dashElem" v-for="id in this.localDashboardIDs" @click="onClickGotoNewDash(id)" >
-      <p >{{id}}</p>
-    </div>
-    <div>
-      <h2 @click="onClickCreateNewDash">Add</h2>
+  <div class="main">
+    <h1 class="heading">Browse Dashboards</h1>
+    <div class="underline"></div>
+    <div class="browse">
+      <div class="browseElem" v-for="id in this.localDashboardIDs" @click="onClickGotoNewDash(id)" >
+        <h4 >Dashboard : {{id}}</h4>
+        <div v-if="this.localDashboardIDs.length > 1"  @mousedown="onRemoveDash(id)" >
+          <img :src="require('@/assets/img/GridMenu/Delete.svg')"/>
+        </div>
+      </div>
+      <div>
+        <h2 class="addButton" @click="onClickCreateNewDash">Add</h2>
+      </div>
     </div>
   </div>
 </template>
@@ -23,9 +29,18 @@ export default {
     }
   },
   methods:{
+    onRemoveDash(id){
+      console.log(this.localDashboardIDs,id)
+      this.$store.dispatch('getUser').then(user=>{
+        this.localDashboardIDs.splice(this.localDashboardIDs.indexOf(id),1)
+        user.dashboardID = this.localDashboardIDs;
+        this.$store.dispatch('setUser',user).then(()=>{
+          this.getUserDashboardIDs()
+        })
+      })
+    },
     onClickCreateNewDash(){
       let elFac = new ElementsFactory();
-
 
       let meta = elFac.createMeta({
         title:'New',
@@ -109,15 +124,55 @@ export default {
 
 <style scoped lang="scss">
 
-.browse{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.main{
+  //display: flex;
+  //flex-direction: column;
+  //justify-content: center;
+  //align-items: center;
+  margin-top: 20px;
+  padding: 0px 20px;
 
-  .dashElem{
+  .heading{
+    color: #fff;
+  }
+
+  .underline{
+    margin: 0 auto;
     width: 90%;
     background-color: #FFFFFF;
+    height: 2px;
+    margin-bottom: 20px;
+  }
+
+  .browse{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .browseElem{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    padding: 4px 0px;
+    margin-top: 5px;
+    width: 90%;
+    background-color: #FFFFFF;
+
+    &:hover{
+      box-shadow: inset 4px 0px 4px rgba(0, 0, 0, 0.25);;
+    }
+  }
+  .addButton{
+    //width: 90%;
+    margin-top: 10px;
+    padding: 4px 20px;
+    background-color: #2c3e50;
+    color: #FFFFFF;
+
+    &:hover{
+      box-shadow: inset 4px 0px 4px rgba(0, 0, 0, 0.25);;
+    }
   }
 }
 

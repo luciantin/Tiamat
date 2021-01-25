@@ -6,13 +6,6 @@
   </div>
 
   <div :id="SideMenuContentID" v-if="showSideMenuContent" v-click-outside="onClickOutsideOfSideMenuContent" >
-    <h1>drfgbdfgedftge</h1>
-    <h1>drfgbdfgedftge</h1>
-    <h1>drfgbdfgedftge</h1>
-    <h1>drfgbdfgedftge</h1>
-    <h1>drfgbdfgedftge</h1>
-    <h1>drfgbdfgedftge</h1>
-    <h1>drfgbdfgedftge</h1>
     <component v-bind:is="SideMenuContentRegisteredComponentName" />
   </div>
 

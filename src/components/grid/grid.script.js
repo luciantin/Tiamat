@@ -480,6 +480,7 @@ export default {
         },
 
         onMouseRelease(){ // on mouse release over grid handler
+            if(this.gridElement === null) return;
             this.gridElement.style.cursor = 'default';
             if(this.mouseData.hasClicked) this.handleMouseReleasedForDrag();
             if(this.mouseData.hasClickedOnResize) this.handleMouseReleasedForResize();
@@ -883,8 +884,10 @@ export default {
             if(oldID === undefined) return ;
             if(this.ID !== newID){
                 this.ID = Number(newID);
-                this.loadData();
-                this.gridElement = document.getElementById(this.ID);
+                this.loadData().then(()=>{
+                    this.gridElement = document.getElementById(this.ID);
+                    console.log(this.gridElement)
+                })
             }
         },
         // container(newState,oldState){
