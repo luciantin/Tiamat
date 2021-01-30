@@ -1,12 +1,17 @@
 <template>
-  <div  v-if="sectionID >= 0" class="section" :id="wrapId([containerID,groupID,sectionID])" :index="index">
-    <div class="sectionContent">
+  <div
+      v-if="sectionID >= 0"
+      class="section"
+      :id="wrapId([containerID,groupID,sectionID])"
+      :index="index"
+      :style="[styleData.section.style]"
+  >
       <div class="left">
       </div>
       <div class="mid">
-        <div class="Header">
+        <div class="Header" v-if="showTitle" >
 
-          <div v-if="!showAddMenu" class="menuItemsRow">
+          <div v-if="!showMenu" class="menuItemsRow">
 <!--            <div  class="actionIcon" @click="onEditSection">-->
 <!--              <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>-->
 <!--            </div>-->
@@ -15,7 +20,7 @@
             </div>
           </div>
 
-          <div v-if="showAddMenu" @mouseleave="onMouseLeaveAddMenu" class="menuItemsRow">
+          <div v-if="showMenu" @mouseleave="onMouseLeaveAddMenu" class="menuItemsRow">
             <Tooltip v-for="(item,index) in sectionAddMenuItems" :key="index">
               <template v-slot:content>
                 <div  class="actionIcon" @click="onSectionAddMenuClick(item,index)">
@@ -80,7 +85,6 @@
       <div class="right">
 
       </div>
-    </div>
   </div>
 
   <div v-else>
@@ -123,6 +127,7 @@ export default {
     index:Number,
     showSectionItems:Boolean,
     modalID:String,
+    styleData:Object,
   },
   emits:['loadData','onSectionDragDown','onSectionDragUp','showModal','onSectionDelete'],
   data(){
@@ -259,6 +264,15 @@ export default {
       }
     }
   },
+  computed:{
+    showMenu(){
+      if(!this.styleData.section.menu) return false;
+      else return  this.showAddMenu
+    },
+    showTitle(){
+      return this.styleData.section.title
+    }
+  },
   beforeMount() {
     this.loadSectionItemID()
   },
@@ -279,15 +293,17 @@ export default {
 
 <style scoped lang="scss">
 
-.section{
-  padding: 5px;
-}
+//.section{
+//}
 
-.sectionContent{
+.section{
   //background-color: #000;
   //margin-top: 3px;
-  margin-right: 3px;
-  margin-left: 3px;
+  padding: 5px;
+
+  //margin-right: 5px;
+  //margin-left: 5px;
+  margin: 3px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

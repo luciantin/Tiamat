@@ -11,7 +11,7 @@
     <GridItemImage  class="item"  v-if="itemData.type === 'image'" :content="itemData.content" :ID="{itemID,sectionID}" />
     <GridItemLink  class="item"  v-if="itemData.type === 'link'" :content="itemData.content" :ID="{itemID,sectionID}" />
     <GridItemList  class="item"  v-if="itemData.type === 'list'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemStuffspace  class="item"  v-if="itemData.type === 'stuffspace'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemStuffspace   v-if="itemData.type === 'stuffspace'" :content="itemData.content" :ID="{itemID,sectionID}" />
     <GridItemTable  class="item"  v-if="itemData.type === 'table'" :content="itemData.content" :ID="{itemID,sectionID}" />
   </div>
 

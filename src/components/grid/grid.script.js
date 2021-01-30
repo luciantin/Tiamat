@@ -35,7 +35,68 @@ export default {
     data(){
         return{
 
-            TOGGLE_ME_SILLY : false, // ! to refresh component
+            styleData:null, // style data that is passed to children components
+
+            dashStyleData:{
+                container:{
+                    title:false, // display title
+                    header: true,
+                    drag:true, // display drag
+                    menu:false, // display menu
+                    resize:true,
+                },
+                group:{
+                    title:false, // display title
+                    header: false,
+                    drag:false, // display drag
+                    menu:false, // display menu
+                    resize:true,
+                    style:{
+                        height:'100%',
+                        overflow:'hidden'
+                    }
+                },
+                section:{
+                    title:false, // display title
+                    header: true,
+                    drag:false, // display drag
+                    menu:false, // display menu
+                    add:false,
+                    style:{
+                        height:'100%',
+                        overflow:'hidden'
+                    }
+                },
+            },
+
+            stuffStyleData:{
+                container:{
+                    title:true, // display title
+                    header: true,
+                    drag:true, // display drag
+                    menu:true, // display menu
+                    resize:true,
+                },
+                group:{
+                    title:true, // display title
+                    header: true,
+                    drag:true, // display drag
+                    menu:true, // display menu
+                    resize:true,
+                    style:{
+                    }
+                },
+                section:{
+                    title:true, // display title
+                    header: true,
+                    drag:true, // display drag TODO
+                    menu:true, // display menu TODO
+                    add:true,
+                    style:{
+
+                    }
+                },
+            },
 
             SideMenuContentID: 'SideMenuContent',
             SideMenuContentRegisteredComponentName:'',
@@ -50,6 +111,7 @@ export default {
                 // {type:'LogOut',tip:'Add Image',src:require('@/assets/img/GridMenu/Image.svg')},
             ],
 
+            // TOGGLE_ME_SILLY : false, // ! to refresh component
 
             gridData: {},
             containers:{},
@@ -917,10 +979,14 @@ export default {
         // console.log(container)
     },
     mounted() {
-        this.$store.dispatch('putFile',{
-            filename:'gagafbadf',
-            file:atob('gfdgfdsbsdfbsdfbsfg')
-        })
+        if(this.type === 'dashboard') this.styleData = this.dashStyleData;
+        else if(this.type === 'stuffspace') this.styleData = this.stuffStyleData;
+        // console.log(this.styleData)
+        // console.log(this.type)
+        // this.$store.dispatch('putFile',{
+        //     filename:'gagafbadf',
+        //     file:atob('gfdgfdsbsdfbsdfbsfg')
+        // })
         // console.log('Mounted')
         // watch('$route.query.id', this.onWatchChangeOfRouterQueryID)
         this.gridElement = document.getElementById(this.ID);

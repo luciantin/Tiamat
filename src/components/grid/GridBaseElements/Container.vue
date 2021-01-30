@@ -1,7 +1,7 @@
 <template>
   <div class="container"  @mouseleave="onMouseLeaveContainer">
 
-    <div class="containerHeader" >
+    <div class="containerHeader" v-if="showHeader">
       <div class="Left">
         <slot name="ContainerDrag"></slot>
       </div>
@@ -13,7 +13,7 @@
 <!--        </div>-->
       </div>
       <div class="Right">
-        <div class="ContainerMenuButton">
+        <div class="ContainerMenuButton" v-if="showMenu">
           <img src="@/assets/img/GridMenu/MenuElem.svg"  @click="onContainerMenuClick" />
         </div>
       </div>
@@ -64,13 +64,14 @@ export default {
     GridType:String,
     gridID:String,
     modalID:String,
+    styleData:Object,
   },
   emits:['loadData','showModal'],
   data(){
     return{
       showSettings:false,
       showTitleInput:false,
-      showTitle:true,
+      // showTitle:true,
       localMeta:{},
     }
   },
@@ -124,6 +125,17 @@ export default {
       }
       this.$emit('loadData',res)
       this.showSettings = false;
+    }
+  },
+  computed:{
+    showHeader(){
+      return this.styleData.container.header
+    },
+    showTitle(){
+      return this.styleData.container.title;
+    },
+    showMenu(){
+      return this.styleData.container.menu
     }
   },
   mounted() {

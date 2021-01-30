@@ -2,9 +2,18 @@
   <div class="main">
     <h1 class="heading">Browse Dashboards</h1>
     <div class="underline"></div>
+
     <div class="browse">
-      <div class="browseElem" v-for="id in this.localDashboardIDs" @click="onClickGotoNewDash(id)" >
-        <h4 >Dashboard : {{id}}</h4>
+      <div class="browseElem" v-for="(id,index) in this.localDashboardIDs" @click="onClickGotoNewDash(id)" >
+<!--        <h4 >Dashboard : {{id}} {{localDashboardMeta[index]}}</h4>-->
+        <div   @click="onTitleClick" @click.stop="stopEventPropagation" >
+          <img :src="require('@/assets/img/GridMenu/Edit.svg')"/>
+        </div>
+        <div v-if="localDashboardMeta[index] !== undefined">
+          <h4  v-if="!showTitleInput">{{localDashboardMeta[index].title}}</h4>
+          <input  ref="input"  :value="localDashboardMeta[index].title" v-else @focusout="onFocusOutOfTitleInput(id,index,$event)" @click.stop="stopEventPropagation">
+        </div>
+
         <div v-if="this.localDashboardIDs.length > 1"  @mousedown="onRemoveDash(id)" >
           <img :src="require('@/assets/img/GridMenu/Delete.svg')"/>
         </div>
@@ -26,9 +35,32 @@ export default {
   data(){
     return{
       localDashboardIDs:[],
+      localDashboardMeta:[],
+      showTitleInput:false,
+
     }
   },
   methods:{
+    stopEventPropagation(e) {
+      e.stopPropagation()
+    },
+    onTitleClick(){
+      this.showTitleInput = true;
+    },
+    onFocusOutOfTitleInput(id,index,e){
+        // console.log('tewt')
+      // return (e)=>{
+        // this.localMeta.title = e.srcElement.value;
+      this.localDashboardMeta[index].title = e.srcElement.value;
+        this.$store.dispatch('setElementByKey',{
+          type:'dashboard',
+          id:id,
+          key:'meta',
+          val:this.localDashboardMeta[index]
+        })
+        this.showTitleInput = false;
+      // }
+    },
     onRemoveDash(id){
       console.log(this.localDashboardIDs,id)
       this.$store.dispatch('getUser').then(user=>{
@@ -122,12 +154,29 @@ export default {
     getUserDashboardIDs(){
       this.$store.dispatch('getUser').then(user=>{
         this.localDashboardIDs = Array.from(user['dashboardID']);
+        this.localDashboardMeta = new Array(this.localDashboardIDs.length)
+        this.localDashboardIDs.forEach((id,index)=>{
+          this.$store.dispatch('getElementByKey',{
+            type:'dashboard',
+            id:id,
+            key:'meta'
+          }).then(meta=>{
+            let tmp = Object.assign({},meta);
+            delete tmp.tags;
+            this.localDashboardMeta[index] = {
+              tags:Array.from(meta.tags),
+              ...tmp
+            }
+          })
+        })
+        console.log(this.localDashboardMeta)
       })
+
     },
 
   },
 
-  mounted() {
+  beforeMount() {
     this.getUserDashboardIDs()
   }
 }
@@ -158,13 +207,13 @@ export default {
   .browse{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
   }
   .browseElem{
     display: flex;
     flex-direction: row;
-    justify-content: space-evenly;
+    justify-content: space-between;
     padding: 4px 0px;
     margin-top: 5px;
     width: 90%;
@@ -184,6 +233,32 @@ export default {
     &:hover{
       box-shadow: inset 4px 0px 4px rgba(0, 0, 0, 0.25);;
     }
+  }
+}
+
+
+h4{
+  color: black;
+  flex-grow: 1;
+}
+
+input{
+  pointer-events: all;
+  border: none;
+  user-select: initial;
+  font-family: Arial, sans-serif;
+  display: block;
+  box-sizing: border-box;
+  font-size: 1em;
+  color: black;
+  text-align: center;
+  //margin-top: 1.33em;
+  //margin-bottom: 1.33em;
+  //margin-left: 0;
+  //margin-right: 0;
+  font-weight: bold;
+  &:focus{
+    outline: none;
   }
 }
 

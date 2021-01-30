@@ -1,23 +1,25 @@
 <template>
   <div class="group" @mouseleave="onMouseLeaveGroup" @mouseenter="onMouseEnterGroup" @mouseover="onMouseOverGroup">
 
-    <div class="groupHeader">
+    <div class="groupHeader" v-if="showHeader">
       <div class="Left">
         <slot name="GroupDrag"></slot>
       </div>
       <div class="Mid">
-        <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
-        <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
+        <div v-if="showTitle">
+          <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
+          <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
+        </div>
       </div>
       <div class="Right">
-        <div class="GroupMenuButton">
+        <div class="GroupMenuButton" v-if="showMenu">
           <img src="@/assets/img/GridMenu/MenuElem.svg"  @click="onGroupMenuClick" />
         </div>
       </div>
     </div>
 
 
-    <div v-if="!showSettings"  class="groupItems" >
+    <div v-if="!showSettings"  class="groupItems" :style="[styleData.group.style]" >
       <Section
           v-for="(id,index) in sections"
           :groupID="GroupID"
@@ -28,13 +30,14 @@
           :showSectionItems="showSectionItems"
           :gridType="GridType"
           :modalID="modalID"
+          :styleData="styleData"
           @loadData="onSectionLoadData"
           @onSectionDragDown="onSectionDragDown"
           @onSectionDragUp="onSectionDragUp"
           @showModal="onShowModal"
           @onSectionDelete="onSectionDelete"
       />
-      <div v-if="showAddButton" class="AddNewButton" @click="onAddNewSection">Add</div>
+      <div v-if="showSectionAddButton " class="AddNewButton" @click="onAddNewSection">Add</div>
 
     </div>
 
@@ -76,6 +79,7 @@ export default {
     sectionPlaceholderPos:Number,
     showSectionItems:Boolean,
     modalID:String,
+    styleData:Object,
   },
   emits:['loadData','onSectionDragUp','onSectionDragDown','showModal'],
   data(){
@@ -162,6 +166,19 @@ export default {
       }
       // else return
       return res;
+    },
+    showMenu(){
+      return this.styleData.group.menu
+    },
+    showSectionAddButton(){
+      if(!this.styleData.section.add) return false;
+      else return this.showAddButton;
+    },
+    showTitle(){
+      return this.styleData.group.title;
+    },
+    showHeader(){
+      return this.styleData.group.header
     }
   },
   mounted() {

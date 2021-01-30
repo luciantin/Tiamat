@@ -64,6 +64,7 @@
         :meta="container.meta"
         :GridType="type"
         :modalID="modalID"
+        :styleData="styleData"
         @loadData="onStateChange"
         @showModal="onShowModal"
     >
@@ -91,6 +92,7 @@
             :sectionPlaceholderPos="makeSectionPlaceholderForGroup(keyContainer,keyGroup)"
             :showSectionItems="shouldGroupShowSectionItems(keyContainer,keyGroup)"
             :modalID="modalID"
+            :styleData="styleData"
             @loadData="onStateChange"
             @onSectionDragDown="onSectionDragDown"
             @showModal="onShowModal"
