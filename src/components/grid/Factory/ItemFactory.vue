@@ -4,15 +4,15 @@
 <!--    {{itemData.type}} {{itemData.content}}-->
 <!--  </div>-->
 
-  <div v-if="itemData !== null">
-    <GridItemText v-if="itemData.type === 'text'" :content="itemData.content" />
-    <GridItemCheckbox v-if="itemData.type === 'checkbox'" :content="itemData.content" />
-    <GridItemFile v-if="itemData.type === 'file'" :content="itemData.content" />
-    <GridItemImage v-if="itemData.type === 'image'" :content="itemData.content" />
-    <GridItemLink v-if="itemData.type === 'link'" :content="itemData.content" />
-    <GridItemList v-if="itemData.type === 'list'" :content="itemData.content" />
-    <GridItemStuffspace v-if="itemData.type === 'stuffspace'" :content="itemData.content" />
-    <GridItemTable v-if="itemData.type === 'table'" :content="itemData.content" />
+  <div v-if="itemData !== null" class="itemContainer">
+    <GridItemText  class="item" v-if="itemData.type === 'text'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemCheckbox  class="item"  v-if="itemData.type === 'checkbox'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemFile  class="item"  v-if="itemData.type === 'file'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemImage  class="item"  v-if="itemData.type === 'image'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemLink  class="item"  v-if="itemData.type === 'link'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemList  class="item"  v-if="itemData.type === 'list'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemStuffspace  class="item"  v-if="itemData.type === 'stuffspace'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemTable  class="item"  v-if="itemData.type === 'table'" :content="itemData.content" :ID="{itemID,sectionID}" />
   </div>
 
 
@@ -58,6 +58,17 @@ export default {
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.itemContainer{
+  width: 98%;
+
+
+  .item{
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.25);
+    border-radius: 5px;
+    width: 100%;
+  }
+}
 
 </style>

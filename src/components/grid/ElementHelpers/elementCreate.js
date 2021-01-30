@@ -9,19 +9,21 @@ import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
 async function CreateNewDashboard(data){
 
     let newDashboardID = await store.dispatch('getNewID',{type:'dashboard'})
+    // console.log(Array.from(data.dashboard.containerID),data.dashboard)
 
-    let {newStuffSpaceID, newStuffSpaceContainerID} = await CreateNewStuffspace(data.dashboard, data.container)
+    let {newStuffSpaceID, newStuffSpaceContainerID} = await CreateNewStuffspace(data.stuffspace, data.stfContainer)
 
 
-    // console.log(data)
+    // console.log(Array.from(data.dashboard.containerID),data.dashboard)
     await store.dispatch('setElement',{
         type:'dashboard',
         id:newDashboardID,
         val:data.dashboard
     })
 
+    // console.log(Array.from(data.dashboard.containerID),data.dashboard)
 
-    let newDashboardContainerForStuffSpaceID = CreateNewStuffspaceContainerForDashboard(newDashboardID,newStuffSpaceID,data)
+    let newDashboardContainerForStuffSpaceID = await CreateNewStuffspaceContainerForDashboard(newDashboardID,newStuffSpaceID,data)
 
 
     return newDashboardID;
@@ -29,7 +31,7 @@ async function CreateNewDashboard(data){
 
 async function CreateNewStuffspaceContainerForDashboard(DashboardID,StuffSpaceID,data){
     data.item.content = StuffSpaceID;
-    let containerID = await CreateNewContainer(DashboardID,data.container)
+    let containerID = await CreateNewContainer(DashboardID,data.container,'dashboard')
     let groupID = await CreateNewGroup(containerID, data.group)
     let sectionID = await CreateNewSection(groupID, data.section)
     let itemID = await CreateNewItem(sectionID, data.item)
@@ -41,15 +43,15 @@ async function CreateNewStuffspaceContainerForDashboard(DashboardID,StuffSpaceID
 // create new container
 async function CreateNewStuffspace(StfData, CntData){
     let newStuffSpaceID = await store.dispatch('getNewID',{type:'stuffspace'})
-
+    // console.log(StfData)
     await store.dispatch('setElement',{
         type:'stuffspace',
         id:newStuffSpaceID,
         val:StfData
     })
-
+    // console.log(StfData)
     let newStuffSpaceContainerID = await CreateNewContainer(newStuffSpaceID, CntData, 'stuffspace')
-
+    // console.log(StfData)
     return {newStuffSpaceID, newStuffSpaceContainerID};
 }
 
@@ -57,10 +59,10 @@ async function CreateNewContainer(gridID,CntData,type){
     let elFac = new ElementsFactory();
     let firstCnt = CntData;
 
-    let GridType = 'dashboard'
+    let GridType = type
 
-    if(type !== undefined) GridType = type;
-
+    // if(type !== undefined) GridType = type;
+    // console.trace(type)
 
     if(firstCnt === undefined) {
         firstCnt = elFac.createContainer({

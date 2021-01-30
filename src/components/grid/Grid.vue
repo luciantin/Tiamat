@@ -2,7 +2,6 @@
 <!--<div id="GridMain">-->
 
   <div :id="modalID" v-if="showModal">
-    <h1>ttestsetsetseet</h1>
   </div>
 
   <div :id="SideMenuContentID" v-if="showSideMenuContent" v-click-outside="onClickOutsideOfSideMenuContent" >

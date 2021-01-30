@@ -56,10 +56,19 @@ export default {
       })
 
       let dashboard = elFac.createDashboard({stuffspaceID:[],containerID:[],meta:meta,gridData:gridData});
+      let stuffspace = elFac.createStuffspace({containerID:[],meta:meta,gridData:gridData})
 
       let container = elFac.createContainer({
         groupID:[],
         pos:{w:1,h:1,x:1,y:1},
+        innerGrid:{rows:1,cols:1},
+        groupPos:{},
+        meta:meta
+      })
+
+      let stfContainer = elFac.createContainer({
+        groupID:[],
+        pos:{w:1,h:3,x:1,y:1},
         innerGrid:{rows:1,cols:1},
         groupPos:{},
         meta:meta
@@ -88,12 +97,14 @@ export default {
         group: group,
         section: section,
         item: stuffspaceItem,
+        stuffspace:stuffspace,
+        stfContainer: stfContainer,
       }
       CreateNewDashboard(newDashData).then(newDashID=>{
 
         // let userData = new UserFactory().createUser(this.username,[newDashID]);
         this.$store.dispatch('getUser').then((userData)=>{
-          console.log(userData)
+          // console.log(userData)
           userData.dashboardID = Array.from(userData.dashboardID)
           userData.dashboardID.push(newDashID)
 

@@ -2,6 +2,7 @@ import firebase from "firebase";
 import 'firebase/auth'
 import 'firebase/firestore'
 import 'firebase/database'
+import 'firebase/storage'
 import {store} from "@/store/store";
 import router from '@/router/router'
 
@@ -22,7 +23,9 @@ firebase.analytics();
 
 // firebase.database.enableLogging(true);
 
-
+const storage = firebase.storage();
+// var storageRef = storage.ref();
+// console.log(storageRef)
 
 // should handle login ~persistancy
 // if a user is auth then init the database handler
@@ -31,6 +34,8 @@ firebase.auth().onAuthStateChanged((user)=>{
     // console.log(user);
     if(user){
         store.dispatch('initDB',{uid:user.uid})
+        store.dispatch('initStorage',{uid:user.uid})
+
         store.commit('authUser',)
 
         if(router.currentRoute.value.path === '/login') { // ako je na login stranici onda ga prebaci na prvi dash
@@ -55,5 +60,6 @@ const database = firebase.database();
 
 export {
     firebase,
-    database
+    database,
+    storage
 }

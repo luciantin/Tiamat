@@ -98,12 +98,13 @@ const actions = {
         }
     },
     setElementByKey(context,{type,id,val,key}){
-        // console.log(type,id,val,key,context)
+        // if(type==='dashboard')console.log(type,id,val,key,context)
 
         context.commit('setElementByKey',{type,id,val,key})
         dbHandler.qElement.setKey(type,id,key,val);
     },
     setSubElementByKey(context,{type,id,val,key,subKey}){
+        // console.log(type,id,key,subKey)
         context.commit('setSubElementByKey',{type,id,val,key,subKey})
         let tmpKey = key+'/'+subKey;
         dbHandler.qElement.setKey(type,id,tmpKey,val);

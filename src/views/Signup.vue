@@ -89,8 +89,17 @@ export default {
         })
 
         let dashboard = elFac.createDashboard({stuffspaceID:[],containerID:[],meta:meta,gridData:gridData});
+        let stuffspace = elFac.createStuffspace({containerID:[],meta:meta,gridData:gridData})
 
         let container = elFac.createContainer({
+          groupID:[],
+          pos:{w:1,h:3,x:1,y:1},
+          innerGrid:{rows:1,cols:1},
+          groupPos:{},
+          meta:meta
+        })
+
+        let stfContainer = elFac.createContainer({
           groupID:[],
           pos:{w:1,h:3,x:1,y:1},
           innerGrid:{rows:1,cols:1},
@@ -121,6 +130,8 @@ export default {
           group: group,
           section: section,
           item: stuffspaceItem,
+          stuffspace:stuffspace,
+          stfContainer: stfContainer,
         }
 
         CreateNewDashboard(newDashData).then(newDashID=>{

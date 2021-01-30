@@ -37,7 +37,7 @@ export default {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  user-select: none; // TODO
+  user-select: none;  //TODO
 }
 
 #app {

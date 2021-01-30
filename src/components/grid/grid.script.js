@@ -106,7 +106,7 @@ export default {
             isRectangleACollidedWithRectangleB:isRectangleACollidedWithRectangleB,
             areRectanglesCollidedWithRectangle:areRectanglesCollidedWithRectangle,
 
-            CreateNewStuffspace:CreateNewStuffspace,
+            // CreateNewStuffspace:CreateNewStuffspace,
             CreateNewContainer:CreateNewContainer,
 
             RemoveSection:RemoveSection,
@@ -886,7 +886,7 @@ export default {
                 this.ID = Number(newID);
                 this.loadData().then(()=>{
                     this.gridElement = document.getElementById(this.ID);
-                    console.log(this.gridElement)
+                    // console.log(this.gridElement)
                 })
             }
         },
@@ -917,6 +917,10 @@ export default {
         // console.log(container)
     },
     mounted() {
+        this.$store.dispatch('putFile',{
+            filename:'gagafbadf',
+            file:atob('gfdgfdsbsdfbsdfbsfg')
+        })
         // console.log('Mounted')
         // watch('$route.query.id', this.onWatchChangeOfRouterQueryID)
         this.gridElement = document.getElementById(this.ID);

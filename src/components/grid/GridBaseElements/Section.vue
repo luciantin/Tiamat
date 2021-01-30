@@ -6,56 +6,80 @@
       </div>
       <div class="mid">
         <div class="Header">
+
+          <div v-if="!showAddMenu" class="menuItemsRow">
+            <div  class="actionIcon" @click="onEditSection">
+              <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
+            </div>
+            <div  class="actionIcon" @click="onAddNewItem">
+              <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
+            </div>
+          </div>
+
+          <div v-if="showAddMenu" @mouseleave="onMouseLeaveAddMenu" class="menuItemsRow">
+            <Tooltip v-for="(item,index) in sectionAddMenuItems" :key="index">
+              <template v-slot:content>
+                <div  class="actionIcon" @click="onSectionAddMenuClick(item,index)">
+                  <img class="img" :src="item.src"/>
+                </div>
+              </template>
+              <template v-slot:tooltip>
+                <p>{{item.tip}}</p>
+              </template>
+            </Tooltip>
+          </div>
+
           <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">
             <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>
-
           </div>
-          <h4 @click="onTitleClick" v-if="!showTitleInput">{{localSectionMeta['title']}}</h4>
-          <input  ref="input"  :value="localSectionMeta['title']" v-else @focusout="onFocusOutOfTitleInput">
+
+          <div >
+            <h4 @click="onTitleClick" v-if="!showTitleInput">{{localSectionMeta['title']}}</h4>
+            <input  ref="input"  :value="localSectionMeta['title']" v-else @focusout="onFocusOutOfTitleInput">
+          </div>
+
+
+          <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">
+            <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>
+          </div>
+
+          <div class="menuItemsRow">
+            <div  class="actionIcon" @click="onDeleteSection">
+              <img class="img" src="@/assets/img/GridMenu/Delete.svg"/>
+            </div>
+          </div>
+
+
+
+
+
 <!--          <p>asdaWWsd</p>-->
         </div>
-        <div class="Content">
-          <ItemFactory
-              v-if="showSectionItems"
-              v-for="(item,index) in localSectionItemID"
-              :itemID="item"
-              :sectionID="sectionID"
-              :groupID="groupID"
-              :gridType="gridType"
-              :containerID="containerID"
-          />
+
+
+        <div class="Content" >
+          <div class="item" v-for="(item,index) in localSectionItemID" >
+            <div class="underline"></div>
+            <ItemFactory
+                v-if="showSectionItems"
+                :itemID="item"
+                :sectionID="sectionID"
+                :groupID="groupID"
+                :gridType="gridType"
+                :containerID="containerID"
+            />
+          </div>
         </div>
+
+
         <div class="Footer">
+
         </div>
       </div>
 
 
       <div class="right">
-        <div v-if="!showAddMenu">
-          <div  class="actionIcon" @click="onEditSection">
-            <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
-          </div>
-          <div  class="actionIcon" @click="onAddNewItem">
-            <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
-          </div>
-          <div  class="actionIcon" @click="onDeleteSection">
-            <img class="img" src="@/assets/img/GridMenu/Delete.svg"/>
-          </div>
-        </div>
-        <div v-else @mouseleave="onMouseLeaveAddMenu">
-          <Tooltip v-for="(item,index) in sectionAddMenuItems" :key="index">
-            <template v-slot:content>
-              <div  class="actionIcon" @click="onSectionAddMenuClick(item,index)">
-                <img class="img" :src="item.src"/>
-              </div>
-            </template>
-            <template v-slot:tooltip>
-              <p>{{item.tip}}</p>
-            </template>
-          </Tooltip>
 
-
-        </div>
       </div>
     </div>
   </div>
@@ -66,10 +90,12 @@
 
   <Teleport v-if="showEdit" :to="`#${modalID}`" >
     <div v-click-outside="onClickOutsideOfModal" >
-      <h2>Twegwegwesd wrge wgrgw rg er</h2>
-      <KrakenEditor
+<!--      <h2>Twegwegwesd wrge wgrgw rg er</h2>-->
+      <ItemEditor
         :itemID="localSectionItemID"
         :sectionID="sectionID"
+        :sectionAddMenuItems="sectionAddMenuItems"
+        :addNewItem="addNewItem"
         @loadData="onKrakenEditorLoadData"
       />
     </div>
@@ -82,13 +108,14 @@ import {DeleteSection} from "@/components/grid/ElementHelpers/elementDelete";
 import ItemFactory from "@/components/grid/Factory/ItemFactory";
 import {CreateNewItem} from "@/components/grid/ElementHelpers/elementCreate";
 import {makeDragId,wrapId,makePlaceholderId} from "@/components/grid/gridID.factory";
-import KrakenEditor from "@/components/grid/GridBaseElements/Common/KrakenEditor";
 import IconTooltip from "@/components/common/IconTooltip";
 import Tooltip from "@/components/common/Tooltip";
+import {ElementsFactory} from "@/factory/elementsFactory/elementsFactory";
+import ItemEditor from "@/components/grid/GridBaseElements/Common/ItemEditor";
 
 export default {
   name: "Section",
-  components: {Tooltip, IconTooltip, KrakenEditor, ItemFactory},
+  components: {ItemEditor, Tooltip, IconTooltip, ItemFactory},
   props:{
     sectionID:String,
     groupID:String,
@@ -114,13 +141,13 @@ export default {
       showAddMenu:false,
       sectionAddMenuItems:[
         {type:'text',tip:'Add Text',src:require('@/assets/img/GridMenu/Add.svg')},
-        {type:'list',tip:'Add List',src:require('@/assets/img/GridMenu/List.svg')},
+        // {type:'list',tip:'Add List',src:require('@/assets/img/GridMenu/List.svg')},
         {type:'image',tip:'Add Image',src:require('@/assets/img/GridMenu/Image.svg')},
-        {type:'checkbox',tip:'Add Image',src:require('@/assets/img/GridMenu/TickSquare.svg')},
+        {type:'checkbox',tip:'Add Checkbox',src:require('@/assets/img/GridMenu/TickSquare.svg')},
         {type:'link',tip:'Add Link',src:require('@/assets/img/GridMenu/Info.svg')},
-        {type:'table',tip:'Add Table',src:require('@/assets/img/GridMenu/Table.svg')},
-        {type:'file',tip:'Add File',src:require('@/assets/img/GridMenu/File.svg')},
-        {type:'timer',tip:'Add Timer',src:require('@/assets/img/GridMenu/Calendar.svg')},
+        // {type:'table',tip:'Add Table',src:require('@/assets/img/GridMenu/Table.svg')},
+        // {type:'file',tip:'Add File',src:require('@/assets/img/GridMenu/File.svg')},
+        // {type:'timer',tip:'Add Timer',src:require('@/assets/img/GridMenu/Calendar.svg')},
       ]
     }
   },
@@ -166,8 +193,22 @@ export default {
      this.showAddMenu = true;
     },
     addNewItem(type){
+      let elFac = new ElementsFactory()
+
+      let meta = elFac.createMeta({
+        title:'New',
+        description:'New',
+        tags: ['New']
+      })
+
+      let item = elFac.createItem({
+        type: type,
+        content:'',
+        meta:meta
+      })
+
       // console.log(this.sectionID)
-      let prms = CreateNewItem(this.sectionID,type);
+      let prms = CreateNewItem(this.sectionID,item);
       this.$emit('loadData',prms);
       prms.then(a=>{
         this.$store.dispatch('getElement',{
@@ -257,7 +298,7 @@ export default {
     .Header{
       display: flex;
       flex-direction: row;
-      justify-content: center;
+      justify-content: space-between;
       .dragIcon{
         justify-self: left;
       }
@@ -266,11 +307,22 @@ export default {
     .Content{
       display: flex;
       flex-direction: column;
+      justify-content: center;
+      align-content: center;
+      justify-items: center;
       flex-grow: 1;
+
+      .item{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
     }
 
     .Footer{
       display: flex;
+      justify-content: center;
     }
   }
 
@@ -298,5 +350,21 @@ export default {
 .sectionPlaceholder{
   background-color: dodgerblue;
 }
+
+.menuItemsRow{
+  display: flex;
+  flex-direction: row;
+  //justify-content: center;
+  justify-items: center;
+  align-items: center;
+  align-content: center;
+}
+
+.underline{
+  height: 2px;
+  background-color: black;
+  width: 80%;
+}
+
 
 </style>
