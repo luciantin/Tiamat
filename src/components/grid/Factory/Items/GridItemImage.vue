@@ -54,7 +54,8 @@ export default {
   },
   mounted() {
     if(String(this.content) === '') return;
-    console.log(this.$store.dispatch('getFileURL',{filename:String(this.content)}).then(a=>this.blobData=a))
+    // console.log()
+    this.$store.dispatch('getFileURL',{filename:String(this.content)}).then(a=>this.blobData=a)
     // this.blobData = String(this.content)
   }
 }

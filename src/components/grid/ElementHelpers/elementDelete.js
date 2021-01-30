@@ -74,7 +74,6 @@ const DeleteContainer = function (gridID,cntID,GridType){
 }
 
 const DeleteSection = function (groupID,sectionID){
-
     let delFromGroup = new Promise((resolve => {
         return store.dispatch('getElementByKey',{
             type:'group',

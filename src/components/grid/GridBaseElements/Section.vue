@@ -2,15 +2,14 @@
   <div  v-if="sectionID >= 0" class="section" :id="wrapId([containerID,groupID,sectionID])" :index="index">
     <div class="sectionContent">
       <div class="left">
-
       </div>
       <div class="mid">
         <div class="Header">
 
           <div v-if="!showAddMenu" class="menuItemsRow">
-            <div  class="actionIcon" @click="onEditSection">
-              <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>
-            </div>
+<!--            <div  class="actionIcon" @click="onEditSection">-->
+<!--              <img class="img "  src="@/assets/img/GridMenu/Edit.svg"/>-->
+<!--            </div>-->
             <div  class="actionIcon" @click="onAddNewItem">
               <img class="img "  src="@/assets/img/GridMenu/Add.svg"/>
             </div>
@@ -125,7 +124,7 @@ export default {
     showSectionItems:Boolean,
     modalID:String,
   },
-  emits:['loadData','onSectionDragDown','onSectionDragUp','showModal'],
+  emits:['loadData','onSectionDragDown','onSectionDragUp','showModal','onSectionDelete'],
   data(){
     return{
       showTitleInput:false,
@@ -181,7 +180,9 @@ export default {
       this.$emit('showModal',resp)
     },
     onDeleteSection(){
-      DeleteSection(this.groupID,this.sectionID);
+      DeleteSection(this.groupID,this.sectionID).then(a=>{
+        this.$emit('onSectionDelete');
+      });
     },
     onEditSection(){
       this.modalClickDebounce = true;
@@ -243,20 +244,23 @@ export default {
       }
       // console.log(this.localSectionMeta)
     },
+    loadSectionItemID(){
+      if(this.sectionID >= 0 && this.sectionID !== null){
+        this.$store.dispatch('getElement',{
+          type:'section',
+          id:this.sectionID,
+        }).then(sec=>{
+          // console.log(sec)
+          if(sec.itemID === undefined) this.localSectionItemID = [];
+          else {
+            this.localSectionItemID = Array.from(sec.itemID);
+          }
+        })
+      }
+    }
   },
   beforeMount() {
-    if(this.sectionID >= 0 && this.sectionID !== null){
-      this.$store.dispatch('getElement',{
-        type:'section',
-        id:this.sectionID,
-      }).then(sec=>{
-        // console.log(sec)
-        if(sec.itemID === undefined) this.localSectionItemID = [];
-        else {
-          this.localSectionItemID = Array.from(sec.itemID);
-        }
-      })
-    }
+    this.loadSectionItemID()
   },
   mounted() {
     if(this.sectionID >= 0 && this.sectionID !== null){

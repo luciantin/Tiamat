@@ -24,7 +24,7 @@
           :sectionID="id"
           :containerID="containerID"
           :index="index"
-          :key="index"
+          :key="id"
           :showSectionItems="showSectionItems"
           :gridType="GridType"
           :modalID="modalID"
@@ -32,6 +32,7 @@
           @onSectionDragDown="onSectionDragDown"
           @onSectionDragUp="onSectionDragUp"
           @showModal="onShowModal"
+          @onSectionDelete="onSectionDelete"
       />
       <div v-if="showAddButton" class="AddNewButton" @click="onAddNewSection">Add</div>
 
@@ -88,6 +89,9 @@ export default {
     }
   },
   methods:{
+    onSectionDelete(){
+      // console.log(this.sections)
+    },
     onShowModal(resp) {
       this.$emit('showModal',resp)
     },
