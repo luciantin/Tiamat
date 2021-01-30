@@ -33,9 +33,9 @@
             </Tooltip>
           </div>
 
-          <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">
-            <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>
-          </div>
+<!--          <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">-->
+<!--            <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>-->
+<!--          </div>-->
 
           <div >
             <h4 @click="onTitleClick" v-if="!showTitleInput">{{localSectionMeta['title']}}</h4>
@@ -43,9 +43,9 @@
           </div>
 
 
-          <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">
-            <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>
-          </div>
+<!--          <div class="actionIcon dragIcon" :id="makeDragId([containerID,groupID,sectionID])"  @mousedown="onDragDown" @mouseup="onDragUp">-->
+<!--            <img class="img" src="@/assets/img/GridMenu/DragElem.svg"/>-->
+<!--          </div>-->
 
           <div class="menuItemsRow">
             <div  class="actionIcon" @click="onDeleteSection">

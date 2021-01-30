@@ -12,7 +12,7 @@ export default {
 .drag{
   width: 0.5em;
   height: 0.5em;
-  background-color: chartreuse;
+  background-color: rgba(0,0,0,0);
   cursor: se-resize;
 }
 </style>

@@ -43,14 +43,14 @@ export default {
                     header: true,
                     drag:true, // display drag
                     menu:false, // display menu
-                    resize:true,
+                    resize:false,
                 },
                 group:{
                     title:false, // display title
                     header: false,
                     drag:false, // display drag
                     menu:false, // display menu
-                    resize:true,
+                    resize:false,
                     style:{
                         height:'100%',
                         overflow:'hidden'
@@ -176,6 +176,10 @@ export default {
         }
     },
     methods:{
+        onLogout(){
+            this.$store.dispatch('logOut');
+            this.$router.push({path:'/'});
+        },
         onShowModal(resp){
             this.showModal = resp.showModal;
         },
@@ -202,6 +206,9 @@ export default {
             this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.sectionId);
 
             this.mouseData.mouseDownTarget.style.position = 'absolute';
+            this.mouseData.mouseDownTarget.style.maxWidth = '5vw'
+            this.mouseData.mouseDownTarget.style.maxHeight = '5vw'
+            // this.mouseData.mouseDownTarget.style.maxWidth = '5vw'
         },
 
         onContainerResizeMouseDown(event){
@@ -258,7 +265,10 @@ export default {
 
 
             this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.groupId);
+
             this.mouseData.mouseDownTarget.style.position = 'absolute';
+            this.mouseData.mouseDownTarget.style.maxWidth = '5vw'
+            this.mouseData.mouseDownTarget.style.maxHeight = '5vw'
         },
 
         onContainerMouseDown(event){
@@ -271,6 +281,9 @@ export default {
             // console.log(this.mouseData.containerId)
             this.mouseData.mouseDownTarget = document.getElementById(this.mouseData.containerId);
             this.mouseData.mouseDownTarget.style.position = 'absolute'; // 'unlock' the container so it can be moved
+            this.mouseData.mouseDownTarget.style.maxWidth = '5vw'
+            this.mouseData.mouseDownTarget.style.maxHeight = '5vw'
+
             this.mouseData.containerKey = this.unwrapId(this.mouseData.containerId)[0];
             this.refreshTmpContainerPosDic(); // used for collision detection
             this.tmpContainerData.placeholderPos.w = this.containers[this.mouseData.containerKey].pos.w; // set placeholder w and h to be the same as current dragged elem.
@@ -553,6 +566,8 @@ export default {
         handleMouseReleasedForSection(){
             this.mouseData.hasClickedOnSection = false;
             this.mouseData.mouseDownTarget.style.position = 'static';
+            this.mouseData.mouseDownTarget.style.maxWidth = 'none';
+            this.mouseData.mouseDownTarget.style.maxHeight = 'none';
 
             if(this.mouseData.mouseUpSectionPlaceholderIndex === -1) return ;
             // groupID: this.groupID,
@@ -617,6 +632,8 @@ export default {
                 this.mouseData.prevHoveredOverGroupPlaceholderElement.style.display = 'none';
             }
             this.mouseData.mouseDownTarget.style.position = 'static';
+            this.mouseData.mouseDownTarget.style.maxWidth = 'none'
+            this.mouseData.mouseDownTarget.style.maxHeight = 'none'
             this.mouseData.canBeDropped = false;
         },
 

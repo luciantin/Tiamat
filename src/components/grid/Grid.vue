@@ -32,14 +32,13 @@
 
       </div>
       <div class="Mid">
-
-      </div>
-      <div class="Bot">
         <div   @mousedown="addGrid" >
           <img class="actionDragButton" :src="require('@/assets/img/GridMenu/SideAdd.svg')"/>
         </div>
-        <img :src="require('@/assets/img/GridMenu/SideSettings.svg')" @click="onClickShowSideMenuContent('UserSettings')" />
-        <img :src="require('@/assets/img/GridMenu/SideMenuLogout2.svg')" @click="Logout" />
+      </div>
+      <div class="Bot">
+<!--        <img :src="require('@/assets/img/GridMenu/SideSettings.svg')" @click="onClickShowSideMenuContent('UserSettings')" />-->
+        <img :src="require('@/assets/img/GridMenu/SideMenuLogout2.svg')" @click="onLogout" />
       </div>
 
 
@@ -70,12 +69,12 @@
     >
 
       <template v-slot:ContainerDrag>
-          <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer])" @mousedown="onContainerMouseDown($event)"  ></Drag>
+          <Drag v-if="styleData.container.drag" class="dashboardHoverMenu" :id="this.makeDragId([keyContainer])" @mousedown="onContainerMouseDown($event)"  ></Drag>
       </template>
 
 
       <template v-slot:ContainerFooter>
-          <Resize class="dashboardResize" :id="this.makeResizeId([keyContainer])" @mousedown="onContainerResizeMouseDown($event)"  ></Resize>
+          <Resize v-if="styleData.container.resize" class="dashboardResize" :id="this.makeResizeId([keyContainer])" @mousedown="onContainerResizeMouseDown($event)"  ></Resize>
       </template>
 
       <template v-slot:ContainerGroups>
@@ -98,11 +97,11 @@
             @showModal="onShowModal"
         >
           <template v-slot:GroupDrag>
-              <Drag class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>
+              <Drag v-if="styleData.group.drag" class="dashboardHoverMenu" :id="this.makeDragId([keyContainer,keyGroup])" @mousedown="onGroupMouseDown($event)"  ></Drag>
           </template>
 
           <template v-slot:GroupFooter>
-            <Resize class="dashboardResize" :id="this.makeResizeId([keyContainer,keyGroup])" @mousedown="onGroupResizeMouseDown($event)"  ></Resize>
+            <Resize v-if="styleData.group.resize" class="dashboardResize" :id="this.makeResizeId([keyContainer,keyGroup])" @mousedown="onGroupResizeMouseDown($event)"  ></Resize>
           </template>
 
         </Group>
