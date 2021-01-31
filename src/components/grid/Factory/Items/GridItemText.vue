@@ -1,14 +1,25 @@
 <template>
 <!--  <p>text {{content}}</p>-->
-  <p @click="onTextClick" v-if="!showTextInput">{{localText}}</p>
-  <textarea  ref="input"  :value="localText" v-else @focusout="onFocusOutOfTextInput"> </textarea>
+  <div class="textItem">
+    <div class="leftCol">
+      <div @click="onTextClick" v-if="!showTextInput">
+        <p v-for="line in localText.split('\n')">{{line}}</p>
+      </div>
+      <textarea  ref="input" :rows="numOfNewlines" :value="localText" v-else @focusout="onFocusOutOfTextInput"> </textarea>
+    </div>
+    <div class="rightCol">
+      <DeleteItem @onItemDelete=""  />
+    </div>
+  </div>
 
 
 </template>
 
 <script>
+import DeleteItem from "@/components/grid/GridBaseElements/Common/DeleteItem";
 export default {
 name: "GridItemText",
+  components: {DeleteItem},
   props:{
     content:String,
     ID:Object,
@@ -37,11 +48,34 @@ name: "GridItemText",
   },
   mounted() {
     this.localText = String(this.content)
+  },
+  computed:{
+    numOfNewlines(){
+      return this.localText.split('\n').length
+    }
   }
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+
+.textItem{
+  display: flex;
+  flex-direction: row;
+
+  .leftCol{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 5;
+  }
+
+  .rightCol{
+    display: flex;
+    flex-direction: column;
+    flex-grow: 0;
+  }
+
+}
 
 p{
   color: black;

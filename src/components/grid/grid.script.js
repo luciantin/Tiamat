@@ -474,11 +474,11 @@ export default {
                 this.tmpContainerData.placeholderPos.y = gridSector.y;
 
                 if(isCollision.isCollided){
-                    placeholder.style.backgroundColor = "red";
+                    placeholder.style.backgroundColor = "rgba(255, 153, 153, 0.2)";
                     this.mouseData.canBeDropped = false;
                 }
                 else{
-                    placeholder.style.backgroundColor = 'green';
+                    placeholder.style.backgroundColor = 'rgba(179, 255, 179, 0.2)';
                     this.mouseData.canBeDropped = true;
                 }
             }
@@ -542,11 +542,11 @@ export default {
                 let isCopyComingFromDifferentContainer = this.mouseData.containerKey != firstHoveredContainerKey;
 
                 if(isCollision.isCollided || (isCopyOfGroupAlreadyInContainer && isCopyComingFromDifferentContainer)){
-                    groupPlaceholderElement.style.backgroundColor = "red";
+                    groupPlaceholderElement.style.backgroundColor = "rgba(255, 153, 153, 0.2)";
                     this.mouseData.canBeDropped = false;
                 }
                 else{
-                    groupPlaceholderElement.style.backgroundColor = "green";
+                    groupPlaceholderElement.style.backgroundColor = "rgba(179, 255, 179, 0.2)";
                     this.mouseData.canBeDropped = true;
                 }
                 groupPlaceholderElement.style.display = 'initial'; //FIXME ??? ...... zaboravio sam sta, valjda je ok onda....
@@ -753,8 +753,8 @@ export default {
                 let gridData = elFac.createGridData({
                     gridID : 'newDash',
                     gridClass: 'dashboard',
-                    gridColNum:5,
-                    gridRowNum:5
+                    gridColNum:20,
+                    gridRowNum:20
                 })
 
                 let newStuffSpaceData = elFac.createStuffspace({

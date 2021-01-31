@@ -68,7 +68,7 @@ async function CreateNewContainer(gridID,CntData,type){
         firstCnt = elFac.createContainer({
             groupID: [],
             pos: {w: 1, h: 1, x: 1, y: 1},
-            innerGrid: {rows: 2, cols: 2},
+            innerGrid: {rows: 6, cols: 6},
             groupPos: {},
             meta: elFac.createMeta({
                 title: 'New',

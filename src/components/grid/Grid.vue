@@ -116,7 +116,9 @@
               gridRowStart: container.groupPlaceholderPos.y,
               gridRowEnd: container.groupPlaceholderPos.y + container.groupPlaceholderPos.h ,
             }"
-        > <p> Hi, I'm a placeholder for {{keyContainer}}</p></div>
+        >
+<!--          <p> Hi, I'm a placeholder for {{keyContainer}}</p>-->
+        </div>
       </template>
 
     </Container>
@@ -131,7 +133,9 @@
               gridRowStart: tmpContainerData.placeholderPos.y,
               gridRowEnd: tmpContainerData.placeholderPos.y + tmpContainerData.placeholderPos.h ,
             }"
-    > <p> Hi, I'm a placeholder for dashboard</p></div>
+    >
+<!--      <p> Hi, I'm a placeholder for dashboard</p>-->
+    </div>
   </div>
 
 <!--</div>-->

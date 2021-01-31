@@ -63,24 +63,18 @@
   height: 100vh;
   //padding: 50px;
 
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  padding-left: 60px;
-  padding-right: 0.5em;
-
-
+  padding: 0.5em 0.5em 0.5em 60px;
   overflow: hidden;
 
 
-
   .dashboardPlaceholder{
-    background-color: green;
+    background-color: rgba(179, 255, 179, 0.1);
     color: black;
     display: none;
   }
 
   .containerPlaceholder{
-    background-color: green;
+    background-color: rgba(179, 255, 179, 0.1);
     color: black;
     display: none;
   }

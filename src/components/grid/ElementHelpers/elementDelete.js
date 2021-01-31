@@ -99,9 +99,28 @@ const DeleteSection = function (groupID,sectionID){
 
 }
 
+async function DeleteItemFromSection(secID,itemID){
+    let itemList = await store.dispatch('getElementByKey',{
+        type:'section',
+        id:secID,
+        key:'itemID'
+    })
+
+    itemList = Array.from(itemList);
+    itemList.splice(itemList.indexOf(Number(itemID)), 1);
+
+    return store.dispatch('setElementByKey',{
+        type:'section',
+        id:secID,
+        key:'itemID',
+        val: itemList
+    })
+}
+
 
 export {
     DeleteGroupFromContainer,
     DeleteContainer,
-    DeleteSection
+    DeleteSection,
+    DeleteItemFromSection
 }
