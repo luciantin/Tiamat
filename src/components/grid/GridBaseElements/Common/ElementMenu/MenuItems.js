@@ -30,7 +30,22 @@ let dashCnt = {
     ]
 }
 
+let grp = {
+    top:[
+        items['Delete'],
 
+        // items['Edit'],
+    ],
+    mid:[
+        // items['Delete'],
+        // items['Filter'],
+        // items['Lock'],
+    ],
+    bot:[
+        // items['Tags'],
+        // items['Delete'],
+    ]
+}
 
 
 
@@ -41,7 +56,7 @@ let MenuItems={
     },
     'stuffspace':{
         'container':dashCnt,
-        'group':dashCnt
+        'group':grp
     }
 }
 

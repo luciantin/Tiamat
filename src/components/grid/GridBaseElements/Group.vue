@@ -12,7 +12,7 @@
         </div>
       </div>
       <div class="Right">
-        <div class="GroupMenuButton" v-if="showMenu">
+        <div class="GroupMenuButton" v-if="showMenu" >
           <img src="@/assets/img/GridMenu/MenuElem.svg"  @click="onGroupMenuClick" />
         </div>
       </div>
@@ -84,7 +84,7 @@ export default {
   emits:['loadData','onSectionDragUp','onSectionDragDown','showModal'],
   data(){
     return{
-      showSettings:true,
+      showSettings:false,
       showTitleInput:false,
       showAddButton:false,
       isSectionBeingDragged:false,
