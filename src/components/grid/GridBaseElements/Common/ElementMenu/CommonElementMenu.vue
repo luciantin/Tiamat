@@ -51,12 +51,13 @@ name: "CommonElementMenu",
   .CommonMenuElement{
     display: flex;
     flex-direction: column;
-    align-items: center;
+    //align-items:  space-between;
 
     .TopRow{
       display: flex;
       flex-direction: row;
       padding-bottom: 20px;
+      justify-content: space-evenly;
     }
 
     .MidRow{

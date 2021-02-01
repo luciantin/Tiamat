@@ -96,7 +96,7 @@ export default {
 
         let container = elFac.createContainer({
           groupID:[],
-          pos:{w:1,h:3,x:1,y:1},
+          pos:{w:1,h:1,x:1,y:1},
           innerGrid:{rows:1,cols:1},
           groupPos:{},
           meta:meta
@@ -104,8 +104,8 @@ export default {
 
         let stfContainer = elFac.createContainer({
           groupID:[],
-          pos:{w:1,h:3,x:1,y:1},
-          innerGrid:{rows:1,cols:1},
+          pos:{w:1,h:1,x:1,y:1},
+          innerGrid:{rows:3,cols:3},
           groupPos:{},
           meta:meta
         })

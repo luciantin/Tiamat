@@ -84,7 +84,7 @@ export default {
   emits:['loadData','onSectionDragUp','onSectionDragDown','showModal'],
   data(){
     return{
-      showSettings:false,
+      showSettings:true,
       showTitleInput:false,
       showAddButton:false,
       isSectionBeingDragged:false,

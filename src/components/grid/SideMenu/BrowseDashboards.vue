@@ -83,8 +83,8 @@ export default {
       let gridData = elFac.createGridData({
         gridID : 'newDash',
         gridClass: 'dashboard',
-        gridColNum:5,
-        gridRowNum:5
+        gridColNum:8,
+        gridRowNum:8
       })
 
       let dashboard = elFac.createDashboard({stuffspaceID:[],containerID:[],meta:meta,gridData:gridData});
@@ -100,8 +100,8 @@ export default {
 
       let stfContainer = elFac.createContainer({
         groupID:[],
-        pos:{w:1,h:3,x:1,y:1},
-        innerGrid:{rows:1,cols:1},
+        pos:{w:2,h:2,x:1,y:1},
+        innerGrid:{rows:3,cols:3},
         groupPos:{},
         meta:meta
       })

@@ -753,8 +753,8 @@ export default {
                 let gridData = elFac.createGridData({
                     gridID : 'newDash',
                     gridClass: 'dashboard',
-                    gridColNum:20,
-                    gridRowNum:20
+                    gridColNum:6,
+                    gridRowNum:6
                 })
 
                 let newStuffSpaceData = elFac.createStuffspace({

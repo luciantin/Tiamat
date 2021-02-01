@@ -15,15 +15,18 @@ let items = {
 let dashCnt = {
     top:[
         items['Add'],
-        items['Edit'],
+        items['Delete'],
+
+        // items['Edit'],
     ],
     mid:[
-        items['Filter'],
-        items['Lock'],
+        // items['Delete'],
+        // items['Filter'],
+        // items['Lock'],
     ],
     bot:[
-        items['Tags'],
-        items['Delete'],
+        // items['Tags'],
+        // items['Delete'],
     ]
 }
 

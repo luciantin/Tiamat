@@ -38,8 +38,8 @@
 <!--          </div>-->
 
           <div >
-            <h4 @click="onTitleClick" v-if="!showTitleInput">{{localSectionMeta['title']}}</h4>
-            <input  ref="input"  :value="localSectionMeta['title']" v-else @focusout="onFocusOutOfTitleInput">
+            <h4 @click="onTitleClick" class="titleText" v-if="!showTitleInput">{{localSectionMeta['title']}}</h4>
+            <input  ref="input" class="titleInput" :value="localSectionMeta['title']" v-else @focusout="onFocusOutOfTitleInput">
           </div>
 
 
@@ -401,6 +401,19 @@ export default {
   background-color: black;
   width: 80%;
 }
-
+.titleInput{
+  font-family: Arial, sans-serif;
+  font-size: 100%;
+  width: 95%;
+  pointer-events: all;
+  border: none;
+  user-select: initial;
+  text-align: center;
+  background-color: rgba(0,0,0,0);
+  font-weight: bold;
+  &:focus{
+    outline: none;
+  }
+}
 
 </style>
