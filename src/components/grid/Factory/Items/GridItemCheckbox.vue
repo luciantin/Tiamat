@@ -6,14 +6,19 @@
      <p  v-if="!showTextInput">{{localText}}</p>
      <input  ref="input"  :value="localText" v-else @focusout="onFocusOutOfTextInput">
    </div>
+    <div>
+      <DeleteItem :secID="Number(this.ID.sectionID)" :itemID="Number(this.ID.itemID)" @onItemDelete="$emit('onItemDelete',$event)"  />
+    </div>
   </div>
 
 
 </template>
 
 <script>
+import DeleteItem from "@/components/grid/GridBaseElements/Common/DeleteItem";
 export default {
   name: "GridItemCheckbox",
+  components: {DeleteItem},
   props:{
     ID:Object,
   },

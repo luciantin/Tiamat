@@ -8,7 +8,7 @@
       <textarea  ref="input" :rows="numOfNewlines" :value="localText" v-else @focusout="onFocusOutOfTextInput"> </textarea>
     </div>
     <div class="rightCol">
-      <DeleteItem @onItemDelete=""  />
+      <DeleteItem :secID="Number(this.ID.sectionID)" :itemID="Number(this.ID.itemID)" @onItemDelete="$emit('onItemDelete',$event)"  />
     </div>
   </div>
 
@@ -24,6 +24,7 @@ name: "GridItemText",
     content:String,
     ID:Object,
   },
+  emits:['onItemDelete',],
   data(){
     return{
       localText:'',

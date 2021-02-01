@@ -19,6 +19,7 @@ name: "DeleteItem",
   },
   methods:{
     onClickDelete(){
+      // console.log(this.secID,this.itemID)
       this.$emit('onItemDelete',DeleteItemFromSection(this.secID, this.itemID));
     }
   },
@@ -27,10 +28,12 @@ name: "DeleteItem",
 }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .actionIcon{
   cursor: pointer;
-  width:16px ;
-  height: 16px;
+  img{
+    width: 14px ;
+    height: 14px;
+  }
 }
 </style>

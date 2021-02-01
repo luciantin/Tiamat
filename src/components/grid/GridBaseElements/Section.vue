@@ -66,11 +66,13 @@
             <div class="underline"></div>
             <ItemFactory
                 v-if="showSectionItems"
+                :key="item"
                 :itemID="item"
                 :sectionID="sectionID"
                 :groupID="groupID"
                 :gridType="gridType"
                 :containerID="containerID"
+                @onItemDelete="onItemDelete"
             />
           </div>
         </div>
@@ -155,7 +157,20 @@ export default {
       ]
     }
   },
+  // watch:{
+  //   localSectionItemID(New,Old){
+  //    // console.log(New,Old)
+  //   }
+  // },
   methods:{
+    onItemDelete(e) {
+
+      this.$emit('loadData',e)
+
+      e.then(a=>{
+        this.loadSectionItemID();
+      })
+    },
     onTitleClick(){
       this.showTitleInput = true;
     },
@@ -314,7 +329,7 @@ export default {
 
   .mid{
     flex-grow: 1;
-
+    width: 100%;
     .Header{
       display: flex;
       flex-direction: row;
@@ -336,6 +351,7 @@ export default {
         display: flex;
         flex-direction: column;
         align-items: center;
+        width: 100%;
       }
 
     }

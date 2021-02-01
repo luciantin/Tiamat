@@ -20,7 +20,7 @@
                 v-model="email"
                 placeholder="Email"
                 title="Email"
-                :is-ok="passwordCheck"
+                :is-ok="emailCheck"
                 type="email"
             />
             <InputField
@@ -30,6 +30,8 @@
                 :is-ok="passwordCheck"
                 type="password"
             />
+
+            <p>{{errorMessage}}</p>
           </div>
 
           <Button class="buttonLogin" text="Sign Up" @buttonClick="onClickSubmit" />
@@ -62,6 +64,7 @@ export default {
       password:'',
       email:'',
       username:'',
+      errorMessage:'    '
     }
   },
   methods:{
@@ -140,29 +143,25 @@ export default {
           this.$router.push({path:'/dashboard',query:{id:newDashID}});
         })
 
-
-
-
-        // let grpTwo = elFac.createGroup({
-        //   sectionID:[1],
-        //   meta:meta
-        // })
-        // let grpThree = elFac.createGroup({
-        //   sectionID:[2],
-        //   meta:meta
-        // })
-
-
-
       }).catch((error)=>{
-
+        // console.log(error)
+        this.errorMessage = error.message
       })
 
     },
 
     passwordCheck(val){
       return val.length >= 4;
-    }
+    },
+    emailCheck(val){
+      let indexOfAt = val.indexOf('@');
+      let indexOfDot = val.indexOf('.',indexOfAt);
+      if(indexOfAt === -1 || indexOfDot === -1) return false;// nema ih
+      if(indexOfDot-indexOfAt < 2) return false;
+      if(indexOfDot === val.length -1) return false;
+
+      else return true;
+    },
   }
 }
 </script>
@@ -198,6 +197,10 @@ export default {
         flex-shrink: 0;
         height: 40vh;
 
+
+        p{
+          text-align: center;
+        }
 
         .inputs{
           display: flex;

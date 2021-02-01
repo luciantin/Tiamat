@@ -7,8 +7,8 @@
       </div>
       <div class="Mid">
         <div v-if="showTitle">
-          <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
-          <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
+          <h4 @click="onTitleClick" class="titleText" v-if="!showTitleInput">{{localMeta.title}}</h4>
+          <input class="titleInput" ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
         </div>
       </div>
       <div class="Right">
@@ -125,6 +125,7 @@ export default {
       this.showTitleInput = true;
     },
     onFocusOutOfTitleInput(e){
+      console.log(document)
       this.localMeta.title = e.srcElement.value;
       this.$store.dispatch('setElementByKey',{
         type:'group',
@@ -255,9 +256,10 @@ export default {
       background-color: #D4C324;
       margin: 5px;
       cursor: pointer;
+      border-radius: 5px;
 
       &:hover{
-        background-color: chartreuse;
+        background-color: #ede494 ;
       }
     }
   }
@@ -276,6 +278,22 @@ export default {
     display: flex;
     flex-direction: row;
     justify-content: right;
+  }
+
+
+  .titleInput{
+    font-family: Arial, sans-serif;
+    font-size: 100%;
+    width: 95%;
+    pointer-events: all;
+    border: none;
+    user-select: initial;
+    text-align: center;
+    background-color: rgba(0,0,0,0);
+    font-weight: bold;
+    &:focus{
+      outline: none;
+    }
   }
 
 }

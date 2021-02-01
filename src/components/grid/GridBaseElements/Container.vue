@@ -7,7 +7,7 @@
       </div>
       <div class="Mid" v-if="showTitle">
         <h4 @click="onTitleClick" v-if="!showTitleInput">{{localMeta.title}}</h4>
-        <input  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
+        <input class="titleInput"  ref="input"  :value="localMeta.title" v-else @focusout="onFocusOutOfTitleInput">
 <!--        <div class="ShowTitle">-->
 <!--          <img src="@/assets/img/GridMenu/Show.svg"  @click="onHideTitleClick" />-->
 <!--        </div>-->
@@ -237,6 +237,22 @@ export default {
     flex-direction: row;
     justify-content: right;
   }
+
+  .titleInput{
+    font-family: Arial, sans-serif;
+    font-size: 100%;
+    width: 95%;
+    pointer-events: all;
+    border: none;
+    user-select: initial;
+    text-align: center;
+    background-color: rgba(0,0,0,0);
+    font-weight: bold;
+    &:focus{
+      outline: none;
+    }
+  }
+
 
 }
 

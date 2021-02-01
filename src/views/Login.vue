@@ -31,7 +31,7 @@
                 v-model="email"
                 placeholder="Email"
                 title="Email"
-                :is-ok="passwordCheck"
+                :is-ok="emailCheck"
                 type="email"
             />
             <InputField
@@ -41,6 +41,9 @@
                 :is-ok="passwordCheck"
                 type="password"
             />
+
+            <p>{{errorMessage}}</p>
+
           </div>
 
           <Button class="buttonLogin" text="Sign In" @buttonClick="onClickSubmit" />
@@ -71,6 +74,7 @@ export default {
       email:'',
       loading:false,
       // username:'',
+      errorMessage:'  '
     }
   },
   methods:{
@@ -87,7 +91,7 @@ export default {
             this.sendUserToFirstDash();
           })
           .catch((error)=>{
-
+            this.errorMessage = error.message
           })
     },
     sendUserToFirstDash(){
@@ -98,7 +102,16 @@ export default {
     },
     passwordCheck(val){
       return val.length >= 4;
-    }
+    },
+    emailCheck(val){
+      let indexOfAt = val.indexOf('@');
+      let indexOfDot = val.indexOf('.',indexOfAt);
+      if(indexOfAt === -1 || indexOfDot === -1) return false;// nema ih
+      if(indexOfDot-indexOfAt < 2) return false;
+      if(indexOfDot === val.length -1) return false;
+
+      else return true;
+    },
   },
   beforeMount() {
     // console.log(this.$store.getters.isAuth)
@@ -138,6 +151,9 @@ export default {
           flex-shrink: 0;
           height: 40vh;
 
+          p{
+            text-align: center;
+          }
 
           .inputs{
             display: flex;

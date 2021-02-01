@@ -5,14 +5,14 @@
 <!--  </div>-->
 
   <div v-if="itemData !== null" class="itemContainer">
-    <GridItemText  class="item" v-if="itemData.type === 'text'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemCheckbox  class="item"  v-if="itemData.type === 'checkbox'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemFile  class="item"  v-if="itemData.type === 'file'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemImage  class="item"  v-if="itemData.type === 'image'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemLink  class="item"  v-if="itemData.type === 'link'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemList  class="item"  v-if="itemData.type === 'list'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemStuffspace   v-if="itemData.type === 'stuffspace'" :content="itemData.content" :ID="{itemID,sectionID}" />
-    <GridItemTable  class="item"  v-if="itemData.type === 'table'" :content="itemData.content" :ID="{itemID,sectionID}" />
+    <GridItemText  class="item" v-if="itemData.type === 'text'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
+    <GridItemCheckbox  class="item"  v-if="itemData.type === 'checkbox'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
+    <GridItemFile  class="item"  v-if="itemData.type === 'file'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
+    <GridItemImage  class="item"  v-if="itemData.type === 'image'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
+    <GridItemLink  class="item"  v-if="itemData.type === 'link'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
+    <GridItemList  class="item"  v-if="itemData.type === 'list'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
+    <GridItemStuffspace   v-if="itemData.type === 'stuffspace'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
+    <GridItemTable  class="item"  v-if="itemData.type === 'table'" :content="itemData.content" :ID="{itemID,sectionID}" @onItemDelete="onItemDelete" />
   </div>
 
 
@@ -40,9 +40,16 @@ export default {
     containerID:String,
     gridType:String,
   },
+  emits:['onItemDelete'],
   data(){
     return{
       itemData:null,
+    }
+  },
+  methods:{
+    onItemDelete(e){
+      // console.log(e)
+      this.$emit('onItemDelete',e)
     }
   },
   beforeCreate() {

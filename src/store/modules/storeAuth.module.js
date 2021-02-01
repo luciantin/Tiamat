@@ -24,7 +24,7 @@ const actions = {
                         .catch((err)=>{
                             context.commit('unauthUser')
                             // console.error('nope',err)
-                            reject('auth error')
+                            reject(err)
                         })
             })
         })
@@ -42,9 +42,9 @@ const actions = {
                             console.log(firebase)
                         })
                         .catch((err) => {
-                            console.error('nope', err)
+                            // console.error('nope', err)
                             context.commit('unauthUser')
-                            reject('error')
+                            reject(err)
                         })
             })
         })

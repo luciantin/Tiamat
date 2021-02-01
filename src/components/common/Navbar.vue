@@ -7,8 +7,8 @@
 
       <div id="mid">
         <router-link to="/features">Features</router-link>
-        <router-link to="/pricing">Pricing</router-link>
-        <router-link to="/demo">Demo</router-link>
+<!--        <router-link to="/pricing">Pricing</router-link>-->
+<!--        <router-link to="/demo">Demo</router-link>-->
       </div>
 
       <div id="right">
