@@ -74,7 +74,7 @@ export default {
     //font-weight: bold;
     color: $color-nav-text;
     &.router-link-exact-active {
-      color: #42b983;
+      color: #53a0e8;
     }
   }
 

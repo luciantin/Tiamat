@@ -4,7 +4,7 @@
     <section class="frame" id="features-heading">
       <div class="heading">
         <div class="text">
-          <h1>Full Of Features</h1>
+<!--          <h1>Full Of Features</h1>-->
         </div>
         <img src="@/assets/img/banner/banner-bg-primary.svg" />
       </div>
@@ -79,6 +79,10 @@ export default {
 <style scoped lang="scss">
   .features{
     overflow-x: hidden;
+  }
+
+  h1{
+    font-size: 30px;
   }
 
   .frame{

@@ -33,7 +33,7 @@
     <CommonElementMenu
         v-else
         class="CommonElementMenu"
-       :elementType="'group'"
+       :elementType="'container'"
        :elementID="containerID"
        :gridType="GridType"
         @MenuItemClick="onMenuItemClick"

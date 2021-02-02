@@ -34,6 +34,7 @@ name: "CommonElementMenu",
   },
   methods:{
     loadContent(){
+      console.log(this.elementType)
       this.items = MenuItems[this.gridType][this.elementType]
     },
     onMenuItemClick(item){
