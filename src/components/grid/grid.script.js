@@ -42,7 +42,7 @@ export default {
                     title:false, // display title
                     header: true,
                     drag:true, // display drag
-                    menu:false, // display menu
+                    menu:true, // display menu
                     resize:false,
                 },
                 group:{

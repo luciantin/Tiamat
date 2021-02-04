@@ -47,11 +47,28 @@ let grp = {
     ]
 }
 
+let gr2p = {
+    top:[
+        items['Delete'],
+
+        // items['Edit'],
+    ],
+    mid:[
+        // items['Delete'],
+        // items['Filter'],
+        // items['Lock'],
+    ],
+    bot:[
+        // items['Tags'],
+        // items['Delete'],
+    ]
+}
+
 
 
 let MenuItems={
     'dashboard':{
-        'container':dashCnt,
+        'container':gr2p,
         'group':dashCnt
     },
     'stuffspace':{
