@@ -12,4 +12,4 @@
 
 
 #### Otp. kako funkcionira
-![Slika](https://github.com/luciantin/tiamat/blob/master/ex1.gif)
+![Slika](https://github.com/luciantin/tiamat/blob/master/gif.gif)
